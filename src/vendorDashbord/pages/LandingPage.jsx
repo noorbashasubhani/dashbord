@@ -12,7 +12,7 @@ const LandingPage = () => {
        <NavBar />
        <div className="vendorSection">
        <SideBar />
-       <VendorRegistration />
+      
        </div>
     </section>
     </>
