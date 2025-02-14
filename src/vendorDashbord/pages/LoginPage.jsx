@@ -5,18 +5,18 @@ import VendorLogin from '../components/forms/VendorLogin'
 import VendorRegistration from '../components/forms/VendorRegistration'
 
 
-const LandingPage = () => {
+const LoginPage = () => {
   return (
     <>
     <section className="landingSection">
        <NavBar />
        <div className="vendorSection">
        <SideBar />
-       <VendorRegistration />
+       <VendorLogin />
        </div>
     </section>
     </>
   )
 }
 
-export default LandingPage
+export default LoginPage
