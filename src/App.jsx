@@ -1,15 +1,16 @@
 import React from 'react'
-import LandingPage from './vendorDashbord/pages/LandingPage'
-import LandingLogin from './vendorDashbord/pages/LoginPage'
+import Dashbord from './vendorDashbord/pages/Dashbord'
 import { Routes,Route } from 'react-router-dom'
+import VendorLogin from './vendorDashbord/components/forms/VendorLogin'
+
+
 const App = () => {
   return (
     <div>
       <Routes>
-        <Route path="/" element={<LandingPage />}>
+        <Route path="/" element={<VendorLogin />}></Route>
+        <Route path="/dashboard" element={<Dashbord />}></Route>
         
-        <Route path="/Login" element={<LandingLogin />}></Route>
-        </Route>
       </Routes>
       
     </div>
