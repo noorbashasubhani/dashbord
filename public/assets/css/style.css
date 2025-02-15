@@ -688,7 +688,7 @@ h6 {
   color: #4154f1;
   transition: 0.3;
   background: #f6f9ff;
-  padding: 10px 15px;
+  padding: 10px 0px;
   border-radius: 4px;
   width:210px;
 }
@@ -733,6 +733,7 @@ h6 {
 }
 
 .sidebar-nav .nav-content a {
+  margin-left: -24px;
   display: flex;
   align-items: center;
   font-size: 12.4px;
