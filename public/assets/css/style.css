@@ -117,8 +117,8 @@ h6 {
 .dropdown-menu .dropdown-header,
 .dropdown-menu .dropdown-footer {
   text-align: center;
-  font-size: 15px;
-  padding: 10px 25px;
+  font-size: 12px;
+  padding: 10px 53px;
 }
 
 .dropdown-menu .dropdown-footer a {
@@ -511,13 +511,13 @@ h6 {
 }
 
 .header-nav .notifications .notification-item h4 {
-  font-size: 16px;
+  font-size: 12px;
   font-weight: 600;
   margin-bottom: 5px;
 }
 
 .header-nav .notifications .notification-item p {
-  font-size: 13px;
+  font-size: 12px;
   margin-bottom: 3px;
   color: #919191;
 }
