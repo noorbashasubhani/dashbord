@@ -28,9 +28,9 @@ const VendorLogin = () => {
         console.log(data);
         if (response.ok) {
           // Success - handle the login success logic (e.g., redirect, store token)
-          console.log("Login successful:", data.message);
-          alert('SUccesss');
-          setError("");
+          //console.log("Login successful:", data.message);
+          setError("Your Are Logined successfully...");
+          //setError("");
           setIsValid(true);
           // Redirect user or update state as necessary
         } else {
