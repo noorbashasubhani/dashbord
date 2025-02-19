@@ -252,9 +252,9 @@ const NavBar = () => {
               <hr className="dropdown-divider" />
             </li>
             <li>
-              <a className="dropdown-item d-flex align-items-center" href="#">
+              <a className="dropdown-item d-flex align-items-center" onClick={logout}>
                 <i className="bi bi-box-arrow-right" />
-                <button  onClick={logout}>Sign Out</button >
+                <span>Sign Out</span >
               </a>
             </li>
           </ul>
