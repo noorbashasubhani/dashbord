@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { API_URL } from '../../data/apiUrl';
+
 
 const VendorLogin = () => {
   const navigate = useNavigate();
@@ -22,7 +24,7 @@ const VendorLogin = () => {
       setError("");
 
       try {
-        const response = await fetch("http://localhost:4000/vendor/User-Login", {
+          const response = await fetch(`${API_URL}/vendor/User-Login`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
