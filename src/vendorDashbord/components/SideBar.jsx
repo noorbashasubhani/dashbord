@@ -130,7 +130,7 @@ const SideMenu = () => {
         data-bs-toggle="collapse"
         href="#"
       >
-        <i className="bi bi-layout-text-window-reverse" />
+        <i className="bi bi-box-seam-fill" />
         <span>Vochers</span>
         <i className="bi bi-chevron-down ms-auto" />
       </a>
@@ -141,13 +141,13 @@ const SideMenu = () => {
       >
         <li>
           <a href="tables-general.html">
-            <i className="bi bi-circle" />
+            <i className="bi bi-box2" />
             <span>Vochers List</span>
           </a>
         </li>
         <li>
           <a href="tables-data.html">
-            <i className="bi bi-circle" />
+            <i className="bi bi-gift-fill" />
             <span>Gift Vochers</span>
           </a>
         </li>
@@ -162,7 +162,7 @@ const SideMenu = () => {
         data-bs-toggle="collapse"
         href="#"
       >
-        <i className="bi bi-bar-chart" />
+        <i className="bi bi-life-preserver" />
         <span>Reservations</span>
         <i className="bi bi-chevron-down ms-auto" />
       </a>
@@ -173,13 +173,13 @@ const SideMenu = () => {
       >
         <li>
           <a href="charts-chartjs.html">
-            <i className="bi bi-circle" />
+            <i className="bi bi-alipay" />
             <span>Package Payment</span>
           </a>
         </li>
         <li>
           <a href="charts-apexcharts.html">
-            <i className="bi bi-circle" />
+            <i className="bi bi-credit-card-2-back-fill" />
             <span>Credit Note</span>
           </a>
         </li>
@@ -194,7 +194,7 @@ const SideMenu = () => {
         data-bs-toggle="collapse"
         href="#"
       >
-        <i className="bi bi-gem" />
+        <i className="bi bi-bag-check-fill" />
         <span>Accounts</span>
         <i className="bi bi-chevron-down ms-auto" />
       </a>
@@ -205,43 +205,43 @@ const SideMenu = () => {
       >
         <li>
           <a href="icons-bootstrap.html">
-            <i className="bi bi-circle" />
+            <i className="bi bi-piggy-bank" />
             <span>Ledger</span>
           </a>
         </li>
         <li>
           <a href="icons-remix.html">
-            <i className="bi bi-circle" />
+            <i className="bi bi-recycle" />
             <span>Recoveries</span>
           </a>
         </li>
         <li>
           <a href="icons-boxicons.html">
-            <i className="bi bi-circle" />
+            <i className="bi bi-repeat" />
             <span>Reiumbursment</span>
           </a>
         </li>
         <li>
           <a href="icons-boxicons.html">
-            <i className="bi bi-circle" />
+            <i className="bi bi-paypal" />
             <span>Partner Payout</span>
           </a>
         </li>
         <li>
           <a href="icons-boxicons.html">
-            <i className="bi bi-circle" />
+            <i className="bi bi-scissors" />
             <span>Partner Deductions</span>
           </a>
         </li>
         <li>
           <a href="icons-boxicons.html">
-            <i className="bi bi-circle" />
+            <i className="bi bi-tools" />
             <span>Employee Deductions</span>
           </a>
         </li>
         <li>
           <a href="icons-boxicons.html">
-            <i className="bi bi-circle" />
+            <i className="bi bi-wallet2" />
             <span>Receipts</span>
           </a>
         </li>
@@ -254,7 +254,7 @@ const SideMenu = () => {
         data-bs-toggle="collapse"
         href="#"
       >
-        <i className="bi bi-gem" />
+        <i className="bi bi-book-half" />
         <span>Finacial</span>
         <i className="bi bi-chevron-down ms-auto" />
       </a>
@@ -265,25 +265,25 @@ const SideMenu = () => {
       >
         <li>
           <a href="icons-bootstrap.html">
-            <i className="bi bi-circle" />
+            <i className="bi bi-book" />
             <span>CIH</span>
           </a>
         </li>
         <li>
           <a href="icons-remix.html">
-            <i className="bi bi-circle" />
+            <i className="bi bi-file-bar-graph" />
             <span>P&L</span>
           </a>
         </li>
         <li>
           <a href="icons-boxicons.html">
-            <i className="bi bi-circle" />
+            <i className="bi bi-currency-exchange" />
             <span>Revenue Report</span>
           </a>
         </li>
         <li>
           <a href="icons-boxicons.html">
-            <i className="bi bi-circle" />
+            <i className="bi bi-currency-rupee" />
             <span>Payable  Report</span>
           </a>
         </li>
@@ -298,7 +298,7 @@ const SideMenu = () => {
         data-bs-toggle="collapse"
         href="#"
       >
-        <i className="bi bi-gem" />
+        <i className="bi bi-bricks" />
         <span>Reports</span>
         <i className="bi bi-chevron-down ms-auto" />
       </a>

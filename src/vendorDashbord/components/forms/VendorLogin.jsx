@@ -1,40 +1,51 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const VendorLogin = () => {
+  const navigate = useNavigate();
+
   const [email, setEmail] = useState("");
-  const [pass, setPassword] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isValid, setIsValid] = useState(true);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     // Validate the fields
-    if (!email || !pass) {
+    if (!email || !password) {
       setIsValid(false);
       setError("Both email and password are required.");
     } else {
-      // Proceed with login logic: send data to the backend
+      // Reset error message if validation passes
+      setIsValid(true);
+      setError("");
+
       try {
-        const response = await fetch("http://localhost:4000/vendor/Check-user", {
+        const response = await fetch("http://localhost:4000/vendor/User-Login", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ email, pass }),
+          body: JSON.stringify({ email, password }),
         });
 
         const data = await response.json();
-        console.log(data);
+
         if (response.ok) {
-          // Success - handle the login success logic (e.g., redirect, store token)
-          //console.log("Login successful:", data.message);
-          setError("Your Are Logined successfully...");
-          //setError("");
+          // If login is successful, store the JWT token
+          localStorage.setItem('token', data.token);
+          //console.log('Login successful, token:', data.token);
+          setError("You have logged in successfully...");
           setIsValid(true);
-          // Redirect user or update state as necessary
+          setTimeout(() => {
+            navigate("/dashboard");// Redirect to the dashboard or another page
+          }, 5000); 
+          
+          // You can add logic here to redirect the user or update the UI.
         } else {
-          setError(data.message); // Display the error message from the backend
+          // If backend returns error, display it
+          setError(data.message || "Login failed, please try again.");
         }
       } catch (error) {
         setError("Something went wrong, please try again later.");
@@ -72,7 +83,7 @@ const VendorLogin = () => {
                       type="password"
                       className="form-control"
                       id="yourPassword"
-                      value={pass}
+                      value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required
                     />

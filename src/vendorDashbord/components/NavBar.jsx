@@ -1,6 +1,22 @@
-import React from 'react'
+import React from 'react';
+import { useNavigate } from "react-router-dom";
+import { useEffect } from 'react';
 
 const NavBar = () => {
+  const navigate = useNavigate();
+
+  // Function to handle logout
+  const logout = () => {
+    // Remove token from localStorage
+
+      const token = localStorage.removeItem("token");
+      navigate('/');
+    
+  };
+
+  
+
+
   return (
     <header id="header" className="header fixed-top d-flex align-items-center">
     <div className="d-flex align-items-center justify-content-between">
@@ -238,7 +254,7 @@ const NavBar = () => {
             <li>
               <a className="dropdown-item d-flex align-items-center" href="#">
                 <i className="bi bi-box-arrow-right" />
-                <span>Sign Out</span>
+                <button  onClick={logout}>Sign Out</button >
               </a>
             </li>
           </ul>
