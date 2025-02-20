@@ -24,6 +24,9 @@ const SideMenu = () => {
   const airoplan = () =>{
    navigate('/Airoplan-List');
   }
+  const holidys = () =>{
+    navigate('/Holidays-List'); 
+  }
   return (
     <aside id="sidebar" className="sidebar">
   <ul className="sidebar-nav" id="sidebar-nav">
@@ -492,7 +495,7 @@ const SideMenu = () => {
           </a>
         </li>
         <li>
-          <a href="icons-boxicons.html">
+          <a onClick={holidys}>
             <i className="bi bi-umbrella" />
             <span>Holidays Details </span>
           </a>

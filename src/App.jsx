@@ -8,6 +8,8 @@ import Designation from './vendorDashbord/pages/Designation';
 import Cabs from './vendorDashbord/pages/Cabs';
 import Airoplan from './vendorDashbord/pages/Airoplan';
 import Hotels from './vendorDashbord/pages/Hotels'
+import Notfound from './vendorDashbord/pages/Notfound'
+import Holidays from './vendorDashbord/pages/Holidays'
 const App = () => {
   return (
     <div>
@@ -19,6 +21,8 @@ const App = () => {
         <Route path="/Cabs-List" element={<Cabs />}></Route>
         <Route path="/Airoplan-List" element={<Airoplan />}></Route>
         <Route path="/Hotels" element={<Hotels />}></Route>
+        <Route path="*" element={<Notfound />} />
+        <Route path="/Holidays-List" element={<ProtectedRoute element={<Holidays />} />} />
       </Routes>
       
     </div>
