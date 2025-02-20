@@ -21,7 +21,9 @@ const SideMenu = () => {
   const cabs = () =>{
     navigate('/Cabs-List');
   }
-
+  const airoplan = () =>{
+   navigate('/Airoplan-List');
+  }
   return (
     <aside id="sidebar" className="sidebar">
   <ul className="sidebar-nav" id="sidebar-nav">
@@ -420,7 +422,7 @@ const SideMenu = () => {
         </li>
         
         <li>
-          <a href="Designation-List">
+          <a onClick={departments}>
             <i className="bi bi-pin-fill" />
             <span>Dept & Desg Details</span>
           </a>
@@ -630,13 +632,13 @@ const SideMenu = () => {
         data-bs-parent="#sidebar-nav"
       >
         <li>
-          <a href="Cabs-List">
+          <a onClick={cabs}>
             <i className="bi bi-bus-front" />
             <span>Cab List</span>
           </a>
         </li>
         <li>
-          <a href="Airoplan-List">
+          <a onClick={airoplan}>
             <i className="bi bi-airplane" />
             <span>Airport List</span>
           </a>
@@ -658,7 +660,7 @@ const SideMenu = () => {
         data-bs-parent="#sidebar-nav"
       >
         <li>
-          <a href="components-alerts.html">
+          <a href="Hotels">
             <i className="bi bi-house-fill" />
             <span>Hotel List</span>
           </a>
