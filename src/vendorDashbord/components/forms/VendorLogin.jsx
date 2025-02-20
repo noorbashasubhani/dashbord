@@ -55,6 +55,10 @@ const VendorLogin = () => {
     }
   };
 
+  const regFrom = () => {
+    navigate("/User-Registartion");
+  }
+
   return (
     <>
       <main>
@@ -97,8 +101,12 @@ const VendorLogin = () => {
                     <button className="btn btn-primary w-100" type="submit">
                       Login
                     </button>
+                    
                   </div>
                 </form>
+                <center className="mt-3 text-primary">
+                      <span onClick={regFrom}>If You Dont have Accout Please <u style={{cursor:"pointer"}} >Registration Here</u></span>
+                    </center>
               </div>
             </div>
           </section>
