@@ -8,6 +8,7 @@ const Footer = () => {
         <a href="https://gogagaholidays.com/">© www.gogagacrm.com is a registered trademark of Gogaga Holidays Private Limited.</a>
       </div>
     </footer>
+    
   )
 }
 

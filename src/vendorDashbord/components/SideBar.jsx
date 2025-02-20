@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const SideMenu = () => {
+  const navigate = useNavigate();
   const [isSubmenuVisible, setSubmenuVisible] = useState({
     products: false,
     firms: false,
@@ -12,6 +14,10 @@ const SideMenu = () => {
       [menu]: !prevState[menu],
     }));
   };
+
+  const departments = () =>{
+    navigate('/Designation-List');
+  }
 
   return (
     <aside id="sidebar" className="sidebar">
@@ -409,8 +415,9 @@ const SideMenu = () => {
             <span>Master Details</span>
           </a>
         </li>
+        
         <li>
-          <a href="icons-remix.html">
+          <a href="Designation-List">
             <i className="bi bi-pin-fill" />
             <span>Dept & Desg Details</span>
           </a>
