@@ -6,6 +6,7 @@ import ProtectedRoute from './protextedRoute'
 import VendorRegistration from './vendorDashbord/components/forms/VendorRegistration'
 import Designation from './vendorDashbord/pages/Designation';
 import Cabs from './vendorDashbord/pages/Cabs';
+import Airoplan from './vendorDashbord/pages/Airoplan';
 
 const App = () => {
   return (
@@ -16,6 +17,7 @@ const App = () => {
         <Route path="/User-Registartion" element={<VendorRegistration />}></Route>
         <Route path="/Designation-List" element={<Designation />}></Route>
         <Route path="/Cabs-List" element={<Cabs />}></Route>
+        <Route path="/Airoplan-List" element={<Airoplan />}></Route>
       </Routes>
       
     </div>

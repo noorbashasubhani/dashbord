@@ -18,6 +18,9 @@ const SideMenu = () => {
   const departments = () =>{
     navigate('/Designation-List');
   }
+  const cabs = () =>{
+    navigate('/Cabs-List');
+  }
 
   return (
     <aside id="sidebar" className="sidebar">
@@ -627,13 +630,13 @@ const SideMenu = () => {
         data-bs-parent="#sidebar-nav"
       >
         <li>
-          <a href="components-alerts.html">
+          <a href="Cabs-List">
             <i className="bi bi-bus-front" />
             <span>Cab List</span>
           </a>
         </li>
         <li>
-          <a href="components-accordion.html">
+          <a href="Airoplan-List">
             <i className="bi bi-airplane" />
             <span>Airport List</span>
           </a>
