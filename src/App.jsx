@@ -27,7 +27,7 @@ const App = () => {
         <Route path="*" element={<Notfound />} />
         <Route path="/Holidays-List" element={<ProtectedRoute element={<Holidays />} />} />
         <Route path="/Password" element={<ProtectedRoute element={<ChangePassword />} />} />
-        <Route path="/Employess" element={<ProtectedRoute element={<Employees />} />} />
+        <Route path="/Emp-Details" element={<ProtectedRoute element={<Employees />} />} />
       </Routes>
 
     </div>
