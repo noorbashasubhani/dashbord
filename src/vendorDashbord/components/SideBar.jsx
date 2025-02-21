@@ -27,6 +27,10 @@ const SideMenu = () => {
   const holidys = () =>{
     navigate('/Holidays-List'); 
   }
+
+  const empDetails = ()=>{
+    navigate('/Emp-Details');
+  }
   return (
     <aside id="sidebar" className="sidebar">
   <ul className="sidebar-nav" id="sidebar-nav">
@@ -477,7 +481,7 @@ const SideMenu = () => {
         data-bs-parent="#sidebar-nav"
       >
         <li>
-          <a href="Employees">
+          <a onClick={empDetails}>
             <i className="bi bi-person-bounding-box" />
             <span>Employees</span>
           </a>

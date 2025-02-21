@@ -71,7 +71,7 @@ const Employees = () => {
                         <tr>
                           <th>S.No</th>
                           <th>Employee Name</th>
-                          <th>Joining Date</th>
+                          <th>Email ID</th>
                         </tr>
                       </thead>
                       <tbody style={{ fontSize: "13px" }}>
@@ -79,7 +79,7 @@ const Employees = () => {
                         {emp.map((emps, index) => (
                           <tr key={emps._id}> {/* Use emps._id for the key */}
                             <td>{index + 1}</td> {/* Serial number */}
-                            <td>{emps.Employess}</td> {/* Employee name */}
+                            <td>{emps.first_name} {emps.last_name}</td> {/* Employee name */}
                             <td>{emps.email}</td> {/* Employee joining date */}
                           </tr>
                         ))}
