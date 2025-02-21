@@ -29,6 +29,23 @@ const Flyers = () => {
     fetchFly();
   }, []);
 
+  // Delete function
+  const handleDelete = async (id) => {
+    try {
+      const response = await fetch(`${API_URL}/flyer/delete/${id}`, {
+        method: 'DELETE',
+      });
+      if (response.ok) {
+        setFly(fly.filter((flyer) => flyer._id !== id)); // Remove the deleted flyer from state
+        alert('Flyer deleted successfully');
+      } else {
+        throw new Error('Failed to delete flyer');
+      }
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
   return (
     <>
       <NavBar />
@@ -77,6 +94,10 @@ const Flyers = () => {
                           <div className="gallery-info">
                             <h5>{flys.title}</h5>
                             <p>{new Date(flys.exp_Date).toLocaleDateString()}</p>
+                          </div>
+                          {/* Delete Icon */}
+                          <div className="delete-icon" onClick={() => handleDelete(flys._id)}>
+                            <i className="bi bi-trash" style={{ fontSize: '24px', color: 'red', cursor: 'pointer' }}></i>
                           </div>
                         </div>
                       ))}
