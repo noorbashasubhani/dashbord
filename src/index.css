@@ -11,3 +11,9 @@
 #footer {
     margin-left: 234px;
 }
+.form-group label,form button{
+    font-size: 13px;
+}
+.form-group input{
+    font-size: 11px;
+}

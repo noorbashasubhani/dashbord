@@ -10,6 +10,9 @@ import Airoplan from './vendorDashbord/pages/Airoplan';
 import Hotels from './vendorDashbord/pages/Hotels'
 import Notfound from './vendorDashbord/pages/Notfound'
 import Holidays from './vendorDashbord/pages/Holidays'
+import ChangePassword from './vendorDashbord/pages/ChangePaasword'
+import Employees from './vendorDashbord/pages/Employees'
+
 const App = () => {
   return (
     <div>
@@ -23,6 +26,8 @@ const App = () => {
         <Route path="/Hotels" element={<Hotels />}></Route>
         <Route path="*" element={<Notfound />} />
         <Route path="/Holidays-List" element={<ProtectedRoute element={<Holidays />} />} />
+        <Route path="/Password" element={<ProtectedRoute element={<ChangePassword />} />} />
+        <Route path="/Employess" element={<ProtectedRoute element={<Employees />} />} />
       </Routes>
       
     </div>

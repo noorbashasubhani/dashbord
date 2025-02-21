@@ -232,8 +232,8 @@ const NavBar = () => {
                 className="dropdown-item d-flex align-items-center"
                 href="users-profile.html"
               >
-                <i className="bi bi-gear" />
-                <span>Account Settings</span>
+                <i className="bi bi-key-fill" />
+                <span>Change Password</span>
               </a>
             </li>
             <li>
