@@ -477,7 +477,7 @@ const SideMenu = () => {
         data-bs-parent="#sidebar-nav"
       >
         <li>
-          <a href="icons-bootstrap.html">
+          <a href="Employees">
             <i className="bi bi-person-bounding-box" />
             <span>Employees</span>
           </a>

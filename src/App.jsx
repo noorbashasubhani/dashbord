@@ -29,7 +29,7 @@ const App = () => {
         <Route path="/Password" element={<ProtectedRoute element={<ChangePassword />} />} />
         <Route path="/Employess" element={<ProtectedRoute element={<Employees />} />} />
       </Routes>
-      
+
     </div>
   )
 }
