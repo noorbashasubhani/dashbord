@@ -13,6 +13,7 @@ import Holidays from './vendorDashbord/pages/Holidays'
 import ChangePassword from './vendorDashbord/pages/ChangePaasword'
 import Employees from './vendorDashbord/pages/Employees'
 import Flyers from './vendorDashbord/pages/Flyers'
+import Library from './vendorDashbord/pages/Library'
 
 const App = () => {
   return (
@@ -30,6 +31,7 @@ const App = () => {
         <Route path="/Password" element={<ProtectedRoute element={<ChangePassword />} />} />
         <Route path="/Emp-Details" element={<ProtectedRoute element={<Employees />} />} />
         <Route path="/Fly" element={<ProtectedRoute element={<Flyers />} />} />
+        <Route path="/Librarys" element={<ProtectedRoute element={<Library />} />} />
       </Routes>
 
     </div>

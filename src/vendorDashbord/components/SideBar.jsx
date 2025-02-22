@@ -31,6 +31,12 @@ const SideMenu = () => {
   const empDetails = ()=>{
     navigate('/Emp-Details');
   }
+  const flyDetails = ()=>{
+    navigate('/Fly');
+  }
+  const library = ()=>{
+    navigate('/Librarys');
+  }
   return (
     <aside id="sidebar" className="sidebar">
   <ul className="sidebar-nav" id="sidebar-nav">
@@ -697,13 +703,13 @@ const SideMenu = () => {
       </a>
     </li>
     <li className="nav-item">
-      <a className="nav-link collapsed" href="pages-register.html">
+      <a className="nav-link collapsed" onClick={library}>
         <i className="bi bi-columns-gap" />
         <span> Library</span>
       </a>
     </li>
     <li className="nav-item">
-      <a className="nav-link collapsed" href="pages-register.html">
+      <a className="nav-link collapsed" onClick={flyDetails}>
         <i className="bi bi-dropbox" />
         <span> Marketing</span>
       </a>

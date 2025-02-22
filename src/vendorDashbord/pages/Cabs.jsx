@@ -35,9 +35,9 @@ const Cabs = () => {
       <SideBar />
 
       <main id="main" className="main">
-        <div className="pagetitle">
+        <div className="pagetitle d-flex justify-content-between align-items-center">
           <h4><i className="bi bi-pin-fill mx-2"></i><b>Cabs Details</b></h4>
-          <nav className="d-flex justify-arround">
+          <nav className="d-flex align-items-center">
             <ol className="breadcrumb mx-2">
               <li className="breadcrumb-item">
                 <a href="index.html">Cabs</a>

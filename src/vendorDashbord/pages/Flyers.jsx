@@ -52,17 +52,23 @@ const Flyers = () => {
       <SideBar />
       
       <main id="main" className="main">
-        <div className="pagetitle">
-          <h4><i className="bi bi-person-fill mx-2"></i><b>Flyer Details</b></h4>
-          <nav className="d-flex justify-arround">
-            <ol className="breadcrumb mx-2">
-              <li className="breadcrumb-item">
-                <a href="index.html">Flyer</a>
-              </li>
-              <li className="breadcrumb-item active">List</li>
-            </ol>
-          </nav>
-        </div>
+      <div className="pagetitle d-flex justify-content-between align-items-center">
+  <div className="d-flex align-items-center">
+    <h4><i className="bi bi-pin-fill mx-2"></i><b>Flyer Details</b></h4>
+    <nav className="d-flex justify-arround">
+      <ol className="breadcrumb mx-2 mb-0">
+        <li className="breadcrumb-item">
+          <a href="index.html">Flyer</a>
+        </li>
+        <li className="breadcrumb-item active">List</li>
+      </ol>
+    </nav>
+  </div>
+  
+  <button className="btn btn-sm btn-primary mb-3 ms-auto" onClick={() => setShowModal(true)}>
+    + Add Flyer
+  </button>
+</div>
 
         <section className="section">
           <div className="row">

@@ -37,7 +37,7 @@
   
   .gallery-image {
     width: 100%;
-    height: 200px; /* Fixed height for images */
+    height: 320px; /* Fixed height for images */
     object-fit: cover; /* Ensures image maintains aspect ratio */
     transition: transform 0.3s ease-in-out; /* Smooth transition for the zoom effect */
   }
@@ -87,7 +87,7 @@
   
   .gallery-image {
     width: 100%;
-    height: 200px;
+    height: 260px;
     object-fit: cover;
     transition: transform 0.3s ease-in-out;
   }
@@ -96,6 +96,67 @@
     transform: scale(1.1);
   }
   
+
+  /* Table Styling */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px !important; /* Adjust the font size for the entire table */
+}
+
+.table th,
+.table td {
+  padding: 12px !important; /* Increase padding for better spacing */
+  text-align: left !important;
+  border: 1px solid #ddd !important;
+  font-size: 13px !important; /* Set font size for table cells */
+}
+
+.table th {
+  background-color: #f4f4f4;
+  font-weight: bold; /* Make header text bold */
+}
+
+.table td a {
+  color: #007bff; /* Set the color for the PDF link */
+  text-decoration: none;
+}
+
+.table td a:hover {
+  text-decoration: underline; /* Underline the link on hover */
+}
+
+/* Button Styling */
+.btn {
+  font-size: 14px; /* Set button font size */
+  padding: 8px 16px; /* Adjust padding for a better button size */
+  border-radius: 5px; /* Rounded corners for buttons */
+  border: none; /* Remove border */
+  cursor: pointer; /* Add pointer cursor on hover */
+}
+
+.btn-primary {
+  background-color: #007bff; /* Blue background for the primary button */
+  color: white; /* White text color */
+}
+
+.btn-primary:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+}
+
+.btn-danger {
+  background-color: #dc3545; /* Red background for the delete button */
+  color: white;
+}
+
+.btn-danger:hover {
+  background-color: #c82333; /* Darker red on hover */
+}
+
+.btn-sm {
+  font-size: 12px; /* Smaller font size for small buttons */
+  padding: 6px 12px; /* Smaller padding for small buttons */
+}
 
 
 
