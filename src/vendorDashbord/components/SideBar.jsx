@@ -629,37 +629,39 @@ const SideMenu = () => {
     </li>
 
     <li className="nav-item">
-      <a
-        className="nav-link collapsed"
-        data-bs-target="#components-sip"
-        data-bs-toggle="collapse"
-        href="#"
-      >
-        <i className="bi bi-airplane-engines" />
-        <span>Suppliers</span>
-        <i className="bi bi-chevron-down ms-auto" />
+  <a
+    className="nav-link collapsed"
+    data-bs-target="#components-sip"
+    data-bs-toggle="collapse"
+    href="#"
+  >
+    <i className="bi bi-airplane-engines" />
+    <span>Suppliers</span>
+    <i className="bi bi-chevron-down ms-auto" />
+  </a>
+  <ul
+    id="components-sip"
+    className="nav-content collapse"
+    data-bs-parent="#sidebar-nav"
+  >
+    <li>
+      <a onClick={cabs}>
+        <i className="bi bi-bus-front" />
+        <span>Cab List</span>
       </a>
-      <ul
-        id="components-sip"
-        className="nav-content collapse "
-        data-bs-parent="#sidebar-nav"
-      >
-        <li>
-          <a onClick={cabs}>
-            <i className="bi bi-bus-front" />
-            <span>Cab List</span>
-          </a>
-        </li>
-        <li>
-          <a onClick={airoplan}>
-            <i className="bi bi-airplane" />
-            <span>Airport List</span>
-          </a>
-        </li>
-        <li className="nav-items">
+    </li>
+    <li>
+      <a onClick={airoplan}>
+        <i className="bi bi-airplane" />
+        <span>Airport List</span>
+      </a>
+    </li>
+
+    {/* Hotels Section */}
+    <li className="nav-item">
       <a
         className="nav-link collapsed"
-        data-bs-target="#components-hot"
+        data-bs-target="#components-hotds"
         data-bs-toggle="collapse"
         href="#"
       >
@@ -668,8 +670,8 @@ const SideMenu = () => {
         <i className="bi bi-chevron-down ms-auto" />
       </a>
       <ul
-        id="components-hot"
-        className="nav-content collapse "
+        id="components-hotds"
+        className="nav-content collapse"
         data-bs-parent="#sidebar-nav"
       >
         <li>
@@ -681,13 +683,14 @@ const SideMenu = () => {
         <li>
           <a href="components-accordion.html">
             <i className="bi bi-houses" />
-            <span>Rate Chat</span>
+            <span>Rate Chart</span>
           </a>
         </li>
       </ul>
     </li>
-      </ul>
-    </li>
+  </ul>
+</li>
+
 
     <li className="nav-heading">MISCELLANEOUS</li>
     <li className="nav-item">

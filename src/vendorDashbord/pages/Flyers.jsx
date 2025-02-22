@@ -93,14 +93,8 @@ const Flyers = () => {
       const data = await response.json();
       setFly((prevFly) => [...prevFly, data.data]);
       setShowModal(false);
-      setNewFlyer({
-        title: '',
-        img: null,
-        exp_Date: '',
-      });
-      setPreviewImage(null);
-      //setSuccessMessage('Flyer added successfully!');
-      //setPreviewImage(null); // Reset the preview image
+      
+     
     } catch (err) {
       setError(err.message);
     }

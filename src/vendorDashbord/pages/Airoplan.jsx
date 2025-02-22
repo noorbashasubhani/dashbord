@@ -5,12 +5,17 @@ import Footer from '../components/forms/Footer';
 import { API_URL } from '../data/apiUrl';
 
 const Dashboard = () => {
-  const [airplan, setairplan] = useState([]); // Should be an array to store multiple airports
+  const [airplan, setAirplan] = useState([]); // Store airport details
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showModal, setShowModal] = useState(false); // Control modal visibility
+  const [newAirport, setNewAirport] = useState({
+    airport_name: '',
+    airport_city: '',
+    airport_code: ''
+  });
 
   useEffect(() => {
-    // Fetch data from the "Airplan-List" collection
     const fetchAirplan = async () => {
       try {
         const response = await fetch(`${API_URL}/vendor/Airplan-List`);
@@ -18,7 +23,7 @@ const Dashboard = () => {
           throw new Error('Failed to fetch airplan details');
         }
         const data = await response.json();
-        setairplan(data); // This will store the list of airplan details
+        setAirplan(data); // Store the airport list
       } catch (err) {
         setError(err.message);
       } finally {
@@ -28,6 +33,40 @@ const Dashboard = () => {
 
     fetchAirplan();
   }, []);
+
+  // Handle form input changes
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setNewAirport({
+      ...newAirport,
+      [name]: value
+    });
+  };
+
+  // Handle form submission to add a new airport
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch(`${API_URL}/vendor/Add-Airports`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newAirport),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to add airport');
+      }
+
+      const data = await response.json();
+      setAirplan([...airplan, data.data]); // Update the list with the new airport
+      setShowModal(false); // Close the modal
+      setNewAirport({ airport_name: '', airport_city: '', airport_code: '' }); // Reset the form
+    } catch (err) {
+      setError(err.message);
+    }
+  };
 
   return (
     <>
@@ -98,6 +137,67 @@ const Dashboard = () => {
           </div>
         </section>
       </main>
+
+      {/* Modal for adding a new airport */}
+      {showModal && (
+        <div className="modal" tabIndex="-1" style={{display: 'block'}}>
+          <div className="modal-dialog">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Add Airport</h5>
+                <button type="button" className="close" onClick={() => setShowModal(false)}>
+                  <span>&times;</span>
+                </button>
+              </div>
+              <div className="modal-body">
+                <form onSubmit={handleSubmit}>
+                  <div className="form-group mb-3">
+                    <label>Airport Name</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      name="airport_name"
+                      value={newAirport.airport_name}
+                      onChange={handleInputChange}
+                      required
+                    />
+                  </div>
+                  <div className="form-group mb-3">
+                    <label>Airport Location</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      name="airport_city"
+                      value={newAirport.airport_city}
+                      onChange={handleInputChange}
+                      required
+                    />
+                  </div>
+                  <div className="form-group mb-3">
+                    <label>Airport Code</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      name="airport_code"
+                      value={newAirport.airport_code}
+                      onChange={handleInputChange}
+                      required
+                    />
+                  </div>
+                  <div className="modal-footer">
+                    <button type="button" className="btn btn-secondary" onClick={() => setShowModal(false)}>
+                      Close
+                    </button>
+                    <button type="submit" className="btn btn-primary">
+                      Save Airport
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       <Footer />
     </>

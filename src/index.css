@@ -157,7 +157,20 @@
   font-size: 12px; /* Smaller font size for small buttons */
   padding: 6px 12px; /* Smaller padding for small buttons */
 }
+.pagetitle{
+  box-shadow: 5px 5px 5px 5px #f1f1f1;
+  border: 1px solid gry;
+  padding: 10px;
+  background-color: #ffffff;
+  border:5px;
+}
 
+
+.breadcrumb + button {
+    position: relative;
+    
+    top: -36px;
+}
 
 
   /* Responsive design: */

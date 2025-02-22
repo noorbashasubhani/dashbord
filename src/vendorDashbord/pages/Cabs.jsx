@@ -5,12 +5,23 @@ import Footer from '../components/forms/Footer';
 import { API_URL } from '../data/apiUrl';
 
 const Cabs = () => {
-  const [cabs, setCabs] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [cabs, setCabs] = useState([]); // To store the list of cabs
+  const [loading, setLoading] = useState(true); // For loading state
+  const [error, setError] = useState(null); // For error state
+  const [showModal, setShowModal] = useState(false); // To control modal visibility
+  const [newCab, setNewCab] = useState({
+    state_name: '',
+    service_location: '',
+    supplier_name: '',
+    email_contact: '',
+    vehicle_type: '',
+    seating_capacity: '',
+    per_day_cost: '',
+    rate_per_km: '',
+  });
 
+  // Fetch data from the "Cab-list" collection
   useEffect(() => {
-    // Fetch data from the "Cab-list" collection
     const fetchCabs = async () => {
       try {
         const response = await fetch(`${API_URL}/vendor/Cab-list`);
@@ -18,16 +29,65 @@ const Cabs = () => {
           throw new Error('Failed to fetch Cab Details');
         }
         const data = await response.json();
-        setCabs(data); // This will store the list of cabs
+        setCabs(data); // Store the list of cabs
       } catch (err) {
-        setError(err.message);
+        setError(err.message); // Set error message
       } finally {
-        setLoading(false);
+        setLoading(false); // Set loading state to false
       }
     };
 
     fetchCabs();
   }, []);
+
+  // Handle input changes in the add cab form
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setNewCab((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  // Handle the form submission to add new cab
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch(`${API_URL}/vendor/Add-Cab`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newCab), // Send the new cab data as JSON
+      });
+      if (!response.ok) {
+        throw new Error('Failed to add new cab');
+      }
+      const data = await response.json();
+      setCabs((prevCabs) => [...prevCabs, data.data]); // Add the new cab to the list
+      setShowModal(false); // Close the modal
+     
+    } catch (err) {
+      setError(err.message); // Handle errors
+    }
+  };
+
+
+   const deleteCab = async (id) => {
+      try {
+        const response = await fetch(`${API_URL}/vendor/DeleteCab/${id}`, {
+          method: 'DELETE',
+        });
+        if (!response.ok) {
+          throw new Error('Failed to delete library');
+        }
+        // Filter out the deleted item from the state
+        setCabs(cabs.filter((item) => item._id !== id));
+      } catch (err) {
+        setError(err.message);
+      }
+    };
+  
 
   return (
     <>
@@ -81,22 +141,29 @@ const Cabs = () => {
                           <th>Per Day Cost</th>
                           <th>Km</th>
                           <th>Created Date</th>
+                          <th>Action</th>
                         </tr>
                       </thead>
                       <tbody style={{ "font-size": "13px" }}>
                         {/* Loop through the cabs */}
                         {cabs.map((cab, index) => (
                           <tr key={cab._id}>
-                            <td>{index + 1}</td> {/* Serial number */}
-                            <td>{cab.state_name}</td> {/* State */}
-                            <td>{cab.service_location}</td> {/* Location */}
-                            <td>{cab.supplier_name}</td> {/* Cab Name */}
-                            <td>{cab.email_contact}</td> {/* Email or Contact Number */}
-                            <td>{cab.vehicle_type}</td> {/* Vehicle Type */}
-                            <td>{cab.seating_capacity}</td> {/* Capacity */}
-                            <td>{cab.per_day_cost}</td> {/* Per Day Cost */}
-                            <td>{cab.rate_per_km}</td> {/* Kilometers */}
-                            <td>{new Date(cab.created_date).toLocaleDateString()}</td> {/* Created Date */}
+                            <td>{index + 1}</td>
+                            <td>{cab.state_name}</td>
+                            <td>{cab.service_location}</td>
+                            <td>{cab.supplier_name}</td>
+                            <td>{cab.email_contact}</td>
+                            <td>{cab.vehicle_type}</td>
+                            <td>{cab.seating_capacity}</td>
+                            <td>{cab.per_day_cost}</td>
+                            <td>{cab.rate_per_km}</td>
+                            <td>{new Date(cab.created_date).toLocaleDateString()}</td>
+                            <td> <button
+                                  className="btn btn-sm btn-danger"
+                                  onClick={() => deleteCab(cab._id)}
+                                >
+                                  Delete
+                                </button></td>
                           </tr>
                         ))}
                       </tbody>
@@ -107,6 +174,121 @@ const Cabs = () => {
             </div>
           </div>
         </section>
+
+        {/* Modal for Adding New Cab */}
+        {showModal && (
+          <div className="modal show" style={{ display: 'block' }} onClick={() => setShowModal(false)}>
+            <div className="modal-dialog" onClick={(e) => e.stopPropagation()}>
+              <div className="modal-content container-fluid">
+                <div className="modal-header">
+                  <h5 className="modal-title">Add New Cab</h5>
+                  <button type="button" className="btn-close" onClick={() => setShowModal(false)}></button>
+                </div>
+                <div className="modal-body">
+                  <form onSubmit={handleSubmit}>
+                    <div className="mb-3">
+                      <label htmlFor="state_name" className="form-label">State</label>
+                      <input
+                        type="text"
+                        id="state_name"
+                        name="state_name"
+                        value={newCab.state_name}
+                        onChange={handleInputChange}
+                        className="form-control"
+                        required
+                      />
+                    </div>
+                    <div className="mb-3">
+                      <label htmlFor="service_location" className="form-label">Location</label>
+                      <input
+                        type="text"
+                        id="service_location"
+                        name="service_location"
+                        value={newCab.service_location}
+                        onChange={handleInputChange}
+                        className="form-control"
+                        required
+                      />
+                    </div>
+                    <div className="mb-3">
+                      <label htmlFor="supplier_name" className="form-label">Cab Name</label>
+                      <input
+                        type="text"
+                        id="supplier_name"
+                        name="supplier_name"
+                        value={newCab.supplier_name}
+                        onChange={handleInputChange}
+                        className="form-control"
+                        required
+                      />
+                    </div>
+                    <div className="mb-3">
+                      <label htmlFor="email_contact" className="form-label">Email or Contact Number</label>
+                      <input
+                        type="text"
+                        id="email_contact"
+                        name="email_contact"
+                        value={newCab.email_contact}
+                        onChange={handleInputChange}
+                        className="form-control"
+                        required
+                      />
+                    </div>
+                    <div className="mb-3">
+                      <label htmlFor="vehicle_type" className="form-label">Vehicle Type</label>
+                      <input
+                        type="text"
+                        id="vehicle_type"
+                        name="vehicle_type"
+                        value={newCab.vehicle_type}
+                        onChange={handleInputChange}
+                        className="form-control"
+                        required
+                      />
+                    </div>
+                    <div className="mb-3">
+                      <label htmlFor="seating_capacity" className="form-label">Seating Capacity</label>
+                      <input
+                        type="number"
+                        id="seating_capacity"
+                        name="seating_capacity"
+                        value={newCab.seating_capacity}
+                        onChange={handleInputChange}
+                        className="form-control"
+                        required
+                      />
+                    </div>
+                    <div className="mb-3">
+                      <label htmlFor="per_day_cost" className="form-label">Per Day Cost</label>
+                      <input
+                        type="number"
+                        id="per_day_cost"
+                        name="per_day_cost"
+                        value={newCab.per_day_cost}
+                        onChange={handleInputChange}
+                        className="form-control"
+                        required
+                      />
+                    </div>
+                    <div className="mb-3">
+                      <label htmlFor="rate_per_km" className="form-label">Rate Per KM</label>
+                      <input
+                        type="number"
+                        id="rate_per_km"
+                        name="rate_per_km"
+                        value={newCab.rate_per_km}
+                        onChange={handleInputChange}
+                        className="form-control"
+                        required
+                      />
+                    </div>
+                    <button type="submit" className="btn btn-primary">Save</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </main>
 
       <Footer />

@@ -37,7 +37,7 @@ const Library = () => {
   // Delete function to remove library entry
   const deleteLib = async (id) => {
     try {
-      const response = await fetch(`${API_URL}/Lib/Library-Details/${id}`, {
+      const response = await fetch(`${API_URL}/Lib/DeleteLib/${id}`, {
         method: 'DELETE',
       });
       if (!response.ok) {
@@ -64,7 +64,7 @@ const Library = () => {
     const file = e.target.files[0];
     setNewLibrary((prev) => ({
       ...prev,
-      pdf: file,
+      libra_pdf: file,
     }));
   };
 
@@ -73,10 +73,10 @@ const Library = () => {
     e.preventDefault();
     const formData = new FormData();
     formData.append('name', newLibrary.name);
-    formData.append('pdf', newLibrary.pdf);
+    formData.append('libra_pdf', newLibrary.libra_pdf);
 
     try {
-      const response = await fetch(`${API_URL}/Lib/Add-Library`, {
+      const response = await fetch(`${API_URL}/Lib/Library`, {
         method: 'POST',
         body: formData,
       });
@@ -86,7 +86,7 @@ const Library = () => {
       const data = await response.json();
       setLib((prevLib) => [...prevLib, data.data]);
       setShowModal(false); // Close the modal
-      setNewLibrary({ name: '', pdf: null }); // Reset form
+      setNewLibrary({ name: '', libra_pdf: null }); // Reset form
     } catch (err) {
       setError(err.message);
     }
@@ -208,8 +208,8 @@ const Library = () => {
                       <label htmlFor="pdf" className="form-label">Upload PDF</label>
                       <input
                         type="file"
-                        id="pdf"
-                        name="pdf"
+                        id="libra_pdf"
+                        name="libra_pdf"
                         onChange={handleFileChange}
                         className="form-control"
                         required
