@@ -5,20 +5,26 @@ import Footer from '../components/forms/Footer';
 import { API_URL } from '../data/apiUrl';
 
 const Flyers = () => {
-  const [fly, setFly] = useState([]); // Should be an array to store flyer details
+  const [fly, setFly] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [newFlyer, setNewFlyer] = useState({
+    title: '',
+    img: null,
+    exp_Date: '',
+  });
+  const [previewImage, setPreviewImage] = useState(null); // For image preview
 
   useEffect(() => {
-    // Fetch data from the "Flyers" API endpoint
     const fetchFly = async () => {
       try {
-        const response = await fetch(`${API_URL}/flyer/Flyer-list`); // Corrected endpoint
+        const response = await fetch(`${API_URL}/flyer/Flyer-list`);
         if (!response.ok) {
           throw new Error('Failed to fetch flyer details');
         }
         const data = await response.json();
-        setFly(data.data); // This will store the list of flyers
+        setFly(data.data);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -29,18 +35,72 @@ const Flyers = () => {
     fetchFly();
   }, []);
 
-  // Delete function
   const handleDelete = async (id) => {
     try {
-      const response = await fetch(`${API_URL}/flyer/delete/${id}`, {
+      const response = await fetch(`${API_URL}/flyer/DeleteFlyer/${id}`, {
         method: 'DELETE',
       });
       if (response.ok) {
-        setFly(fly.filter((flyer) => flyer._id !== id)); // Remove the deleted flyer from state
-        alert('Flyer deleted successfully');
+        setFly(fly.filter((flyer) => flyer._id !== id));
+        //alert('Flyer deleted successfully');
       } else {
         throw new Error('Failed to delete flyer');
       }
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setNewFlyer((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    setNewFlyer((prevState) => ({
+      ...prevState,
+      img: file,
+    }));
+    // Preview the image
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setPreviewImage(reader.result);
+    };
+    if (file) {
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append('title', newFlyer.title);
+    formData.append('img', newFlyer.img);
+    formData.append('exp_Date', newFlyer.exp_Date);
+
+    try {
+      const response = await fetch(`${API_URL}/flyer/addFly`, {
+        method: 'POST',
+        body: formData,
+      });
+      if (!response.ok) {
+        throw new Error('Failed to add flyer');
+      }
+      const data = await response.json();
+      setFly((prevFly) => [...prevFly, data.data]);
+      setShowModal(false);
+      setNewFlyer({
+        title: '',
+        img: null,
+        exp_Date: '',
+      });
+      setPreviewImage(null);
+      //setSuccessMessage('Flyer added successfully!');
+      //setPreviewImage(null); // Reset the preview image
     } catch (err) {
       setError(err.message);
     }
@@ -52,23 +112,23 @@ const Flyers = () => {
       <SideBar />
       
       <main id="main" className="main">
-      <div className="pagetitle d-flex justify-content-between align-items-center">
-  <div className="d-flex align-items-center">
-    <h4><i className="bi bi-pin-fill mx-2"></i><b>Flyer Details</b></h4>
-    <nav className="d-flex justify-arround">
-      <ol className="breadcrumb mx-2 mb-0">
-        <li className="breadcrumb-item">
-          <a href="index.html">Flyer</a>
-        </li>
-        <li className="breadcrumb-item active">List</li>
-      </ol>
-    </nav>
-  </div>
-  
-  <button className="btn btn-sm btn-primary mb-3 ms-auto" onClick={() => setShowModal(true)}>
-    + Add Flyer
-  </button>
-</div>
+        <div className="pagetitle d-flex justify-content-between align-items-center">
+          <div className="d-flex align-items-center">
+            <h4><i className="bi bi-pin-fill mx-2"></i><b>Flyer Details</b></h4>
+            <nav className="d-flex justify-arround">
+              <ol className="breadcrumb mx-2 mb-0">
+                <li className="breadcrumb-item">
+                  <a href="index.html">Flyer</a>
+                </li>
+                <li className="breadcrumb-item active">List</li>
+              </ol>
+            </nav>
+          </div>
+          
+          <button className="btn btn-sm btn-primary mb-3 ms-auto" onClick={() => setShowModal(true)}>
+            + Add Flyer
+          </button>
+        </div>
 
         <section className="section">
           <div className="row">
@@ -80,28 +140,23 @@ const Flyers = () => {
                     Explore our flyer list to check all the details and expiration dates.
                   </p>
                   
-                  {/* Loading State */}
                   {loading && <p><center>Loading...</center></p>}
                   
-                  {/* Error State */}
                   {error && <p className="text-danger">{error}</p>}
 
-                  {/* Gallery layout */}
                   {!loading && !error && fly.length > 0 && (
                     <div className="gallery">
-                      {/* Loop through the flyer data and display it in a grid */}
                       {fly.map((flys, index) => (
                         <div key={flys._id} className="gallery-item">
                           <img
-                            src={`${API_URL}/${flys.img}`}  // Assuming `flys.img` contains the URL of the image
-                            alt={flys.title} // Use the title as alt text for accessibility
+                            src={`${API_URL}/${flys.img}`}
+                            alt={flys.title}
                             className="gallery-image"
                           />
                           <div className="gallery-info">
                             <h5>{flys.title}</h5>
                             <p>{new Date(flys.exp_Date).toLocaleDateString()}</p>
                           </div>
-                          {/* Delete Icon */}
                           <div className="delete-icon" onClick={() => handleDelete(flys._id)}>
                             <i className="bi bi-trash" style={{ fontSize: '24px', color: 'red', cursor: 'pointer' }}></i>
                           </div>
@@ -110,7 +165,6 @@ const Flyers = () => {
                     </div>
                   )}
 
-                  {/* Message if no flyers are available */}
                   {!loading && !error && fly.length === 0 && (
                     <p>No flyers available.</p>
                   )}
@@ -119,6 +173,70 @@ const Flyers = () => {
             </div>
           </div>
         </section>
+
+        {/* Modal for adding new flyer */}
+        {showModal && (
+          <div className="modal show" style={{ display: 'block' }} onClick={() => setShowModal(false)}>
+            <div className="modal-dialog" onClick={(e) => e.stopPropagation()}>
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h5 className="modal-title">Add New Flyer</h5>
+                  <button type="button" className="btn-close" onClick={() => setShowModal(false)}></button>
+                </div>
+                <div className="modal-body">
+                  <form onSubmit={handleSubmit}>
+                    <div className="mb-3">
+                      <label htmlFor="title" className="form-label">Title</label>
+                      <input
+                        type="text"
+                        id="title"
+                        name="title"
+                        value={newFlyer.title}
+                        onChange={handleInputChange}
+                        className="form-control"
+                        required
+                      />
+                    </div>
+                    <div className="mb-3">
+                      <label htmlFor="img" className="form-label">Upload Image</label>
+                      <input
+                        type="file"
+                        id="img"
+                        name="img"
+                        onChange={handleImageChange}
+                        className="form-control"
+                        required
+                      />
+                    </div>
+                    {previewImage && (
+                      <div className="mb-3">
+                        <label>Image Preview:</label>
+                        <img
+                          src={previewImage}
+                          alt="Preview"
+                          style={{ maxWidth: '100%', maxHeight: '200px', marginTop: '10px' }}
+                        />
+                      </div>
+                    )}
+                    <div className="mb-3">
+                      <label htmlFor="exp_Date" className="form-label">Expiration Date</label>
+                      <input
+                        type="date"
+                        id="exp_Date"
+                        name="exp_Date"
+                        value={newFlyer.exp_Date}
+                        onChange={handleInputChange}
+                        className="form-control"
+                        required
+                      />
+                    </div>
+                    <button type="submit" className="btn btn-primary">Add Flyer</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </main>
 
       <Footer />

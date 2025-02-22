@@ -9,12 +9,16 @@ const Library = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showModal, setShowModal] = useState(false); // For controlling modal visibility
+  const [newLibrary, setNewLibrary] = useState({
+    name: '',
+    pdf: null,
+  });
 
   useEffect(() => {
     // Fetch data from the "Library" API endpoint
     const fetchLib = async () => {
       try {
-        const response = await fetch(`${API_URL}/Lib/Library-Details`); // Corrected endpoint
+        const response = await fetch(`${API_URL}/Lib/Library-Details`);
         if (!response.ok) {
           throw new Error('Failed to fetch library details');
         }
@@ -41,6 +45,48 @@ const Library = () => {
       }
       // Filter out the deleted item from the state
       setLib(lib.filter((item) => item._id !== id));
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  // Handle changes in the form fields
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setNewLibrary((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  // Handle PDF file upload
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setNewLibrary((prev) => ({
+      ...prev,
+      pdf: file,
+    }));
+  };
+
+  // Handle the form submission to add a new library
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append('name', newLibrary.name);
+    formData.append('pdf', newLibrary.pdf);
+
+    try {
+      const response = await fetch(`${API_URL}/Lib/Add-Library`, {
+        method: 'POST',
+        body: formData,
+      });
+      if (!response.ok) {
+        throw new Error('Failed to add library');
+      }
+      const data = await response.json();
+      setLib((prevLib) => [...prevLib, data.data]);
+      setShowModal(false); // Close the modal
+      setNewLibrary({ name: '', pdf: null }); // Reset form
     } catch (err) {
       setError(err.message);
     }
@@ -79,7 +125,7 @@ const Library = () => {
                   <p className="" style={{ fontSize: "13px", marginTop: "-15px" }}>
                     Explore our library list to check all the details and expiration dates.
                   </p>
-                  
+
                   {/* Loading State */}
                   {loading && <p><center>Loading...</center></p>}
                   
@@ -134,6 +180,48 @@ const Library = () => {
             </div>
           </div>
         </section>
+
+        {/* Modal for adding new library */}
+        {showModal && (
+          <div className="modal show" style={{ display: 'block' }} onClick={() => setShowModal(false)}>
+            <div className="modal-dialog" onClick={(e) => e.stopPropagation()}>
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h5 className="modal-title">Add New Library</h5>
+                  <button type="button" className="btn-close" onClick={() => setShowModal(false)}></button>
+                </div>
+                <div className="modal-body">
+                  <form onSubmit={handleSubmit}>
+                    <div className="mb-3">
+                      <label htmlFor="name" className="form-label">Library Name</label>
+                      <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        value={newLibrary.name}
+                        onChange={handleInputChange}
+                        className="form-control"
+                        required
+                      />
+                    </div>
+                    <div className="mb-3">
+                      <label htmlFor="pdf" className="form-label">Upload PDF</label>
+                      <input
+                        type="file"
+                        id="pdf"
+                        name="pdf"
+                        onChange={handleFileChange}
+                        className="form-control"
+                        required
+                      />
+                    </div>
+                    <button type="submit" className="btn btn-primary">Add Library</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </main>
 
       <Footer />
