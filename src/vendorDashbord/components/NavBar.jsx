@@ -1,10 +1,16 @@
 import React from 'react';
 import { useNavigate } from "react-router-dom";
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 const NavBar = () => {
   const navigate = useNavigate();
-
+  const [users, setUser] = useState(null);  // State to store the user data
+  const password = () =>{
+    navigate('/Password');
+   }
+   const myprofile = () => {
+    navigate('/Profile');
+   }
   // Function to handle logout
   const logout = () => {
     // Remove token from localStorage
@@ -13,8 +19,22 @@ const NavBar = () => {
       navigate('/');
     
   };
-
   
+  useEffect(() => {
+    const storedUser = localStorage.getItem("token");  // Retrieve token from localStorage
+
+    console.log(storedUser);
+    if (storedUser) {
+      try {
+        const parsedUser = JSON.parse(storedUser);  // Parse the stored token to get the user data
+        setUser(parsedUser);  // Set the user data in state
+      } catch (error) {
+        console.error("Error parsing stored user data:", error);
+      }
+    }
+  }, []);  // Only run on mount (empty dependency array)
+
+
 
 
   return (
@@ -198,28 +218,26 @@ const NavBar = () => {
             data-bs-toggle="dropdown"
           >
             <img
-              src="assets/img/profile-img.jpg"
-              alt="Profile"
-              className="rounded-circle"
-            />
-            <span className="d-none d-md-block dropdown-toggle ps-2">
-              K. Anderson
-            </span>
+                src="assets/img/profile-img.jpg"
+                alt="Profile"
+                className="rounded-circle"
+              />
+              {/* Show the user's name from the state */}
+              <span className="d-none d-md-block dropdown-toggle ps-2">
+                {users ? `${users.first_name} ${users.last_name}` : 'Guest'}
+              </span>
           </a>
           {/* End Profile Iamge Icon */}
           <ul className="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
-            <li className="dropdown-header">
-              <h6>Kevin Anderson</h6>
-              <span>Web Designer</span>
-            </li>
+          <li className="dropdown-header">
+                <h6>{users ? `${users.first_name} ${users.last_name}` : 'Guest'}</h6>
+                <span>{users ? 'Web Designer' : 'Not Logged In'}</span>
+              </li>
             <li>
               <hr className="dropdown-divider" />
             </li>
             <li>
-              <a
-                className="dropdown-item d-flex align-items-center"
-                href="users-profile.html"
-              >
+              <a className="dropdown-item d-flex align-items-center" onClick={myprofile}>
                 <i className="bi bi-person" />
                 <span>My Profile</span>
               </a>
@@ -229,9 +247,7 @@ const NavBar = () => {
             </li>
             <li>
               <a
-                className="dropdown-item d-flex align-items-center"
-                href="users-profile.html"
-              >
+                className="dropdown-item d-flex align-items-center" onClick={password}>
                 <i className="bi bi-key-fill" />
                 <span>Change Password</span>
               </a>

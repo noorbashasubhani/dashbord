@@ -14,6 +14,7 @@ import ChangePassword from './vendorDashbord/pages/ChangePaasword'
 import Employees from './vendorDashbord/pages/Employees'
 import Flyers from './vendorDashbord/pages/Flyers'
 import Library from './vendorDashbord/pages/Library'
+import MyProfile from './vendorDashbord/pages/MyProfile'
 
 const App = () => {
   return (
@@ -32,6 +33,7 @@ const App = () => {
         <Route path="/Emp-Details" element={<ProtectedRoute element={<Employees />} />} />
         <Route path="/Fly" element={<ProtectedRoute element={<Flyers />} />} />
         <Route path="/Librarys" element={<ProtectedRoute element={<Library />} />} />
+        <Route path="/Profile" element={<ProtectedRoute element={<MyProfile />} />} />
       </Routes>
 
     </div>
