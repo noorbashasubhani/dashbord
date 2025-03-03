@@ -2,9 +2,12 @@ import React, { useState, useEffect } from 'react';
 import NavBar from '../components/NavBar';
 import SideBar from '../components/SideBar';
 import Footer from '../components/forms/Footer';
+import { useNavigate } from 'react-router-dom';
 
-const Profile = () => {
+const MyProfile = () => {
   const [user, setUser] = useState(null);
+
+  const navigation = useNavigate();
 
   useEffect(() => {
     const storedUser = localStorage.getItem('token'); // Retrieve token from localStorage
@@ -15,6 +18,10 @@ const Profile = () => {
     }
   }, []);
 
+  const editprofile=()=>{
+    navigation('/Edit-Profile');
+  }
+
   return (
     <>
       <NavBar />
@@ -22,7 +29,7 @@ const Profile = () => {
 
       <main id="main" className="main">
         <div className="pagetitle">
-          <h4><i className="bi bi-person-circle mx-2"></i><b>My Profile</b></h4>
+          <h4><i className="bi bi-person-circle mx-2"></i><b>My Profile</b> <i class="bi bi-slash-square" onClick={editprofile}></i></h4>
         </div>
 
         <section className="section">
@@ -30,15 +37,15 @@ const Profile = () => {
             <div className="col-lg-12">
               <div className="card">
                 <div className="card-body">
-                  <h6 className="card-title" style={{ fontSize: '14px' }}>Profile Information</h6>
+                  <h6 className="card-title" style={{ fontSize: '14px' }}>Profile Information </h6>
                   
                   {/* Profile Information */}
                   {user && (
                     <div className="d-flex align-items-center">
-                     <img alt="Profile" class="rounded-circle" src="assets/img/profile-img.jpg" />
+                     <img alt="Profile" class="rounded-circle" src="assets/img/profile-img.jpg"/>
                       <div>
-                        <h5>{user.first_name} {user.last_name}</h5>
-                        <p>{user.email}</p>
+                        <h5 className="p-5"> {user.first_name} {user.last_name}</h5>
+                        <p className="p-3"> {user.email}</p>
                       </div>
                     </div>
                   )}
@@ -78,7 +85,7 @@ const Profile = () => {
                     </li>
                   </ul>
 
-                  <div className="tab-content" id="myTabContent">
+                  <div className="tab-content mt-5" id="myTabContent">
                     {/* Personal Details */}
                     <div className="tab-pane fade show active" id="personal" role="tabpanel" aria-labelledby="personal-tab">
                       <h6>Personal Information</h6>
@@ -124,4 +131,4 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+export default MyProfile;

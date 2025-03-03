@@ -38,7 +38,7 @@ const VendorLogin = () => {
           // If login is successful, store the JWT token
           //console.log(data.to);
           //const datas = localStorage.setItem('token', data.token);
-          localStorage.setItem("token", JSON.stringify(data.token));  // Save it as a string
+          localStorage.setItem("token", data.token);  // Save it as a string
 
           //console.log(datas);
           //console.log('Login successful, token:', data.token);

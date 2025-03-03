@@ -3,6 +3,8 @@ import NavBar from '../components/NavBar';
 import SideBar from '../components/SideBar';
 import Footer from '../components/forms/Footer';
 import { API_URL } from '../data/apiUrl';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Flyers = () => {
   const [fly, setFly] = useState([]);
@@ -25,6 +27,7 @@ const Flyers = () => {
         }
         const data = await response.json();
         setFly(data.data);
+        
       } catch (err) {
         setError(err.message);
       } finally {
@@ -93,7 +96,7 @@ const Flyers = () => {
       const data = await response.json();
       setFly((prevFly) => [...prevFly, data.data]);
       setShowModal(false);
-      
+      toast.success('Flyer added successfully!');
      
     } catch (err) {
       setError(err.message);

@@ -15,25 +15,33 @@ import Employees from './vendorDashbord/pages/Employees'
 import Flyers from './vendorDashbord/pages/Flyers'
 import Library from './vendorDashbord/pages/Library'
 import MyProfile from './vendorDashbord/pages/MyProfile'
+import Editprofile from './vendorDashbord/pages/Editprofile'
 
 const App = () => {
   return (
     <div>
       <Routes>
-        <Route path="/" element={<VendorLogin />}></Route>
-        <Route path="/dashboard" element={<ProtectedRoute element={<Dashbord />} />} />
-        <Route path="/User-Registartion"  element={<VendorRegistration />}></Route>
-        <Route path="/Designation-List" element={<Designation />}></Route>
-        <Route path="/Cabs-List" element={<Cabs />}></Route>
-        <Route path="/Airoplan-List" element={<Airoplan />}></Route>
-        <Route path="/Hotels" element={<Hotels />}></Route>
+        <Route path="/" element={<VendorLogin />}></Route> 
         <Route path="*" element={<Notfound />} />
+
+
+
+
+
+        <Route path="/dashboard" element={<ProtectedRoute element={<Dashbord />} />} /> 
+        <Route path="/User-Registartion" element={<ProtectedRoute element={<VendorRegistration />} />} /> 
+        <Route path="/Designation-List" element={<ProtectedRoute element={<Designation />} />} /> 
+        <Route path="/Cabs-List" element={<ProtectedRoute element={<Cabs />} />} /> 
+        <Route path="/Airoplan-List" element={<ProtectedRoute element={<Airoplan />} />} /> 
+        <Route path="/Hotels" element={<ProtectedRoute element={<Hotels />} />} /> 
         <Route path="/Holidays-List" element={<ProtectedRoute element={<Holidays />} />} />
         <Route path="/Password" element={<ProtectedRoute element={<ChangePassword />} />} />
         <Route path="/Emp-Details" element={<ProtectedRoute element={<Employees />} />} />
         <Route path="/Fly" element={<ProtectedRoute element={<Flyers />} />} />
         <Route path="/Librarys" element={<ProtectedRoute element={<Library />} />} />
         <Route path="/Profile" element={<ProtectedRoute element={<MyProfile />} />} />
+        <Route path="/Edit-Profile" element={<ProtectedRoute element={<Editprofile />} />} />
+        
       </Routes>
 
     </div>

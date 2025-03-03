@@ -224,14 +224,14 @@ const NavBar = () => {
               />
               {/* Show the user's name from the state */}
               <span className="d-none d-md-block dropdown-toggle ps-2">
-                {users ? `${users.first_name} ${users.last_name}` : 'Guest'}
+                
               </span>
           </a>
           {/* End Profile Iamge Icon */}
           <ul className="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
           <li className="dropdown-header">
-                <h6>{users ? `${users.first_name} ${users.last_name}` : 'Guest'}</h6>
-                <span>{users ? 'Web Designer' : 'Not Logged In'}</span>
+                <h6></h6>
+                <span></span>
               </li>
             <li>
               <hr className="dropdown-divider" />

@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+
 const ProtectedRoute = ({ element, ...rest }) => {
   const navigate = useNavigate();
   const token = localStorage.getItem('token'); // Check if there's a token in localStorage
