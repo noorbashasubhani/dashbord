@@ -21,7 +21,7 @@ const Flyers = () => {
   useEffect(() => {
     const fetchFly = async () => {
       try {
-        const response = await fetch(`${API_URL}/flyer/Flyer-list`);
+        const response = await fetch(`${API_URL}/flyer/Flyercloudes`);
         if (!response.ok) {
           throw new Error('Failed to fetch flyer details');
         }
@@ -86,7 +86,7 @@ const Flyers = () => {
     formData.append('exp_Date', newFlyer.exp_Date);
 
     try {
-      const response = await fetch(`${API_URL}/flyer/addFly`, {
+      const response = await fetch(`${API_URL}/flyer/Add-coludFlyer`, {
         method: 'POST',
         body: formData,
       });
@@ -146,7 +146,7 @@ const Flyers = () => {
                       {fly.map((flys, index) => (
                         <div key={flys._id} className="gallery-item">
                           <img
-                            src={`${API_URL}/${flys.img}`}
+                            src={`${flys.img}`}
                             alt={flys.title}
                             className="gallery-image"
                           />
