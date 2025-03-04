@@ -16,6 +16,9 @@ import Flyers from './vendorDashbord/pages/Flyers'
 import Library from './vendorDashbord/pages/Library'
 import MyProfile from './vendorDashbord/pages/MyProfile'
 import Editprofile from './vendorDashbord/pages/Editprofile'
+import Escalation from './vendorDashbord/pages/Escalation'
+
+
 import { EmpProvider } from '../EmpContext'
 
 const App = () => {
@@ -43,6 +46,7 @@ const App = () => {
         <Route path="/Librarys" element={<ProtectedRoute element={<Library />} />} />
         <Route path="/Profile" element={<ProtectedRoute element={<MyProfile />} />} />
         <Route path="/Edit-Profile" element={<ProtectedRoute element={<Editprofile />} />} />
+        <Route path="/Escalation" element={<ProtectedRoute element={<Escalation />} />} />
         
       </Routes>
       </EmpProvider>

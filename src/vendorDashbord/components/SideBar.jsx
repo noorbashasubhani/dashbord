@@ -37,6 +37,9 @@ const SideMenu = () => {
   const library = ()=>{
     navigate('/Librarys');
   }
+  const Escalation = ()=>{
+    navigate('/Escalation');
+  }
   return (
     <aside id="sidebar" className="sidebar">
   <ul className="sidebar-nav" id="sidebar-nav">
@@ -700,7 +703,7 @@ const SideMenu = () => {
       </a>
     </li>
     <li className="nav-item">
-      <a className="nav-link collapsed" href="pages-register.html">
+      <a className="nav-link collapsed" onClick={Escalation}>
         <i className="bi bi-card-checklist" />
         <span> Complaints</span>
       </a>
