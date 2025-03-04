@@ -16,10 +16,12 @@ import Flyers from './vendorDashbord/pages/Flyers'
 import Library from './vendorDashbord/pages/Library'
 import MyProfile from './vendorDashbord/pages/MyProfile'
 import Editprofile from './vendorDashbord/pages/Editprofile'
+import { EmpProvider } from '../EmpContext'
 
 const App = () => {
   return (
     <div>
+      <EmpProvider>
       <Routes>
         <Route path="/" element={<VendorLogin />}></Route> 
         <Route path="*" element={<Notfound />} />
@@ -43,6 +45,7 @@ const App = () => {
         <Route path="/Edit-Profile" element={<ProtectedRoute element={<Editprofile />} />} />
         
       </Routes>
+      </EmpProvider>
 
     </div>
   )

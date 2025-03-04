@@ -1,22 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import NavBar from '../components/NavBar';
 import SideBar from '../components/SideBar';
 import Footer from '../components/forms/Footer';
 import { useNavigate } from 'react-router-dom';
+import { EmpContext } from '../../../EmpContext';
 
 const MyProfile = () => {
   const [user, setUser] = useState(null);
-
+  const { emp } = useContext(EmpContext);
   const navigation = useNavigate();
-
-  useEffect(() => {
-    const storedUser = localStorage.getItem('token'); // Retrieve token from localStorage
-
-    if (storedUser) {
-      const parsedUser = JSON.parse(storedUser);
-      setUser(parsedUser); // Set the user data into state
-    }
-  }, []);
+  
+  console.log("MY pROFILE DETAISL:"+emp);
 
   const editprofile=()=>{
     navigation('/Edit-Profile');
@@ -40,12 +34,12 @@ const MyProfile = () => {
                   <h6 className="card-title" style={{ fontSize: '14px' }}>Profile Information </h6>
                   
                   {/* Profile Information */}
-                  {user && (
+                  {emp && (
                     <div className="d-flex align-items-center">
                      <img alt="Profile" class="rounded-circle" src="assets/img/profile-img.jpg"/>
                       <div>
-                        <h5 className="p-5"> {user.first_name} {user.last_name}</h5>
-                        <p className="p-3"> {user.email}</p>
+                        <h5 className="p-5"> {emp.first_name} {emp.last_name}</h5>
+                        <p className="p-3"> {emp.email}</p>
                       </div>
                     </div>
                   )}
@@ -89,9 +83,11 @@ const MyProfile = () => {
                     {/* Personal Details */}
                     <div className="tab-pane fade show active" id="personal" role="tabpanel" aria-labelledby="personal-tab">
                       <h6>Personal Information</h6>
-                      <p><strong>First Name:</strong> {user ? user.first_name : 'N/A'}</p>
-                      <p><strong>Last Name:</strong> {user ? user.last_name : 'N/A'}</p>
-                      <p><strong>Email:</strong> {user ? user.email : 'N/A'}</p>
+                      <p><strong>Emp Id:</strong> {emp ? emp._id : 'N/A'}</p>
+                      <p><strong>First Name:</strong> {emp ? emp.first_name : 'N/A'}</p>
+                      <p><strong>Last Name:</strong> {emp ? emp.last_name : 'N/A'}</p>
+                      <p><strong>Full Name:</strong> {emp ? emp.first_name +"  "+ emp.last_name : 'N/A'}</p>
+                      <p><strong>Email:</strong> {emp ? emp.email : 'N/A'}</p>
                     </div>
 
                     {/* Bank Details */}

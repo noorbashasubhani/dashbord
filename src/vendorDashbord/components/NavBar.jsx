@@ -1,10 +1,20 @@
 import React from 'react';
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from 'react';
+import { useState, useEffect ,useContext } from 'react';
+import { API_URL } from '../data/apiUrl';
+import { jwtDecode } from 'jwt-decode';
+import { EmpContext } from '../../../EmpContext';
+
 
 const NavBar = () => {
-  const navigate = useNavigate();
-  const [users, setUser] = useState(null);  // State to store the user data
+const navigate = useNavigate();
+const [em,setEm]=useState();
+
+
+const { emp } = useContext(EmpContext);
+
+  //const {}=
+  
   const password = () =>{
     navigate('/Password');
    }
@@ -14,29 +24,10 @@ const NavBar = () => {
   // Function to handle logout
   const logout = () => {
     // Remove token from localStorage
-
       const token = localStorage.removeItem("token");
       navigate('/');
-    
   };
-  
-  useEffect(() => {
-    const storedUser = localStorage.getItem("token");  // Retrieve token from localStorage
-
-    console.log(storedUser);
-    if (storedUser) {
-      try {
-        const parsedUser = JSON.parse(storedUser);  // Parse the stored token to get the user data
-        setUser(parsedUser);  // Set the user data in state
-      } catch (error) {
-        console.error("Error parsing stored user data:", error);
-      }
-    }
-  }, []);  // Only run on mount (empty dependency array)
-
-
-
-
+ 
   return (
     <header id="header" className="header fixed-top d-flex align-items-center">
     <div className="d-flex align-items-center justify-content-between">
@@ -230,8 +221,9 @@ const NavBar = () => {
           {/* End Profile Iamge Icon */}
           <ul className="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
           <li className="dropdown-header">
-                <h6></h6>
-                <span></span>
+          <h6>Welcome,</h6>
+          <h6>You Logined As a : {emp ? `${emp.first_name} ${emp.last_name}` : "Loading..."}</h6>
+          <span>{emp ? emp.email : "Loading..."}</span>
               </li>
             <li>
               <hr className="dropdown-divider" />

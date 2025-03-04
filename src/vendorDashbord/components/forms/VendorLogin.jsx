@@ -33,7 +33,7 @@ const VendorLogin = () => {
         });
 
         const data = await response.json();
-
+        
         if (response.ok) {
           // If login is successful, store the JWT token
           //console.log(data.to);
@@ -46,7 +46,8 @@ const VendorLogin = () => {
           setIsValid(true);
           setTimeout(() => {
             navigate("/dashboard");// Redirect to the dashboard or another page
-          }, 5000); 
+            window.location.reload();
+          }, 1000); 
           
           // You can add logic here to redirect the user or update the UI.
         } else {
