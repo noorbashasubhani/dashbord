@@ -221,8 +221,8 @@ const { emp } = useContext(EmpContext);
           {/* End Profile Iamge Icon */}
           <ul className="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
           <li className="dropdown-header">
-          <h6>Welcome,</h6>
-          <h6>You Logined As a : {emp ? `${emp.first_name} ${emp.last_name}` : "Loading..."}</h6>
+          <h6 style={{color:"green"}}>Welcome Gogaga Dashboard</h6>
+          <h6>You are Logined as : {emp ? `${emp.first_name} ${emp.last_name}` : "Loading..."}</h6>
           <span>{emp ? emp.email : "Loading..."}</span>
               </li>
             <li>

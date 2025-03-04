@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect } from 'react';
 import { jwtDecode } from 'jwt-decode';
+import { API_URL } from './src/vendorDashbord/data/apiUrl';
 
 // Create a context for employee data
 const EmpContext = createContext();
@@ -24,7 +25,7 @@ const EmpProvider = ({ children }) => {
         const userId = decodedToken.userId; // Extract userId from the decoded token
 
         // Fetch employee details using the userId
-        const response = await fetch(`http://localhost:4000/vendor/Single-user/${userId}`);
+        const response = await fetch(`${API_URL}/vendor/Single-user/${userId}`);
 
         if (!response.ok) {
           throw new Error('Failed to fetch employee details');

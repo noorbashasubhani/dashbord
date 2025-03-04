@@ -1,78 +1,78 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import NavBar from '../components/NavBar';
 import SideBar from '../components/SideBar';
 import Footer from '../components/forms/Footer';
 import { useNavigate } from 'react-router-dom';
+import { EmpContext } from '../../../EmpContext';
+import { API_URL } from '../data/apiUrl';
 
 const Editprofile = () => {
-  const [user, setUser] = useState(null);
-  const [bankDetails, setBankDetails] = useState({
-    bankName: '',
-    bankBranch: '',
-    bankAccount: '',
-    ifscCode: ''
-  });
+  const { emp } = useContext(EmpContext); // emp comes from EmpContext
+  const [user, setUser] = useState({
+    first_name: '',
+    last_name: '',
+    email: ''
+  });  // Initial state for user profile
+  const navigate = useNavigate();  // For navigation after form submission
 
-  const navigation = useNavigate();
-
-  // Load user data from localStorage on component mount
+  // Fetch user data (Simulating fetching from an API)
   useEffect(() => {
-    const storedUser = localStorage.getItem('token'); // Retrieve token from localStorage
+    // Replace with your actual API call to fetch the user data
+    const fetchUserData = async () => {
+      const response = await fetch('/api/userProfile', {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+      const data = await response.json();
+      setUser(data);  // Assuming the response contains user data
+    };
+    fetchUserData();
+  }, []); // Empty dependency array means this runs once when the component mounts
 
-    if (storedUser) {
-      const parsedUser = JSON.parse(storedUser);
-      setUser(parsedUser); // Set the user data into state
-    }
-  }, []);
-
-  // Handle input changes
+  // Handle form field changes
   const handleChange = (e) => {
     const { id, value } = e.target;
-    setBankDetails({
-      ...bankDetails,
-      [id]: value
-    });
+    setUser((prevUser) => ({
+      ...prevUser,
+      [id]: value,  // Dynamically update the field in the state
+    }));
   };
 
   // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
-  
-    // Here you would typically send the form data to the backend or API
-    console.log('Updated Bank Details:', bankDetails);
-  
-    // Replace this URL with your actual API endpoint
-    const apiUrl = '${API_URL}/vendor/Update-Bank'; 
-  
-    // Example payload, assuming you need to send these values in the request body
+    
+    // Update the user profile (replace with your API URL)
+    const apiUrl = `${API_URL}/vendor/update-user/${emp._id}`;  // Corrected template literal
+
     const payload = {
-      bankName: bankDetails.bankName,
-      bankBranch: bankDetails.bankBranch,
-      bankAccount: bankDetails.bankAccount,
-      ifscCode: bankDetails.ifscCode,
+      first_name: user.first_name,
+      last_name: user.last_name,
+      email: user.email,
     };
-  
-    // Sending POST request to update bank details
+
     fetch(apiUrl, {
-      method: 'POST',
+      method: 'PUT',
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('token')}`, // Assuming the API requires an auth token
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify(payload),
     })
-      .then((response) => response.json()) // Parse the JSON response
+      .then((response) => response.json())
       .then((data) => {
-        console.log('Success:', data); // Handle successful response
-        // Navigate to profile page or show success message
-        navigation('/Profile'); // Example: Redirecting to profile page after successful submission
+        //console.log('Profile updated successfully:', data);
+        // Navigate to the profile page or show a success message
+        navigate('/Profile');
+        window.location.reload();
+
       })
       .catch((error) => {
-        console.error('Error:', error); // Handle error if the API call fails
-        // Optionally show an error message to the user
+        console.error('Error:', error);
+        // Handle errors (maybe show an error message to the user)
       });
   };
-  
+
   return (
     <>
       <NavBar />
@@ -89,7 +89,7 @@ const Editprofile = () => {
               <div className="card">
                 <div className="card-body">
                   <h6 className="card-title" style={{ fontSize: '14px' }}>Profile Information</h6>
-                  {/* Profile Information */}
+                  {/* Display current user info */}
                   {user && (
                     <div className="d-flex align-items-center">
                       <img alt="Profile" className="rounded-circle" src="assets/img/profile-img.jpg" />
@@ -105,65 +105,54 @@ const Editprofile = () => {
           </div>
         </section>
 
-        {/* Bank Details Section */}
+        {/* Edit Profile Form */}
         <section className="section">
           <div className="row">
             <div className="col-lg-12">
               <div className="card">
                 <div className="card-body">
-                  <h4 className="card-title">Bank Details</h4>
+                  <h4 className="card-title">Profile Details</h4>
 
-                  {/* Bank details form */}
+                  {/* Profile details form */}
                   <form onSubmit={handleSubmit} className="d-flex flex-wrap justify-content-around">
                     <div className="form-group mr-3 mb-3">
-                      <label htmlFor="bankName">Bank Name</label>
+                      <label htmlFor="first_name">First Name</label>
                       <input
                         type="text"
                         className="form-control"
-                        id="bankName"
-                        placeholder="Enter bank name"
-                        value={bankDetails.bankName}
+                        id="first_name"
+                        placeholder="Enter First Name"
+                        value={user.first_name} // Use user state instead of emp
+                        onChange={handleChange} // Handle form field changes
+                      />
+                    </div>
+
+                    <div className="form-group mr-3 mb-3">
+                      <label htmlFor="last_name">Last Name</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        id="last_name"
+                        placeholder="Enter Last Name"
+                        value={user.last_name} // Use user state instead of emp
                         onChange={handleChange}
                       />
                     </div>
 
                     <div className="form-group mr-3 mb-3">
-                      <label htmlFor="bankBranch">Bank Branch</label>
+                      <label htmlFor="email">E-Mail</label>
                       <input
-                        type="text"
+                        type="email"
                         className="form-control"
-                        id="bankBranch"
-                        placeholder="Enter bank branch"
-                        value={bankDetails.bankBranch}
+                        id="email"
+                        placeholder="Enter Email Id"
+                        value={user.email} // Use user state instead of emp
                         onChange={handleChange}
                       />
                     </div>
 
                     <div className="form-group mr-3 mb-3">
-                      <label htmlFor="bankAccount">Bank Account Number</label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        id="bankAccount"
-                        placeholder="Enter bank account number"
-                        value={bankDetails.bankAccount}
-                        onChange={handleChange}
-                      />
-                    </div>
-
-                    <div className="form-group mr-3 mb-3">
-                      <label htmlFor="ifscCode">Bank IFSC Code</label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        id="ifscCode"
-                        placeholder="Enter bank IFSC code"
-                        value={bankDetails.ifscCode}
-                        onChange={handleChange}
-                      />
-                    </div>
-                    <div className="form-group mr-3 mb-3">
-                    <button type="submit" className="btn btn-sm btn-primary mt-5">Submit</button>
+                      <button type="submit" className="btn btn-sm btn-primary mt-5">Submit</button>
                     </div>
                   </form>
                 </div>

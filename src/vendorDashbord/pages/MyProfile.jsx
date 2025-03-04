@@ -10,7 +10,7 @@ const MyProfile = () => {
   const { emp } = useContext(EmpContext);
   const navigation = useNavigate();
   
-  console.log("MY pROFILE DETAISL:"+emp);
+  //console.log("MY pROFILE DETAISL:"+emp);
 
   const editprofile=()=>{
     navigation('/Edit-Profile');
