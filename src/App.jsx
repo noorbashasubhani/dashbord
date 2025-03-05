@@ -19,20 +19,15 @@ import Editprofile from './vendorDashbord/pages/Editprofile'
 import Escalation from './vendorDashbord/pages/Escalation'
 
 
-import { EmpProvider } from '../EmpContext'
+//import { EmpProvider } from '../EmpContext'
 
 const App = () => {
   return (
     <div>
-      <EmpProvider>
+      
       <Routes>
         <Route path="/" element={<VendorLogin />}></Route> 
         <Route path="*" element={<Notfound />} />
-
-
-
-
-
         <Route path="/dashboard" element={<ProtectedRoute element={<Dashbord />} />} /> 
         <Route path="/User-Registartion" element={<ProtectedRoute element={<VendorRegistration />} />} /> 
         <Route path="/Designation-List" element={<ProtectedRoute element={<Designation />} />} /> 
@@ -49,7 +44,7 @@ const App = () => {
         <Route path="/Escalation" element={<ProtectedRoute element={<Escalation />} />} />
         
       </Routes>
-      </EmpProvider>
+      
 
     </div>
   )

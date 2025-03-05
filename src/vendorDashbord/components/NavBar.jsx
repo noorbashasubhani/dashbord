@@ -3,15 +3,15 @@ import { useNavigate } from "react-router-dom";
 import { useState, useEffect ,useContext } from 'react';
 import { API_URL } from '../data/apiUrl';
 import { jwtDecode } from 'jwt-decode';
-import { EmpContext } from '../../../EmpContext';
+//import { EmpContext } from '../../../EmpContext';
 
 
 const NavBar = () => {
 const navigate = useNavigate();
-const [em,setEm]=useState();
+//const [em,setEm]=useState();
 
 
-const { emp } = useContext(EmpContext);
+//const { emp } = useContext(EmpContext);
 
   //const {}=
   
@@ -222,8 +222,8 @@ const { emp } = useContext(EmpContext);
           <ul className="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
           <li className="dropdown-header">
           <h6 style={{color:"green"}}>Welcome Gogaga Dashboard</h6>
-          <h6>You are Logined as : {emp ? `${emp.first_name} ${emp.last_name}` : "Loading..."}</h6>
-          <span>{emp ? emp.email : "Loading..."}</span>
+          <h6></h6>
+          <span></span>
               </li>
             <li>
               <hr className="dropdown-divider" />
