@@ -1,24 +1,19 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-
 const ProtectedRoute = ({ element, ...rest }) => {
   const navigate = useNavigate();
-  const token = localStorage.getItem('token'); // Check if there's a token in localStorage
+  const token = localStorage.getItem('token'); // Get the token from localStorage
 
   useEffect(() => {
     if (!token) {
-      // If no token, navigate to the login page
+      // If no token, redirect to login page
       navigate('/');
     }
   }, [token, navigate]);
 
-  // If authenticated, render the passed element (e.g., Dashboard)
-  if (token) {
-    return element; // Render the protected element (Dashboard)
-  }
-
-  return null; // If no token, the component will not render anything
+  // If the token exists, render the protected element (component)
+  return token ? element : null;
 };
 
 export default ProtectedRoute;
