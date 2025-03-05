@@ -122,7 +122,7 @@ const Flyers = () => {
             </nav>
           </div>
           
-          <button className="btn btn-sm btn-primary mb-3 ms-auto" onClick={() => setShowModal(true)}>
+          <button className="btn btn-sm btn-dark mb-3 ms-auto" onClick={() => setShowModal(true)}>
             + Add Flyer
           </button>
         </div>

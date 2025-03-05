@@ -111,7 +111,7 @@ const Library = () => {
             </nav>
           </div>
           
-          <button className="btn btn-sm btn-primary mb-3 ms-auto" onClick={() => setShowModal(true)}>
+          <button className="btn btn-sm btn-dark mb-3 ms-auto" onClick={() => setShowModal(true)}>
             + Add Library
           </button>
         </div>
@@ -158,7 +158,7 @@ const Library = () => {
                               </td>
                               <td>
                                 <button
-                                  className="btn btn-sm btn-danger"
+                                  className="btn btn-sm btn-dark"
                                   onClick={() => deleteLib(libs._id)}
                                 >
                                   Delete

@@ -75,14 +75,15 @@
     top: 10px;
     right: 10px;
     background: rgba(255, 255, 255, 0.7);
-    padding: 5px;
+    padding: 5px 10px;
     border-radius: 50%;
     cursor: pointer;
     transition: background 0.3s;
   }
   
   .delete-icon:hover {
-    background: rgba(255, 0, 0, 0.3);
+    background: rgba(247, 45, 45, 0.3);
+    color:black;
   }
   
   .gallery-image {
