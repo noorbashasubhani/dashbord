@@ -258,6 +258,9 @@
 .modal-content{
   background-color: #e8e8fb;
 }
+.text-error {
+  color: red;
+}
   /* Responsive design: */
   @media (max-width: 1200px) {
     .gallery {
