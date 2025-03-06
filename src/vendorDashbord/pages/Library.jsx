@@ -3,6 +3,8 @@ import NavBar from '../components/NavBar';
 import SideBar from '../components/SideBar';
 import Footer from '../components/forms/Footer';
 import { API_URL } from '../data/apiUrl';
+import { Worker, Viewer } from '@react-pdf-viewer/core';
+import '@react-pdf-viewer/core/lib/styles/index.css';
 
 const Library = () => {
   const [lib, setLib] = useState([]); // Use 'lib' for library details
@@ -76,7 +78,7 @@ const Library = () => {
     formData.append('libra_pdf', newLibrary.libra_pdf);
 
     try {
-      const response = await fetch(`${API_URL}/Lib/Library`, {
+      const response = await fetch(`${API_URL}/Lib/LibraryS`, {
         method: 'POST',
         body: formData,
       });
@@ -148,13 +150,12 @@ const Library = () => {
                             <tr key={libs._id}>
                               <td>{libs.name}</td>
                               <td>
-                                <a
-                                  href={`${API_URL}/${libs.libra_pdf}`}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                >
-                                  Download PDF
-                                </a>
+                                {/* Display the PDF Viewer here */}
+                                <div style={{ width: "600px", height: "400px" }}>
+              <Worker workerUrl={`https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js`}>
+                <Viewer fileUrl={libs.libra_pdf} />
+              </Worker>
+            </div>
                               </td>
                               <td>
                                 <button
@@ -215,7 +216,7 @@ const Library = () => {
                         required
                       />
                     </div>
-                    <button type="submit" className="btn btn-primary">Add Library</button>
+                    <button type="submit" className="btn btn-dark">Add Library</button>
                   </form>
                 </div>
               </div>

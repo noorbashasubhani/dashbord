@@ -1,20 +1,46 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import NavBar from '../components/NavBar';
 import SideBar from '../components/SideBar';
 import Footer from '../components/forms/Footer';
 import { useNavigate } from 'react-router-dom';
 import { EmpContext } from '../../../EmpContext';
+import { jwtDecode } from 'jwt-decode';
+import { API_URL } from '../data/apiUrl';
 
 const MyProfile = () => {
   const [user, setUser] = useState(null);
-  const { emp } = useContext(EmpContext);
+  const [errs, setErrs] = useState(null);
   const navigation = useNavigate();
-  
+  const token = localStorage.getItem('token');
+  const decodedToken=jwtDecode(token);
+  const userId = decodedToken.userId; 
   //console.log("MY pROFILE DETAISL:"+emp);
-
   const editprofile=()=>{
     navigation('/Edit-Profile');
   }
+ useEffect(() => {
+   const fetchUser = async () => {
+    
+     try {
+       const respo = await fetch(`${API_URL}/vendor/Single-user/${userId}`);
+       
+       if (!respo.ok) {
+         throw new Error('Network response was not ok');
+       }
+       
+       const datas = await respo.json();
+       setUser(datas);  // Set the user data to state
+       //console.log("dddd:"+datas);   // Log the data (optional)
+     } catch (err) {
+      setErrs(err.message);  // Handle any errors
+       console.error('Fetch error:', err);
+     }
+   };
+ 
+   fetchUser();  // Call the fetchUser function inside useEffect
+ }, [userId]);  // Dependency array: re-run the effect if userId changes
+ 
+  
 
   return (
     <>
@@ -34,15 +60,15 @@ const MyProfile = () => {
                   <h6 className="card-title" style={{ fontSize: '14px' }}>Profile Information </h6>
                   
                   {/* Profile Information */}
-                  {emp && (
+                  
                     <div className="d-flex align-items-center">
-                     <img alt="Profile" class="rounded-circle" src="assets/img/profile-img.jpg"/>
+                      <img alt="Profile" class="rounded-circle" src="assets/img/profile-img.jpg"/>
                       <div>
-                        <h5 className="p-5"> {emp.first_name} {emp.last_name}</h5>
-                        <p className="p-3"> {emp.email}</p>
+                        <h5 className="p-5">Mr. / Mrs : {user && user.first_name?user.first_name:''} {user && user.last_name?user.last_name:''} </h5>
+                        <h5 className="p-3"> {user && user.email ? user.email:''}</h5>
                       </div>
                     </div>
-                  )}
+                
                 </div>
               </div>
             </div>
@@ -83,11 +109,11 @@ const MyProfile = () => {
                     {/* Personal Details */}
                     <div className="tab-pane fade show active" id="personal" role="tabpanel" aria-labelledby="personal-tab">
                       <h6>Personal Information</h6>
-                      <p><strong>Emp Id:</strong> {emp ? emp._id : 'N/A'}</p>
-                      <p><strong>First Name:</strong> {emp ? emp.first_name : 'N/A'}</p>
-                      <p><strong>Last Name:</strong> {emp ? emp.last_name : 'N/A'}</p>
-                      <p><strong>Full Name:</strong> {emp ? emp.first_name +"  "+ emp.last_name : 'N/A'}</p>
-                      <p><strong>Email:</strong> {emp ? emp.email : 'N/A'}</p>
+                      <p><strong>Emp Id:</strong> {user && user.first_name?user.first_name:''} {user && user.last_name?user.last_name:''} </p>
+                      <p><strong>First Name: </strong>{user && user.first_name?user.first_name:''} </p>
+                      <p><strong>Last Name: </strong> {user && user.last_name?user.last_name:''}</p>
+                      <p><strong>Full Name: </strong> {user && user.first_name?user.first_name:''} {user && user.last_name?user.last_name:''}</p>
+                      <p><strong>Email: </strong>{user && user.email?user.email:''}  </p>
                     </div>
 
                     {/* Bank Details */}

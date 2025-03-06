@@ -3,23 +3,49 @@ import { useNavigate } from "react-router-dom";
 import { useState, useEffect ,useContext } from 'react';
 import { API_URL } from '../data/apiUrl';
 import { jwtDecode } from 'jwt-decode';
+
 //import { EmpContext } from '../../../EmpContext';
 
 
 const NavBar = () => {
 const navigate = useNavigate();
-//const [em,setEm]=useState();
+const [em,setEm]=useState();
+const [erro,setError]=useState();
 
+const token = localStorage.getItem('token');
+const decodedToken = jwtDecode(token);  // Decode the token
+const userId = decodedToken.userId;  // Assuming the user ID is stored in the userId field
+//console.log('User ID:', userId);
 
-//const { emp } = useContext(EmpContext);
+useEffect(() => {
+  const fetchUser = async () => {
+    try {
+      const response = await fetch(`${API_URL}/vendor/Single-user/${userId}`);
+      
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      
+      const data = await response.json();
+      setEm(data);  // Set the user data to state
+      //console.log(data);   // Log the data (optional)
+    } catch (err) {
+      setError(err.message);  // Handle any errors
+      //console.error('Fetch error:', err);
+    }
+  };
 
-  //const {}=
+  fetchUser();  // Call the fetchUser function inside useEffect
+}, [userId]);  // Dependency array: re-run the effect if userId changes
+
   
+ 
+
   const password = () =>{
     navigate('/Password');
    }
    const myprofile = () => {
-    navigate('/Profile');
+    navigate('/Profile', { emp :{em}});
    }
   // Function to handle logout
   const logout = () => {
@@ -222,8 +248,8 @@ const navigate = useNavigate();
           <ul className="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
           <li className="dropdown-header">
           <h6 style={{color:"green"}}>Welcome Gogaga Dashboard</h6>
-          <h6></h6>
-          <span></span>
+          <h6>{em && em.email ? em.email:null}</h6>
+          <span>{em && em.first_name ? em.first_name:null} {em && em.last_name ? em.last_name:null}</span>
               </li>
             <li>
               <hr className="dropdown-divider" />

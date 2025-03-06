@@ -255,7 +255,9 @@
   margin-left: 5px;
   cursor: pointer;
 }
-
+.modal-content{
+  background-color: #e8e8fb;
+}
   /* Responsive design: */
   @media (max-width: 1200px) {
     .gallery {

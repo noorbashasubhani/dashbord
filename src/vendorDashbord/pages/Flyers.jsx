@@ -8,7 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const Flyers = () => {
   const [fly, setFly] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [newFlyer, setNewFlyer] = useState({
@@ -17,6 +17,15 @@ const Flyers = () => {
     exp_Date: '',
   });
   const [previewImage, setPreviewImage] = useState(null); // For image preview
+  const [errors, setErrors] = useState({
+    title: '',
+    img: '',
+    exp_Date: '',
+  });
+  const [deleteConfirmation, setDeleteConfirmation] = useState({
+    show: false,
+    flyerId: null,
+  });
 
   useEffect(() => {
     const fetchFly = async () => {
@@ -27,7 +36,6 @@ const Flyers = () => {
         }
         const data = await response.json();
         setFly(data.data);
-        
       } catch (err) {
         setError(err.message);
       } finally {
@@ -38,20 +46,36 @@ const Flyers = () => {
     fetchFly();
   }, []);
 
-  const handleDelete = async (id) => {
+  const handleDeleteClick = (id) => {
+    // Show confirmation modal before deleting
+    setDeleteConfirmation({
+      show: true,
+      flyerId: id,
+    });
+  };
+
+  const handleDeleteConfirm = async () => {
     try {
-      const response = await fetch(`${API_URL}/flyer/DeleteFlyer/${id}`, {
+      const { flyerId } = deleteConfirmation;
+      const response = await fetch(`${API_URL}/flyer/DeleteFlyer/${flyerId}`, {
         method: 'DELETE',
       });
       if (response.ok) {
-        setFly(fly.filter((flyer) => flyer._id !== id));
-        //alert('Flyer deleted successfully');
+        setFly(fly.filter((flyer) => flyer._id !== flyerId));
+        toast.success('Flyer Deleted successfully!');
       } else {
         throw new Error('Failed to delete flyer');
       }
     } catch (err) {
       setError(err.message);
     }
+    // Close the confirmation modal
+    setDeleteConfirmation({ show: false, flyerId: null });
+  };
+
+  const handleDeleteCancel = () => {
+    // Close the confirmation modal without deleting
+    setDeleteConfirmation({ show: false, flyerId: null });
   };
 
   const handleInputChange = (e) => {
@@ -78,28 +102,57 @@ const Flyers = () => {
     }
   };
 
+  const validateForm = () => {
+    const newErrors = {};
+    let formIsValid = true;
+
+    if (!newFlyer.title) {
+      newErrors.title = 'Title is required';
+      formIsValid = false;
+    }
+
+    if (!newFlyer.img) {
+      newErrors.img = 'Image is required';
+      formIsValid = false;
+    }
+
+    if (!newFlyer.exp_Date) {
+      newErrors.exp_Date = 'Expiration date is required';
+      formIsValid = false;
+    }
+
+    setErrors(newErrors);
+    return formIsValid;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const formData = new FormData();
-    formData.append('title', newFlyer.title);
-    formData.append('img', newFlyer.img);
-    formData.append('exp_Date', newFlyer.exp_Date);
 
-    try {
-      const response = await fetch(`${API_URL}/flyer/Add-coludFlyer`, {
-        method: 'POST',
-        body: formData,
-      });
-      if (!response.ok) {
-        throw new Error('Failed to add flyer');
+    if (validateForm()) {
+      setLoading(true);
+      const formData = new FormData();
+      formData.append('title', newFlyer.title);
+      formData.append('img', newFlyer.img);
+      formData.append('exp_Date', newFlyer.exp_Date);
+
+      try {
+        const response = await fetch(`${API_URL}/flyer/Add-coludFlyer`, {
+          method: 'POST',
+          body: formData,
+        });
+        if (!response.ok) {
+          throw new Error('Failed to add flyer');
+        }
+        const data = await response.json();
+        setFly((prevFly) => [data.data, ...prevFly]); // New flyer is added first
+        setShowModal(false);
+        toast.success('Flyer added successfully!');
+      } catch (err) {
+        setError(err.message);
       }
-      const data = await response.json();
-      setFly((prevFly) => [...prevFly, data.data]);
-      setShowModal(false);
-      toast.success('Flyer added successfully!');
-     
-    } catch (err) {
-      setError(err.message);
+      finally {
+        setLoading(false); // Set loading to false once the submission is complete
+      }
     }
   };
 
@@ -126,14 +179,14 @@ const Flyers = () => {
             + Add Flyer
           </button>
         </div>
-
+        <ToastContainer />
         <section className="section">
           <div className="row">
             <div className="col-lg-12">
               <div className="card">
                 <div className="card-body">
                   <h6 className="card-title" style={{ fontSize: "14px" }}>Flyer Details</h6>
-                  <p className="" style={{ fontSize: "13px", marginTop: "-15px" }}>
+                  <p className="" style={{ fontSize: "13px", marginTop: "-15px" }} >
                     Explore our flyer list to check all the details and expiration dates.
                   </p>
                   
@@ -154,7 +207,7 @@ const Flyers = () => {
                             <h5>{flys.title}</h5>
                             <p>{new Date(flys.exp_Date).toLocaleDateString()}</p>
                           </div>
-                          <div className="delete-icon" onClick={() => handleDelete(flys._id)}>
+                          <div className="delete-icon" onClick={() => handleDeleteClick(flys._id)}>
                             <i className="bi bi-trash" style={{ fontSize: '24px', color: 'red', cursor: 'pointer' }}></i>
                           </div>
                         </div>
@@ -171,7 +224,7 @@ const Flyers = () => {
           </div>
         </section>
 
-        {/* Modal for adding new flyer */}
+        {/* Modal for Add Flyer */}
         {showModal && (
           <div className="modal show" style={{ display: 'block' }} onClick={() => setShowModal(false)}>
             <div className="modal-dialog" onClick={(e) => e.stopPropagation()}>
@@ -191,8 +244,8 @@ const Flyers = () => {
                         value={newFlyer.title}
                         onChange={handleInputChange}
                         className="form-control"
-                        required
                       />
+                      {errors.title && <div className="text-danger">{errors.title}</div>}
                     </div>
                     <div className="mb-3">
                       <label htmlFor="img" className="form-label">Upload Image</label>
@@ -202,8 +255,8 @@ const Flyers = () => {
                         name="img"
                         onChange={handleImageChange}
                         className="form-control"
-                        required
                       />
+                      {errors.img && <div className="text-danger">{errors.img}</div>}
                     </div>
                     {previewImage && (
                       <div className="mb-3">
@@ -224,11 +277,30 @@ const Flyers = () => {
                         value={newFlyer.exp_Date}
                         onChange={handleInputChange}
                         className="form-control"
-                        required
                       />
+                      {errors.exp_Date && <div className="text-danger">{errors.exp_Date}</div>}
                     </div>
-                    <button type="submit" className="btn btn-primary">Add Flyer</button>
+                    <button type="submit" className="btn btn-primary" disabled={loading}>{loading ? 'Adding...' : 'Add Flyer'}</button>
                   </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Confirmation Modal */}
+        {deleteConfirmation.show && (
+          <div className="modal show" style={{ display: 'block' }} onClick={() => setDeleteConfirmation({ show: false, flyerId: null })}>
+            <div className="modal-dialog" onClick={(e) => e.stopPropagation()}>
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h5 className="modal-title">Confirm Deletion</h5>
+                  <button type="button" className="btn-close" onClick={() => setDeleteConfirmation({ show: false, flyerId: null })}></button>
+                </div>
+                <div className="modal-body">
+                  <p>Are you sure you want to delete this flyer?</p>
+                  <button className="btn btn-danger" onClick={handleDeleteConfirm}>Yes, Delete</button>
+                  <button className="btn btn-secondary" onClick={handleDeleteCancel}>Cancel</button>
                 </div>
               </div>
             </div>
