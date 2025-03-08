@@ -40,6 +40,9 @@ const SideMenu = () => {
   const Escalation = ()=>{
     navigate('/Escalation');
   }
+  const Package = ()=>{
+     navigate('/Package');
+  }
   return (
     <aside id="sidebar" className="sidebar">
   <ul className="sidebar-nav" id="sidebar-nav">
@@ -697,7 +700,7 @@ const SideMenu = () => {
 
     <li className="nav-heading">MISCELLANEOUS</li>
     <li className="nav-item">
-      <a className="nav-link collapsed" href="pages-register.html">
+      <a className="nav-link collapsed" onClick={Package}>
         <i className="bi bi-xbox" />
         <span> Holiday Packages</span>
       </a>

@@ -4,13 +4,9 @@
 .footer{
     margin-top:50px;
 }
-#main{
-    margin-left: 248px;
-}
 
-#footer {
-    margin-left: 234px;
-}
+
+
 .form-group label,form button{
     font-size: 13px;
 }
@@ -167,6 +163,7 @@
 }
 
 
+
 .breadcrumb + button {
     position: relative;
     
@@ -266,12 +263,14 @@
     .gallery {
       grid-template-columns: repeat(3, 1fr); /* 3 images per row for smaller screens */
     }
+    
   }
   
   @media (max-width: 900px) {
     .gallery {
       grid-template-columns: repeat(2, 1fr); /* 2 images per row for even smaller screens */
     }
+    
   }
   
   @media (max-width: 600px) {
