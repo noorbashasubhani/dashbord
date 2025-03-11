@@ -43,6 +43,15 @@ const SideMenu = () => {
   const Package = ()=>{
      navigate('/Package');
   }
+  const Notifications=()=>{
+    navigate('/Notifications');
+  }
+  const positions=()=>{
+    navigate('/Position');
+  }
+  const Advance=()=>{
+    navigate('/AdvanceSalary');
+  }
   return (
     <aside id="sidebar" className="sidebar">
   <ul className="sidebar-nav" id="sidebar-nav">
@@ -541,19 +550,19 @@ const SideMenu = () => {
           </a>
         </li>
         <li>
-          <a href="icons-boxicons.html">
+          <a onClick={Advance}>
             <i className="bi bi-circle" />
             <span>Advance Salary    </span>
           </a>
         </li>
         <li>
-          <a href="icons-boxicons.html">
+          <a onClick={positions}>
             <i className="bi bi-person-raised-hand" />
             <span>Position Details   </span>
           </a>
         </li>
         <li>
-          <a href="icons-boxicons.html">
+          <a onClick={Notifications}>
             <i className="bi bi-bell" />
             <span>Notifications Details   </span>
           </a>
@@ -662,25 +671,7 @@ const SideMenu = () => {
         <span>Airport List</span>
       </a>
     </li>
-
-    {/* Hotels Section */}
-    <li className="nav-item">
-      <a
-        className="nav-link collapsed"
-        data-bs-target="#components-hotds"
-        data-bs-toggle="collapse"
-        href="#"
-      >
-        <i className="bi bi-house-gear-fill" />
-        <span>Hotels</span>
-        <i className="bi bi-chevron-down ms-auto" />
-      </a>
-      <ul
-        id="components-hotds"
-        className="nav-content collapse"
-        data-bs-parent="#sidebar-nav"
-      >
-        <li>
+    <li>
           <a href="Hotels">
             <i className="bi bi-house-fill" />
             <span>Hotel List</span>
@@ -692,8 +683,8 @@ const SideMenu = () => {
             <span>Rate Chart</span>
           </a>
         </li>
-      </ul>
-    </li>
+
+   
   </ul>
 </li>
 

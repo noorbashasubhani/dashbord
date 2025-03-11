@@ -156,10 +156,6 @@ const Escalation = () => {
         }
         const empData = await empRes.json();
         setEmp(empData.data);
-
-
-
-
         const managerMapping = {};
         empData.data.forEach(employee => {
           if (employee._id && !managerMapping[employee._id]) {
@@ -167,10 +163,6 @@ const Escalation = () => {
                 }
         });
         setManagerNames(managerMapping); 
-
-
-
-
       } catch (err) {
         console.log(err.message);
       }

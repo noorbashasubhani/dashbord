@@ -7,7 +7,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { jwtDecode } from 'jwt-decode';
 
-const Packages = () => {
+const Position = () => {
   const [pack, setPack] = useState([]);
   const [selectedPackage, setSelectedPackage] = useState(null); // State to hold the selected package data
 
@@ -46,7 +46,7 @@ const Packages = () => {
   
     try {
       // Send the request to add the package
-      const response = await fetch(`${API_URL}/vendor/Package/${userId}`, {
+      const response = await fetch(`${API_URL}/vendor/Positions/${userId}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -94,7 +94,7 @@ const Packages = () => {
 
     try {
       // Send the PUT request to update the package
-      const response = await fetch(`${API_URL}/vendor/Package/${editingPackage._id}`, {
+      const response = await fetch(`${API_URL}/vendor/Positions/${editingPackage._id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -138,7 +138,7 @@ const Packages = () => {
   useEffect(() => {
     const GetFun = async () => {
       try {
-        const arryQuery = await fetch(`${API_URL}/vendor/Package`, {
+        const arryQuery = await fetch(`${API_URL}/vendor/Positions`, {
           method: 'GET'
         });
 
@@ -177,8 +177,8 @@ const Packages = () => {
   const handleDeletePackage = async (packageId) => {
     if (window.confirm('Are you sure you want to delete this package?')) {
       try {
-        const response = await fetch(`${API_URL}/vendor/Package/${packageId}`, {
-          method: 'DELETE',
+        const response = await fetch(`${API_URL}/vendor/PositionsDelete/${packageId}`, {
+          method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
           },
@@ -191,6 +191,32 @@ const Packages = () => {
           // Remove the deleted package from the state
           setPack(pack.filter(pkg => pkg._id !== packageId));
           toast.success("Package deleted successfully!");
+        } else {
+          throw new Error(result.message || 'Failed to delete package');
+        }
+      } catch (err) {
+        console.error(err);
+        toast.error("Error deleting package: " + err.message);
+      }
+    }
+  };
+  const handleClosePackage = async (packageId) => {
+    if (window.confirm('Are you sure you want to Close this package?')) {
+      try {
+        const response = await fetch(`${API_URL}/vendor/PositionsClose/${packageId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        const responseText = await response.text();
+        const result = JSON.parse(responseText);
+
+        if (response.ok) {
+          // Remove the deleted package from the state
+          setPack(pack.filter(pkg => pkg._id !== packageId));
+          toast.success("Package Closed successfully!");
         } else {
           throw new Error(result.message || 'Failed to delete package');
         }
@@ -213,11 +239,11 @@ const Packages = () => {
       <main id="main" className="main">
         <div className="pagetitle d-flex justify-content-between align-items-center">
           <div className="d-flex align-items-center">
-            <h4><i className="bi bi-pin-fill mx-2"></i><b>Packages Details</b></h4>
+            <h4><i className="bi bi-pin-fill mx-2"></i><b>Position  Details</b></h4>
             <nav className="d-flex justify-arround">
               <ol className="breadcrumb mx-2 mb-0">
                 <li className="breadcrumb-item">
-                  <a href="index.html">Packages</a>
+                  <a href="index.html">Position</a>
                 </li>
                 <li className="breadcrumb-item active">List</li>
               </ol>
@@ -225,7 +251,7 @@ const Packages = () => {
           </div>
           
           <button className="btn btn-sm btn-dark mb-3 ms-auto" data-bs-toggle="modal" data-bs-target="#addPackageModal">
-            + Add Packages
+            + Add Position
           </button>
         </div>
         
@@ -236,7 +262,7 @@ const Packages = () => {
           <div className="modal-dialog">
             <div className="modal-content">
               <div className="modal-header">
-                <h5 className="modal-title" id="addPackageModalLabel">Add New Package</h5>
+                <h5 className="modal-title" id="addPackageModalLabel">Add New Job Position</h5>
                 <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
               <div className="modal-body">
@@ -334,15 +360,19 @@ const Packages = () => {
                       <thead>
                         <tr>
                           <th>S.No</th>
-                          <th>Package Code</th>
-                          <th>Package Name</th>
-                          <th>Duration</th>
-                          <th>City Name</th>
-                          <th>Destination</th>
-                          <th>Cost</th>
-                          <th>Added By</th>
+                          <th>Dept Name</th>
+                          <th>Role  Name</th>
+                          <th>Designation</th>
+                          <th>No Of Candidates </th>
+                          <th>Candidate Type</th>
+                          <th>Salary Range</th>
+                          <th>Dead Line</th>
                           <th>Created Date</th>
+                         
+                          <th>Added By</th>
+                          
                           <th style={{ width: "420px" }}>Actions</th>
+                          <th>Status</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -350,14 +380,16 @@ const Packages = () => {
                           pack.map((items, index) => (
                             <tr key={items._id}>
                               <td>{index + 1}</td>
-                              <td>{items.package_code}</td>
-                              <td>{items.package_name}</td>
-                              <td>{items.duration}</td>
-                              <td>{items.city}</td>
-                              <td>{items.destination}</td>
-                              <td>{items.cost}</td>
-                              <td>{items.added_by?.name || "Unknown"}</td>
-                              <td>{new Date(items.created_at).toLocaleDateString()}</td>
+                              <td>{items.department_name}</td>
+                              <td>{items.role}</td>
+                              <td>{items.designation_name}</td>
+                              <td>{items.no_of_candidates}</td>
+                              <td>{items.candidate_type}</td>
+                              
+                              <td>{items.salaryrange_from}-{items.salaryrange_to}</td>
+                              <td>{items.application_dead_line}</td>
+                              <td>{items.created_date}</td>
+                              <td>{items.created_by}</td>
                               <td>
                                 <button className="btn btn-sm btn-primary" onClick={() => handleOpenEditModal(items)}>
                                   Edit
@@ -365,9 +397,15 @@ const Packages = () => {
                                 <button className="btn btn-sm btn-danger ms-2" onClick={() => handleDeletePackage(items._id)}>
                                   Delete
                                 </button>
+                                <button className="btn btn-sm btn-warning ms-2" onClick={() => handleClosePackage(items._id)}>
+                                  Close
+                                </button>
+
+                                
                                 <button className="btn btn-sm btn-primary" onClick={() => handleViewPackage(items._id)} data-bs-toggle="modal" data-bs-target="#viewPackageModal">View</button>
 
                                   </td>
+                                  <td>{items.status}</td>
                             </tr>
                           ))
                         ) : (
@@ -395,14 +433,31 @@ const Packages = () => {
               <div className="modal-body">
                 {selectedPackage ? (
                   <div>
-                    <p><strong>Package Code:</strong> {selectedPackage.package_code}</p>
-                    <p><strong>Package Name:</strong> {selectedPackage.package_name}</p>
-                    <p><strong>Duration:</strong> {selectedPackage.duration}</p>
-                    <p><strong>City:</strong> {selectedPackage.city}</p>
-                    <p><strong>Destination:</strong> {selectedPackage.destination}</p>
-                    <p><strong>Cost:</strong> ${selectedPackage.cost}</p>
-                    <p><strong>Added By:</strong> {selectedPackage.added_by?.name || "Unknown"}</p>
-                    <p><strong>Created Date:</strong> {new Date(selectedPackage.created_at).toLocaleDateString()}</p>
+                    <p><strong>Department Name:</strong> {selectedPackage.department_name}</p>
+                    <p><strong>Roll Name:</strong> {selectedPackage.role}</p>
+                    <p><strong>Designation Name:</strong> {selectedPackage.designation_name}</p>
+                    <p><strong>Candidate Type:</strong> {selectedPackage.candidate_type}</p>
+                    <p><strong>No of Candidates:</strong> {selectedPackage.no_of_candidates}</p>
+                    <p><strong>Job Description:</strong> ${selectedPackage.job_desc}</p>
+                    <p><strong>Roll & Responsibility:</strong> {selectedPackage.role_and_responces}</p>
+
+
+                    <p><strong>Experience:</strong> {selectedPackage.experience}</p>
+                    <p><strong>Relavent Experience:</strong> {selectedPackage.relevant_exp}</p>
+                    <p><strong>Employee Type:</strong> {selectedPackage.employee_type}</p>
+                    <p><strong>Education:</strong> {selectedPackage.education}</p>
+                    <p><strong>job Location:</strong> {selectedPackage.job_location}</p>
+                    <p><strong>Salary Range :</strong> {selectedPackage.salaryrange_from} -  {selectedPackage.salaryrange_to}</p>
+
+                    <p><strong>Gender Preffered  :</strong> {selectedPackage.gender}</p>
+                    <p><strong>Application Dead Line  :</strong> {selectedPackage.application_dead_line}</p>
+                    <p><strong>Created By  :</strong> {selectedPackage.created_by}</p>
+                    <p><strong>Created Date  :</strong> {selectedPackage.created_date}</p>
+
+                    
+                    
+                    
+                    
                   </div>
                 ) : (
                   <p>Loading...</p>
@@ -419,4 +474,4 @@ const Packages = () => {
   );
 };
 
-export default Packages;
+export default Position;

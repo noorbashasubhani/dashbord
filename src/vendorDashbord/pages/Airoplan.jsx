@@ -14,6 +14,7 @@ const Dashboard = () => {
     airport_city: '',
     airport_code: ''
   });
+  const [selectedAirportId, setSelectedAirportId] = useState(null); // Track the airport to edit
 
   useEffect(() => {
     const fetchAirplan = async () => {
@@ -43,12 +44,16 @@ const Dashboard = () => {
     });
   };
 
-  // Handle form submission to add a new airport
+  // Handle form submission to add or update airport
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`${API_URL}/vendor/Add-Airports`, {
-        method: 'POST',
+      const url = selectedAirportId
+        ? `${API_URL}/vendor/Airport/${selectedAirportId}` // Update endpoint
+        : `${API_URL}/vendor/Add-Airports`; // Add new airport
+      const method = selectedAirportId ? 'PUT' : 'POST'; // Change HTTP method for updating
+      const response = await fetch(url, {
+        method,
         headers: {
           'Content-Type': 'application/json',
         },
@@ -56,18 +61,56 @@ const Dashboard = () => {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to add airport');
+        throw new Error('Failed to save airport');
       }
 
       const data = await response.json();
-      setAirplan([...airplan, data.data]); // Update the list with the new airport
+      if (selectedAirportId) {
+        setAirplan(airplan.map((airport) =>
+          airport._id === selectedAirportId ? data.data : airport
+        ));
+      } else {
+        setAirplan([...airplan, data.data]); // Update the list with the new airport
+      }
       setShowModal(false); // Close the modal
       setNewAirport({ airport_name: '', airport_city: '', airport_code: '' }); // Reset the form
+      setSelectedAirportId(null); // Reset selected airport ID
     } catch (err) {
       setError(err.message);
     }
   };
 
+  // Open modal for editing an airport
+  const handleEditClick = (airport) => {
+    setNewAirport({
+      airport_name: airport.airport_name,
+      airport_city: airport.airport_city,
+      airport_code: airport.airport_code,
+    });
+    setSelectedAirportId(airport._id); // Set the airport ID to update
+    setShowModal(true);
+  };
+
+
+  // Handle deleting an airport
+  const handleDeleteClick = async (airportId) => {
+    if (window.confirm('Are you sure you want to delete this airport?')) {
+      try {
+        const response = await fetch(`${API_URL}/vendor/Airport/${airportId}`, {
+          method: 'DELETE',
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to delete airport');
+        }
+
+        // Remove the deleted airport from the state
+        setAirplan(airplan.filter(airport => airport._id !== airportId));
+      } catch (err) {
+        setError(err.message);
+      }
+    }
+  };
   return (
     <>
       <NavBar />
@@ -95,9 +138,7 @@ const Dashboard = () => {
               <div className="card">
                 <div className="card-body">
                   <h6 className="card-title" style={{"font-size":"14px"}}>Airport Details</h6>
-                  <p className="" style={{"font-size":"13px", "margin-top":"-15px"}}>
-                    Explore our CRM's organized Departments & Designations feature, facilitating seamless collaboration and clear communication within the workforce.
-                  </p>
+                  <p className="" style={{"font-size":"13px", "margin-top":"-15px"}}>Explore our CRM's organized Departments & Designations feature, facilitating seamless collaboration and clear communication within the workforce.</p>
                   
                   {/* Loading State */}
                   {loading && <p><center>Loading...</center></p>}
@@ -115,6 +156,7 @@ const Dashboard = () => {
                           <th>Airport Location</th>
                           <th>Airport Code</th>
                           <th>Airport Created Date</th>
+                          <th>Actions</th>
                         </tr>
                       </thead>
                       <tbody style={{fontSize: "13px"}}>
@@ -126,6 +168,20 @@ const Dashboard = () => {
                             <td>{airport.airport_city}</td> {/* Airport location */}
                             <td>{airport.airport_code}</td> {/* Airport code */}
                             <td>{airport.created_date}</td> {/* Created date */}
+                            <td>
+                              <button
+                                className="btn btn-sm btn-warning"
+                                onClick={() => handleEditClick(airport)}
+                              >
+                                Edit
+                              </button>
+                              <button
+                                className="btn btn-sm btn-danger ms-2"
+                                onClick={() => handleDeleteClick(airport._id)}
+                              >
+                                Delete
+                              </button>
+                            </td>
                           </tr>
                         ))}
                       </tbody>
@@ -138,13 +194,13 @@ const Dashboard = () => {
         </section>
       </main>
 
-      {/* Modal for adding a new airport */}
+      {/* Modal for adding or editing an airport */}
       {showModal && (
         <div className="modal" tabIndex="-1" style={{display: 'block'}}>
           <div className="modal-dialog">
             <div className="modal-content">
               <div className="modal-header">
-                <h5 className="modal-title">Add Airport</h5>
+                <h5 className="modal-title">{selectedAirportId ? 'Edit Airport' : 'Add Airport'}</h5>
                 <button type="button" className="close" onClick={() => setShowModal(false)}>
                   <span>&times;</span>
                 </button>
@@ -189,7 +245,7 @@ const Dashboard = () => {
                       Close
                     </button>
                     <button type="submit" className="btn btn-primary">
-                      Save Airport
+                      {selectedAirportId ? 'Update Airport' : 'Save Airport'}
                     </button>
                   </div>
                 </form>

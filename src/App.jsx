@@ -18,6 +18,13 @@ import MyProfile from './vendorDashbord/pages/MyProfile'
 import Editprofile from './vendorDashbord/pages/Editprofile'
 import Escalation from './vendorDashbord/pages/Escalation'
 import Packages from './vendorDashbord/pages/Packages'
+import SendMessageToWhatsApp from './vendorDashbord/pages/SendMessageToWhatsApp'
+import Notification from './vendorDashbord/pages/Notification'
+import Position from './vendorDashbord/pages/Position'
+import AdvanceSalary from './vendorDashbord/pages/AdvanceSalary'
+
+
+import Team from './vendorDashbord/pages/Team'
 
 //import { EmpProvider } from '../EmpContext'
 
@@ -28,6 +35,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={<VendorLogin />}></Route> 
         <Route path="*" element={<Notfound />} />
+
         <Route path="/dashboard" element={<ProtectedRoute element={<Dashbord />} />} /> 
         <Route path="/User-Registartion" element={<ProtectedRoute element={<VendorRegistration />} />} /> 
         <Route path="/Designation-List" element={<ProtectedRoute element={<Designation />} />} /> 
@@ -43,9 +51,15 @@ const App = () => {
         <Route path="/Edit-Profile" element={<ProtectedRoute element={<Editprofile />} />} />
         <Route path="/Escalation" element={<ProtectedRoute element={<Escalation />} />} />
         <Route path="/Package" element={<ProtectedRoute element={<Packages />} />} />
-        
+        <Route path="/Whatsup" element={<ProtectedRoute element={<SendMessageToWhatsApp />} />} />
+        <Route path="/Team" element={<ProtectedRoute element={<Team />} />} />
+        <Route path="/Notifications" element={<ProtectedRoute element={<Notification />} />} />
+        <Route path="/Position" element={<ProtectedRoute element={<Position />} />} />
+        <Route path="/AdvanceSalary" element={<ProtectedRoute element={<AdvanceSalary />} />} />
         
       </Routes>
+      
+      
       
 
     </div>

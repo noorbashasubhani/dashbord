@@ -7,7 +7,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { jwtDecode } from 'jwt-decode';
 
-const Packages = () => {
+const Team = () => {
   const [pack, setPack] = useState([]);
   const [selectedPackage, setSelectedPackage] = useState(null); // State to hold the selected package data
 
@@ -213,11 +213,11 @@ const Packages = () => {
       <main id="main" className="main">
         <div className="pagetitle d-flex justify-content-between align-items-center">
           <div className="d-flex align-items-center">
-            <h4><i className="bi bi-pin-fill mx-2"></i><b>Packages Details</b></h4>
+            <h4><i className="bi bi-pin-fill mx-2"></i><b>Team Details</b></h4>
             <nav className="d-flex justify-arround">
               <ol className="breadcrumb mx-2 mb-0">
                 <li className="breadcrumb-item">
-                  <a href="index.html">Packages</a>
+                  <a href="index.html">Team</a>
                 </li>
                 <li className="breadcrumb-item active">List</li>
               </ol>
@@ -225,7 +225,7 @@ const Packages = () => {
           </div>
           
           <button className="btn btn-sm btn-dark mb-3 ms-auto" data-bs-toggle="modal" data-bs-target="#addPackageModal">
-            + Add Packages
+            + Add Team
           </button>
         </div>
         
@@ -236,7 +236,7 @@ const Packages = () => {
           <div className="modal-dialog">
             <div className="modal-content">
               <div className="modal-header">
-                <h5 className="modal-title" id="addPackageModalLabel">Add New Package</h5>
+                <h5 className="modal-title" id="addPackageModalLabel">Add New Team</h5>
                 <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
               <div className="modal-body">
@@ -334,12 +334,12 @@ const Packages = () => {
                       <thead>
                         <tr>
                           <th>S.No</th>
-                          <th>Package Code</th>
-                          <th>Package Name</th>
-                          <th>Duration</th>
-                          <th>City Name</th>
-                          <th>Destination</th>
-                          <th>Cost</th>
+                          <th>Team Name</th>
+                          <th>Travel Type</th>
+                          <th>Department Head</th>
+                          <th>Department Lead</th>
+                          <th>Team Numbers</th>
+                          
                           <th>Added By</th>
                           <th>Created Date</th>
                           <th style={{ width: "420px" }}>Actions</th>
@@ -419,4 +419,4 @@ const Packages = () => {
   );
 };
 
-export default Packages;
+export default Team;

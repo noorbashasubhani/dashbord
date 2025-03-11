@@ -3,6 +3,7 @@ import NavBar from '../components/NavBar';
 import SideBar from '../components/SideBar';
 import Footer from '../components/forms/Footer';
 import { API_URL } from '../data/apiUrl';
+import { toast, ToastContainer } from 'react-toastify';
 
 const Cabs = () => {
   const [cabs, setCabs] = useState([]); // To store the list of cabs
@@ -19,6 +20,7 @@ const Cabs = () => {
     per_day_cost: '',
     rate_per_km: '',
   });
+  const [selectedCabId, setSelectedCabId] = useState(null); // To store the selected cab ID
 
   // Fetch data from the "Cab-list" collection
   useEffect(() => {
@@ -49,45 +51,79 @@ const Cabs = () => {
     }));
   };
 
+  const handleEditClick = (cab) => {
+    setNewCab({
+      state_name: cab.state_name,
+      service_location: cab.service_location,
+      supplier_name: cab.supplier_name,
+      email_contact: cab.email_contact,
+      vehicle_type: cab.vehicle_type,
+      seating_capacity: cab.seating_capacity,
+      per_day_cost: cab.per_day_cost,
+      rate_per_km: cab.rate_per_km,
+    });
+    setSelectedCabId(cab._id); // Set selected cab ID for editing
+    setShowModal(true);
+  };
+
   // Handle the form submission to add new cab
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const requestBody = { ...newCab };
+
     try {
-      const response = await fetch(`${API_URL}/vendor/Add-Cab`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(newCab), // Send the new cab data as JSON
-      });
-      if (!response.ok) {
-        throw new Error('Failed to add new cab');
+      let response;
+      if (selectedCabId) {
+        // Update existing cab
+        response = await fetch(`${API_URL}/vendor/Cabs/${selectedCabId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(requestBody),
+        });
+         toast.success('Cabs Details updated successfully');
+      } else {
+        // Add new cab
+        response = await fetch(`${API_URL}/vendor/add-cab`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(requestBody),
+        });
+        
       }
+
+      if (!response.ok) throw new Error('Failed to save cab');
       const data = await response.json();
-      setCabs((prevCabs) => [...prevCabs, data.data]); // Add the new cab to the list
-      setShowModal(false); // Close the modal
-     
+
+      if (selectedCabId) {
+        // Update the cab in the list
+        setCabs((prevCabs) => prevCabs.map((cab) => (cab._id === selectedCabId ? data.data : cab)));
+        toast.success('Cab updated successfully!');
+      } else {
+        // Add new cab to the list
+        setCabs((prevCabs) => [...prevCabs, data.data]);
+        toast.success('New cab added successfully!');
+      }
+      setShowModal(false);
+      setSelectedCabId(null);
     } catch (err) {
-      setError(err.message); // Handle errors
+      toast.error(err.message);
     }
   };
 
-
-   const deleteCab = async (id) => {
-      try {
-        const response = await fetch(`${API_URL}/vendor/DeleteCab/${id}`, {
-          method: 'DELETE',
-        });
-        if (!response.ok) {
-          throw new Error('Failed to delete library');
-        }
-        // Filter out the deleted item from the state
-        setCabs(cabs.filter((item) => item._id !== id));
-      } catch (err) {
-        setError(err.message);
+  const deleteCab = async (id) => {
+    try {
+      const response = await fetch(`${API_URL}/vendor/DeleteCab/${id}`, {
+        method: 'DELETE',
+      });
+      if (!response.ok) {
+        throw new Error('Failed to delete library');
       }
-    };
-  
+      // Filter out the deleted item from the state
+      setCabs(cabs.filter((item) => item._id !== id));
+    } catch (err) {
+      setError(err.message);
+    }
+  };
 
   return (
     <>
@@ -109,14 +145,14 @@ const Cabs = () => {
             </button>
           </nav>
         </div>
-
+<ToastContainer />
         <section className="section">
           <div className="row">
             <div className="col-lg-12">
               <div className="card">
                 <div className="card-body">
-                  <h6 className="card-title" style={{ "font-size": "14px" }}>Cabs Details Table </h6>
-                  <p className="" style={{ "font-size": "13px", "margin-top": "-15px" }}>
+                  <h6 className="card-title" style={{ fontSize: '14px' }}>Cabs Details Table</h6>
+                  <p className="" style={{ fontSize: '13px', marginTop: '-15px' }}>
                     Explore our CRM's organized Departments & Designations feature, facilitating seamless collaboration and clear communication within the workforce.
                   </p>
 
@@ -129,7 +165,7 @@ const Cabs = () => {
                   {/* Table with dynamic data */}
                   {!loading && !error && (
                     <table className="table datatable table-striped">
-                      <thead style={{ fontSize: "13px" }}>
+                      <thead style={{ fontSize: '13px' }}>
                         <tr>
                           <th>S.No</th>
                           <th>State</th>
@@ -144,7 +180,7 @@ const Cabs = () => {
                           <th>Action</th>
                         </tr>
                       </thead>
-                      <tbody style={{ "font-size": "13px" }}>
+                      <tbody style={{ fontSize: '13px' }}>
                         {/* Loop through the cabs */}
                         {cabs.map((cab, index) => (
                           <tr key={cab._id}>
@@ -158,12 +194,20 @@ const Cabs = () => {
                             <td>{cab.per_day_cost}</td>
                             <td>{cab.rate_per_km}</td>
                             <td>{new Date(cab.created_date).toLocaleDateString()}</td>
-                            <td> <button
-                                  className="btn btn-sm btn-danger"
-                                  onClick={() => deleteCab(cab._id)}
-                                >
-                                  Delete
-                                </button></td>
+                            <td>
+                              <button
+                                className="btn btn-sm btn-danger"
+                                onClick={() => deleteCab(cab._id)}
+                              >
+                                Delete
+                              </button>
+                              <button
+                                className="btn btn-sm btn-warning"
+                                onClick={() => handleEditClick(cab)}
+                              >
+                                Edit
+                              </button>
+                            </td>
                           </tr>
                         ))}
                       </tbody>
@@ -175,17 +219,18 @@ const Cabs = () => {
           </div>
         </section>
 
-        {/* Modal for Adding New Cab */}
+        {/* Modal for Adding/Editing Cab */}
         {showModal && (
           <div className="modal show" style={{ display: 'block' }} onClick={() => setShowModal(false)}>
             <div className="modal-dialog" onClick={(e) => e.stopPropagation()}>
               <div className="modal-content container-fluid">
                 <div className="modal-header">
-                  <h5 className="modal-title">Add New Cab</h5>
+                  <h5 className="modal-title">{selectedCabId ? 'Edit Cab' : 'Add New Cab'}</h5>
                   <button type="button" className="btn-close" onClick={() => setShowModal(false)}></button>
                 </div>
                 <div className="modal-body">
                   <form onSubmit={handleSubmit}>
+                    {/* Form Fields */}
                     <div className="mb-3">
                       <label htmlFor="state_name" className="form-label">State</label>
                       <input
@@ -282,7 +327,14 @@ const Cabs = () => {
                         required
                       />
                     </div>
-                    <button type="submit" className="btn btn-primary">Save</button>
+                    <div className="modal-footer">
+                      <button type="submit" className="btn btn-primary" disabled={false}>
+                        {selectedCabId ? 'Update' : 'Save'}
+                      </button>
+                      <button type="button" className="btn btn-secondary" onClick={() => setShowModal(false)}>
+                        Close
+                      </button>
+                    </div>
                   </form>
                 </div>
               </div>
