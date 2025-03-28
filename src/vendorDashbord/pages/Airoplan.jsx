@@ -14,6 +14,28 @@ const Dashboard = () => {
     airport_city: '',
     airport_code: ''
   });
+
+const [err,setErr]=useState({
+  airport_name: '',
+  airport_city: '',
+  airport_code: ''
+});
+
+const formValidate=()=>{
+  let isVaid=true;
+  const errMsg={...err};
+  Object.keys(errMsg).forEach((key)=>{
+    errMsg[key]='';
+  });
+
+  if(!newAirport.airport_name){
+    errMsg.airport_name='Please Enter Airoplan Name';
+    isVaid=false;
+  }
+  setErr(errMsg);
+  return isVaid;
+}
+
   const [selectedAirportId, setSelectedAirportId] = useState(null); // Track the airport to edit
 
   useEffect(() => {
@@ -47,6 +69,9 @@ const Dashboard = () => {
   // Handle form submission to add or update airport
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if(!formValidate()){
+      return;
+    }
     try {
       const url = selectedAirportId
         ? `${API_URL}/vendor/Airport/${selectedAirportId}` // Update endpoint
@@ -111,6 +136,18 @@ const Dashboard = () => {
       }
     }
   };
+
+
+  const [sqlQquery,setSqlQquery]=useState(null);
+  
+  const queryData=airplan.filter((items)=>{
+    const airportname = items.airport_name ? items.airport_name.toLowerCase() : '';
+    const dates=items.created_date ? items.created_date : ''
+
+    const qury=sqlQquery ? sqlQquery.toLowerCase() : '';
+    return airportname.includes(qury) || dates.includes(qury);
+  });
+
   return (
     <>
       <NavBar />
@@ -126,11 +163,17 @@ const Dashboard = () => {
               </li>
               <li className="breadcrumb-item active">List</li>
             </ol>
+            <div className="px-5 mx-5">
+            <input type="text" className="form-control" name="Search" placeholder="Search..." 
+            value={sqlQquery}  onChange={(e)=>{setSqlQquery(e.target.value)}}/>
+            </div>
             <button className="btn btn-sm btn-primary mb-3 ms-auto" onClick={() => setShowModal(true)}>
                + Add Airport
             </button>
           </nav>
         </div>
+          
+        
 
         <section className="section">
           <div className="row">
@@ -161,7 +204,7 @@ const Dashboard = () => {
                       </thead>
                       <tbody style={{fontSize: "13px"}}>
                         {/* Loop through the airplan data and populate the table rows */}
-                        {airplan.map((airport, index) => (
+                        {queryData.map((airport, index) => (
                           <tr key={airport._id}>
                             <td>{index + 1}</td> {/* Serial number */}
                             <td>{airport.airport_name}</td> {/* Airport name */}
@@ -215,8 +258,9 @@ const Dashboard = () => {
                       name="airport_name"
                       value={newAirport.airport_name}
                       onChange={handleInputChange}
-                      required
+                      
                     />
+                    {err.airport_name && <p className="text-danger">{err.airport_name}</p>}
                   </div>
                   <div className="form-group mb-3">
                     <label>Airport Location</label>
@@ -226,7 +270,7 @@ const Dashboard = () => {
                       name="airport_city"
                       value={newAirport.airport_city}
                       onChange={handleInputChange}
-                      required
+                      
                     />
                   </div>
                   <div className="form-group mb-3">
@@ -237,7 +281,7 @@ const Dashboard = () => {
                       name="airport_code"
                       value={newAirport.airport_code}
                       onChange={handleInputChange}
-                      required
+                      
                     />
                   </div>
                   <div className="modal-footer">

@@ -108,36 +108,59 @@ const MyProfile = () => {
                   <div className="tab-content mt-5" id="myTabContent">
                     {/* Personal Details */}
                     <div className="tab-pane fade show active" id="personal" role="tabpanel" aria-labelledby="personal-tab">
-                      <h6>Personal Information</h6>
-                      <p><strong>Emp Id:</strong> {user && user.first_name?user.first_name:''} {user && user.last_name?user.last_name:''} </p>
+                      <h6 className='text-primary'>Personal Information</h6>
+                      <p><strong>Emp Id:</strong> {user && user.employee_id?user.employee_id:''}  </p>
                       <p><strong>First Name: </strong>{user && user.first_name?user.first_name:''} </p>
                       <p><strong>Last Name: </strong> {user && user.last_name?user.last_name:''}</p>
                       <p><strong>Full Name: </strong> {user && user.first_name?user.first_name:''} {user && user.last_name?user.last_name:''}</p>
                       <p><strong>Email: </strong>{user && user.email?user.email:''}  </p>
+                      <p><strong>Gender: </strong>{user && user.gender?user.gender:''}  </p>
                     </div>
 
                     {/* Bank Details */}
                     <div className="tab-pane fade" id="bank" role="tabpanel" aria-labelledby="bank-tab">
-                      <h6>Bank Information</h6>
+                      <h6 className='text-primary'>Bank Information</h6>
                       {/* You can add bank details here */}
-                      <p>Bank Name: X Bank</p>
-                      <p>Account Number: XXXXXXXX</p>
+                      <p><strong>Bank Name: </strong> {user && user.previous_company?user.previous_company:''}</p>
+                      <p><strong>Bank Branch Name: </strong> {user && user.branch_name?user.branch_name:''} </p>
+                      <p><strong>Bank A/C: </strong>{user && user.bank_ac_number?user.bank_ac_number:''}  </p>
+                      <p><strong>Bank IFC Code: </strong>{user && user.ifsc_no?user.ifsc_no:''}  </p>
+                      
                     </div>
 
                     {/* Education Details */}
                     <div className="tab-pane fade" id="education" role="tabpanel" aria-labelledby="education-tab">
-                      <h6>Education Information</h6>
-                      {/* You can add education details here */}
-                      <p>University: XYZ University</p>
-                      <p>Degree: Bachelor of Science</p>
-                    </div>
+                      <h6 className='text-primary'>Education Information</h6>
+                      <p><strong>Highest Qualification : </strong> {user && user.higher_qualification?user.higher_qualification:''}</p>
+                      <p><strong>Qualification Year: </strong> {user && user.qualification_year?user.qualification_year:''} </p>
+                      <p><strong>Percentage: </strong>{user && user.percentage?user.percentage:''}  </p>
+                      <p><strong>Institute Name: </strong>{user && user.institute_name?user.institute_name:''}  </p>
+                      <p><strong>Marksheet Google Drive link: </strong>{user && user.google_link?user.google_link:''}  </p>
+                                          </div>
 
                     {/* Work Details */}
                     <div className="tab-pane fade" id="work" role="tabpanel" aria-labelledby="work-tab">
-                      <h6>Work Information</h6>
-                      {/* You can add work details here */}
-                      <p>Company: XYZ Corp</p>
-                      <p>Position: Software Developer</p>
+                      <h6 className='text-primary'>Work Information</h6>
+                      <p><strong>Date Of Birthday : </strong> {user && user.date_of_birthday?user.date_of_birthday:''}</p>
+                      <p><strong>Department: </strong> {user && user.department_id?user.department_id:''} </p>
+                      <p><strong>Designation: </strong>{user && user.designation_id?user.designation_id:''}  </p>
+                      <p><strong>PAN NO: </strong>{user && user.pan_number?user.pan_number:''}  </p>
+                      <p><strong>Work Location: </strong>{user && user.address?user.address:''}  </p>
+                      <hr></hr>
+                      {user &&  user.are_you_fresher 
+  ? <p> <b>Previous work details</b> : I am a fresher</p> 
+  : (
+    <div>
+      <h6 className='text-primary'>Previous Work Details</h6>
+      <p><strong>Previous Company Name: </strong>{user?.previous_company || ''}</p>
+      <p><strong>Designation: </strong>{user?.previous_designation || ''}</p>
+      <p><strong>Reporting Manager Name: </strong>{user?.reporting_manager_name || ''}</p>
+      <p><strong>Reporting Manager No: </strong>{user?.reporting_manager_no || ''}</p>
+      <p><strong>From Date: </strong>{user?.from_date || ''} <strong>To Date: </strong>{user?.to_date || ''}</p>
+    </div>
+  )
+}
+
                     </div>
                   </div>
                 </div>

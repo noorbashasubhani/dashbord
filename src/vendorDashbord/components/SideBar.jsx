@@ -52,11 +52,44 @@ const SideMenu = () => {
   const Advance=()=>{
     navigate('/AdvanceSalary');
   }
+  const Lead=()=>{
+    navigate('/Lead');
+  }
+  const dashbord=()=>{
+    navigate('/dashbord');
+  }
+  const birthday=()=>{
+    navigate('/Birthday-List');
+  }
+  const inc_extS=()=>{
+    navigate('/Inclusion-and-Exclusions');
+  }
+  const ad_salary=()=>{
+    navigate('/AdvanceSalary');
+  }
+  const destlist=()=>{
+    navigate('/Destinations');
+  }
+  const rate=()=>{
+    navigate('/Rate-chats');
+  }
+  const Hotelsclic=()=>{
+    navigate('/Hotels');
+  }
+  const Team=()=>{
+    navigate('/Team');
+  }
+  const alusers=()=>{
+    navigate('/All-Users');
+  }
+  const partners=()=>{
+    navigate('/All-Partners');
+  }
   return (
     <aside id="sidebar" className="sidebar">
   <ul className="sidebar-nav" id="sidebar-nav">
     <li className="nav-item">
-      <a className="nav-link " href="index.html">
+      <a className="nav-link" onClick={dashbord}>
         <i className="bi bi-grid" />
         <span>Dashboard</span>
       </a>
@@ -79,7 +112,7 @@ const SideMenu = () => {
         data-bs-parent="#sidebar-nav"
       >
         <li>
-          <a href="components-alerts.html">
+          <a onClick={Lead}>
             <i className="bi bi-airplane-engines" />
             <span>Leads List</span>
           </a>
@@ -397,7 +430,7 @@ const SideMenu = () => {
         data-bs-parent="#sidebar-nav"
       >
         <li>
-          <a href="icons-bootstrap.html">
+          <a onClick={alusers}>
             <i className="bi bi-circle" />
             <span>All Users</span>
           </a>
@@ -462,13 +495,13 @@ const SideMenu = () => {
           </a>
         </li>
         <li>
-          <a href="icons-boxicons.html">
+          <a onClick={inc_extS}>
             <i className="bi bi-option" />
             <span>Inc & Excluds  </span>
           </a>
         </li>
         <li>
-          <a href="icons-boxicons.html">
+          <a  onClick={destlist}>
             <i className="bi bi-person-walking" />
             <span>Destinations  </span>
           </a>
@@ -526,7 +559,7 @@ const SideMenu = () => {
           </a>
         </li>
         <li>
-          <a href="icons-boxicons.html">
+          <a onClick={birthday}>
             <i className="bi bi-cake2-fill" />
             <span>Birthday Details  </span>
           </a>
@@ -621,7 +654,7 @@ const SideMenu = () => {
     {/* End Icons Nav */}
     <li className="nav-heading">PARTICIPANTS</li>
     <li className="nav-item">
-      <a className="nav-link collapsed" href="users-profile.html">
+      <a className="nav-link collapsed" onClick={Team}>
         <i className="bi bi-people-fill" />
         <span>Teams</span>
       </a>
@@ -637,7 +670,7 @@ const SideMenu = () => {
     </li>
     {/* End Contact Page Nav */}
     <li className="nav-item">
-      <a className="nav-link collapsed" href="pages-register.html">
+      <a className="nav-link collapsed" onClick={partners}>
         <i className="bi bi-person-video2" />
         <span> Partners</span>
       </a>
@@ -672,13 +705,13 @@ const SideMenu = () => {
       </a>
     </li>
     <li>
-          <a href="Hotels">
+          <a onClick={Hotelsclic}>
             <i className="bi bi-house-fill" />
             <span>Hotel List</span>
           </a>
         </li>
         <li>
-          <a href="components-accordion.html">
+          <a onClick={rate}>
             <i className="bi bi-houses" />
             <span>Rate Chart</span>
           </a>

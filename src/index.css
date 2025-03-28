@@ -245,6 +245,7 @@
 .input-area input {
   flex-grow: 1;
   padding: 8px;
+  border:1px solid gray;
 }
 
 .input-area button {
@@ -252,12 +253,28 @@
   margin-left: 5px;
   cursor: pointer;
 }
-.modal-content{
-  background-color: #e8e8fb;
-}
+
 .text-error {
   color: red;
 }
+
+/* Highlight the active menu item */
+.nav-item.active {
+  background-color: #f1f1f1; /* Example: Light gray background */
+  color: #007bff; /* Change text color */
+}
+
+.nav-item.active .nav-link {
+  font-weight: bold; /* Optional: Make the active link bold */
+}
+
+/* Optionally, you can change the background of the active link when collapsed */
+.nav-item.active .nav-link::after {
+  content: ' >'; /* Optional: Add a marker for active state */
+  font-weight: bold;
+  color: #007bff;
+}
+
   /* Responsive design: */
   @media (max-width: 1200px) {
     .gallery {

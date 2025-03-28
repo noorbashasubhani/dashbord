@@ -205,6 +205,17 @@ const Packages = () => {
     setSelectedPackage(packageToView); // Set selected package to the state
   };
 
+  const [sqlQuery,setSqlQuery]=useState();
+
+  const queryData = pack.filter((itms) => {
+    const packageCode = itms.package_code || ''; 
+    const packageName = itms.package_name || ''; // Default to empty string if package_code is undefined
+    const query = sqlQuery || '';  // Default to empty string if sqlQuery is undefined
+    return packageCode.toLowerCase().includes(query.toLowerCase()) || 
+           packageName.toLowerCase().includes(query.toLowerCase());
+  });
+  
+  
   return (
     <>
       <NavBar />
@@ -223,7 +234,10 @@ const Packages = () => {
               </ol>
             </nav>
           </div>
-          
+          <div className="mr-5">
+            <input type="text" className="form-control" name="Search" placeholder="Search..." 
+            value={sqlQuery}  onChange={(e)=>{setSqlQuery(e.target.value)}}/>
+            </div>
           <button className="btn btn-sm btn-dark mb-3 ms-auto" data-bs-toggle="modal" data-bs-target="#addPackageModal">
             + Add Packages
           </button>
@@ -347,7 +361,7 @@ const Packages = () => {
                       </thead>
                       <tbody>
                         {Array.isArray(pack) && pack.length > 0 ? (
-                          pack.map((items, index) => (
+                          queryData.map((items, index) => (
                             <tr key={items._id}>
                               <td>{index + 1}</td>
                               <td>{items.package_code}</td>
@@ -357,7 +371,7 @@ const Packages = () => {
                               <td>{items.destination}</td>
                               <td>{items.cost}</td>
                               <td>{items.added_by?.name || "Unknown"}</td>
-                              <td>{new Date(items.created_at).toLocaleDateString()}</td>
+                              <td>{items.created_dt}</td>
                               <td>
                                 <button className="btn btn-sm btn-primary" onClick={() => handleOpenEditModal(items)}>
                                   Edit

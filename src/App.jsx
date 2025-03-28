@@ -22,12 +22,19 @@ import SendMessageToWhatsApp from './vendorDashbord/pages/SendMessageToWhatsApp'
 import Notification from './vendorDashbord/pages/Notification'
 import Position from './vendorDashbord/pages/Position'
 import AdvanceSalary from './vendorDashbord/pages/AdvanceSalary'
-
-
+import Lead from './vendorDashbord/pages/Lead'
+import Testing from './vendorDashbord/pages/Testing'
+import Chat from './vendorDashbord/pages/Chat'
+import RegistrationEmployee from './vendorDashbord/pages/RegistrationEmployee'
+import BirthdayList from './vendorDashbord/pages/BirthdayList'
+import Incandexc from './vendorDashbord/pages/Incandexc'
+import Destinations from './vendorDashbord/pages/Destinations'
+import Ratechats from './vendorDashbord/pages/Ratechats'
+import Rip from './vendorDashbord/pages/Rip'
 import Team from './vendorDashbord/pages/Team'
-
+import Allusers from './vendorDashbord/pages/Allusers'
+import Partners from './vendorDashbord/pages/Partners'
 //import { EmpProvider } from '../EmpContext'
-
 const App = () => {
   return (
     <div>
@@ -35,6 +42,10 @@ const App = () => {
       <Routes>
         <Route path="/" element={<VendorLogin />}></Route> 
         <Route path="*" element={<Notfound />} />
+
+
+
+
 
         <Route path="/dashboard" element={<ProtectedRoute element={<Dashbord />} />} /> 
         <Route path="/User-Registartion" element={<ProtectedRoute element={<VendorRegistration />} />} /> 
@@ -56,6 +67,17 @@ const App = () => {
         <Route path="/Notifications" element={<ProtectedRoute element={<Notification />} />} />
         <Route path="/Position" element={<ProtectedRoute element={<Position />} />} />
         <Route path="/AdvanceSalary" element={<ProtectedRoute element={<AdvanceSalary />} />} />
+        <Route path="/Lead" element={<ProtectedRoute element={<Lead />} />} />
+        <Route path="/Testing" element={<ProtectedRoute element={<Testing />} />} />
+        <Route path="/live-Chating" element={<ProtectedRoute element={<Chat />} />} />
+        <Route path="/Employee-Registration" element={<ProtectedRoute element={<RegistrationEmployee />} />} />
+        <Route path="/Birthday-List" element={<ProtectedRoute element={<BirthdayList />} />} />
+        <Route path="/Inclusion-and-Exclusions" element={<ProtectedRoute element={<Incandexc />} />} />
+        <Route path="/Destinations" element={<ProtectedRoute element={<Destinations />} />} />
+        <Route path="/Rate-chats" element={<ProtectedRoute element={<Ratechats />} />} />
+        <Route path="/Rip" element={<ProtectedRoute element={<Rip />} />} />
+        <Route path="/All-Users" element={<ProtectedRoute element={<Allusers />} />} />
+        <Route path="/All-Partners" element={<ProtectedRoute element={<Partners />} />} />
         
       </Routes>
       

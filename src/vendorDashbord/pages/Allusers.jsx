@@ -4,7 +4,7 @@ import SideBar from '../components/SideBar';
 import Footer from '../components/forms/Footer';
 import { API_URL } from '../data/apiUrl';
 
-const Employees = () => {
+const Allusers = () => {
   const [emp, setEmp] = useState([]); // Should be an array to store employee details
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -37,11 +37,11 @@ const Employees = () => {
       
       <main id="main" className="main">
         <div className="pagetitle">
-          <h4><i className="bi bi-person-fill mx-2"></i><b>Employee Details</b></h4>
+          <h4><i className="bi bi-person-fill mx-2"></i><b>All Users Details</b></h4>
           <nav className="d-flex justify-arround">
             <ol className="breadcrumb mx-2">
               <li className="breadcrumb-item">
-                <a href="index.html">Employee</a>
+                <a href="index.html">Users</a>
               </li>
               <li className="breadcrumb-item active">List</li>
             </ol>
@@ -53,7 +53,7 @@ const Employees = () => {
             <div className="col-lg-12">
               <div className="card">
                 <div className="card-body">
-                  <h6 className="card-title" style={{ fontSize: "14px" }}>Employee Details</h6>
+                  <h6 className="card-title" style={{ fontSize: "14px" }}>Users Details</h6>
                   <p className="" style={{ fontSize: "13px", marginTop: "-15px" }}>
                     Explore our CRM's organized Departments & Designations feature, facilitating seamless collaboration and clear communication within the workforce.
                   </p>
@@ -113,4 +113,4 @@ const Employees = () => {
   );
 };
 
-export default Employees;
+export default Allusers;

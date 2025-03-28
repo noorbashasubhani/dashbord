@@ -323,10 +323,20 @@ const Escalation = () => {
     setSelectedEscalationview(escL);
     setIsModalOpenview(true);  // Open the modal
   };
+
+
   const closeModalview = () => {
     setIsModalOpenview(false);
     setSelectedEscalationview(null);  // Reset the selected escalation
   };
+
+
+  const [searchQuery,setSearchQuery]=useState('');
+  
+  const searchData = esc.filter((items) => 
+    items.annonymus.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+  
 
   return (
     <>
@@ -342,6 +352,10 @@ const Escalation = () => {
               </li>
               <li className="breadcrumb-item active">List</li>
             </ol>
+            <div className="mr-5">
+            <input type="text" className="form-control" name="Search" placeholder="Search..." 
+            value={searchQuery}  onChange={(e)=>{setSearchQuery(e.target.value)}}/>
+            </div>
             <button
               className="btn btn-sm btn-dark mb-3 ms-auto"
               onClick={() => setShowModal(true)}
@@ -378,7 +392,7 @@ const Escalation = () => {
         </tr>
       </thead>
       <tbody>
-  {esc.map((escL,index) => {
+  {searchData.map((escL,index) => {
     //const formattedDate = formatDate(escL.created_date);
     return (
       <tr key={escL._id}> {/* Use escL._id instead of empItem._id */}

@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import NavBar from '../components/NavBar';
-import SideBar from '../components/SideBar';
-import Footer from '../components/forms/Footer';
+
 import { API_URL } from '../data/apiUrl';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Layout from '../components/Layout';
 
 const Library = () => {
   const [lib, setLib] = useState([]);
@@ -143,10 +142,15 @@ const Library = () => {
     }
   };
 
+  const [query,setQuery]=useState('');
+
+  const QueryData=lib.filter((item)=>
+    item.name.toLowerCase().includes(query.toLowerCase())
+  );
+
   return (
-    <>
-      <NavBar />
-      <SideBar />
+    <Layout>
+      
       <main id="main" className="main">
         <div className="pagetitle d-flex justify-content-between align-items-center">
           <div className="d-flex align-items-center">
@@ -160,7 +164,10 @@ const Library = () => {
               </ol>
             </nav>
           </div>
-
+            <div className="mr-5">
+            <input type="text" className="form-control" name="Search" placeholder="Search..." 
+            value={query}  onChange={(e)=>{setQuery(e.target.value)}}/>
+            </div>
           <button
             className="btn btn-sm btn-dark mb-3 ms-auto"
             onClick={() => setShowModal(true)}
@@ -197,7 +204,7 @@ const Library = () => {
                           </tr>
                         </thead>
                         <tbody>
-                          {lib.map((libs) => {
+                          {QueryData.map((libs) => {
                             const libpdfName = libs.libra_pdf.split('/').pop(); // Extract filename from URL
                             return (
                               <tr key={libs._id}>
@@ -317,8 +324,8 @@ const Library = () => {
         )}
       </main>
 
-      <Footer />
-    </>
+      
+    </Layout>
   );
 };
 

@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import NavBar from '../components/NavBar';
-import SideBar from '../components/SideBar';
-import Footer from '../components/forms/Footer';
+
 import { API_URL } from '../data/apiUrl';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Layout from '../components/Layout';
 
 const Flyers = () => {
   const [fly, setFly] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [search,setSearch]=useState('');
   const [newFlyer, setNewFlyer] = useState({
     title: '',
     img: null,
@@ -156,10 +156,17 @@ const Flyers = () => {
     }
   };
 
+
+ const searchData=fly.filter((itm)=>{
+      const fly_name=itm.title ? itm.title.toLowerCase() : ''
+      const searchrW=search ? search.toLowerCase():''
+
+      return fly_name.includes(searchrW)
+ });
+
   return (
-    <>
-      <NavBar />
-      <SideBar />
+    <Layout>
+      
       
       <main id="main" className="main">
         <div className="pagetitle d-flex justify-content-between align-items-center">
@@ -174,7 +181,9 @@ const Flyers = () => {
               </ol>
             </nav>
           </div>
-          
+          <div>
+                  <input type="text" name="sdete" value={search} className="form-controller" onChange={(e)=>setSearch(e.target.value)} placeHolder="Search Here ..."/>
+                </div>
           <button className="btn btn-sm btn-dark mb-3 ms-auto" onClick={() => setShowModal(true)}>
             + Add Flyer
           </button>
@@ -196,7 +205,7 @@ const Flyers = () => {
 
                   {!loading && !error && fly.length > 0 && (
                     <div className="gallery">
-                      {fly.map((flys, index) => (
+                      {searchData.map((flys, index) => (
                         <div key={flys._id} className="gallery-item">
                           <img
                             src={`${flys.img}`}
@@ -229,6 +238,7 @@ const Flyers = () => {
           <div className="modal show" style={{ display: 'block' }} onClick={() => setShowModal(false)}>
             <div className="modal-dialog" onClick={(e) => e.stopPropagation()}>
               <div className="modal-content">
+                
                 <div className="modal-header">
                   <h5 className="modal-title">Add New Flyer</h5>
                   <button type="button" className="btn-close" onClick={() => setShowModal(false)}></button>
@@ -308,8 +318,8 @@ const Flyers = () => {
         )}
       </main>
 
-      <Footer />
-    </>
+      </Layout>
+    
   );
 };
 

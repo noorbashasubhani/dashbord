@@ -6,7 +6,7 @@ import VendorRegistration from '../components/forms/VendorRegistration'
 
 import  { useState } from 'react';
 import Footer from '../components/forms/Footer'
-
+import Layout from '../components/Layout'
 
 const Dashbord = () => {
 
@@ -15,14 +15,12 @@ const Dashbord = () => {
     setFormType(form);
   };
   return (
-    <>
+    <Layout>
     
-       <NavBar />
-       
-       
-       <SideBar />
+      
       
     <main id="main" className="main">
+
   <div className="pagetitle">
     <h1>Dashboard</h1>
     <nav>
@@ -738,8 +736,8 @@ const Dashbord = () => {
     </div>
   </section>
     </main>
-    <Footer />
-    </>
+    
+    </Layout>
   )
 }
 

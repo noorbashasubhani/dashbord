@@ -22,6 +22,32 @@ const Hotels = () => {
     google_link: ''
   });
 
+  const [errors,setErrors]=useState({
+    hotel_state: '',
+    hotel_city: '',
+    hotel_name: '',
+    distance_from: '',
+    price: '',
+    contact_no: '',
+    hotel_addres: '',
+    google_link: ''
+  })
+
+  const formValidate=()=>{
+    let isValidate=true;
+    const errMsg={...errors};
+
+    Object.keys(errMsg).forEach((key)=>{
+      errMsg[key]='';
+    });
+    if(!newHotel.hotel_state){
+      errMsg.hotel_state='Please Enter The Hotel State';
+      isValidate=false;
+    }
+    setErrors(errMsg);
+    return isValidate;
+  }
+
   useEffect(() => {
     const fetchHotels = async () => {
       try {
@@ -59,7 +85,10 @@ const Hotels = () => {
 
   const handleAddHotelSubmit = async (e) => {
     e.preventDefault();
-
+    if(!formValidate()){
+      console.log('Form validateions');
+      return;
+    }
     try {
       const response = await fetch(`${API_URL}/vendor/Add-hotel`, {
         method: 'POST',
@@ -114,6 +143,8 @@ const Hotels = () => {
   const handleEditHotelSubmit = async (e) => {
     e.preventDefault();
 
+    
+
     try {
       const response = await fetch(`${API_URL}/vendor/Update-Hotels/${editHotel._id}`, {
         method: 'PUT',
@@ -139,9 +170,6 @@ const Hotels = () => {
       setError(err.message);
     }
   };
-
-
-
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this hotel?')) {
       try {
@@ -161,6 +189,18 @@ const Hotels = () => {
     }
   };
 
+  const [sql,setSql]=useState(null);
+  const queryData = hotels.filter((items)=>{
+      const hotelstate=items.hotel_state ? items.hotel_state.toLowerCase() : ''
+      const hotel_city=items.hotel_city ? items.hotel_city.toLowerCase() : ''
+      const hotel_name = items.hotel_name ? items.hotel_name.toLowerCase() : ''
+
+      const query=sql ? sql.toLowerCase() : '';
+
+
+      return hotelstate.includes(query) || hotel_city.includes(query) || hotel_name.includes(query);
+  });
+
   return (
     <>
       <NavBar />
@@ -176,6 +216,10 @@ const Hotels = () => {
               </li>
               <li className="breadcrumb-item active">List</li>
             </ol>
+            <div className="px-5 mx-5">
+            <input type="text" className="form-control" name="Search" placeholder="Search..." 
+            value={sql}  onChange={(e)=>{setSql(e.target.value)}}/>
+            </div>
             <button className="btn btn-sm btn-primary mb-3 ms-auto" onClick={() => setShowModal(true)}>
                + Add Hotels
             </button>
@@ -214,7 +258,7 @@ const Hotels = () => {
                         </tr>
                       </thead>
                       <tbody style={{fontSize: "13px"}}>
-                      {hotels.map((hotel, index) => (
+                      {queryData.map((hotel, index) => (
   // Ensure hotel object is valid
   hotel ? (
     <tr key={hotel._id}>
@@ -264,8 +308,9 @@ const Hotels = () => {
                       name="hotel_state"
                       value={newHotel.hotel_state}
                       onChange={handleInputChange}
-                      required
+                      
                     />
+                    {errors.hotel_state && <p className="text-danger">{errors.hotel_state}</p>}
                   </div>
                   <div className="form-group mb-3">
                     <label>Hotel Location</label>
@@ -275,7 +320,7 @@ const Hotels = () => {
                       name="hotel_city"
                       value={newHotel.hotel_city}
                       onChange={handleInputChange}
-                      required
+                      
                     />
                   </div>
                   <div className="form-group mb-3">
@@ -286,7 +331,7 @@ const Hotels = () => {
                       name="hotel_name"
                       value={newHotel.hotel_name}
                       onChange={handleInputChange}
-                      required
+                      
                     />
                   </div>
                   <div className="form-group mb-3">
@@ -297,7 +342,7 @@ const Hotels = () => {
                       name="distance_from"
                       value={newHotel.distance_from}
                       onChange={handleInputChange}
-                      required
+                      
                     />
                   </div>
                   <div className="form-group mb-3">
@@ -308,7 +353,7 @@ const Hotels = () => {
                       name="price"
                       value={newHotel.price}
                       onChange={handleInputChange}
-                      required
+                      
                     />
                   </div>
                   <div className="form-group mb-3">
@@ -319,7 +364,7 @@ const Hotels = () => {
                       name="contact_no"
                       value={newHotel.contact_no}
                       onChange={handleInputChange}
-                      required
+                      
                     />
                   </div>
                   <div className="form-group mb-3">
@@ -330,7 +375,7 @@ const Hotels = () => {
                       name="google_link"
                       value={newHotel.google_link}
                       onChange={handleInputChange}
-                      required
+                      
                     />
                   </div>
                   <div className="form-group mb-3">
@@ -341,7 +386,7 @@ const Hotels = () => {
                       name="hotel_addres"
                       value={newHotel.hotel_addres}
                       onChange={handleInputChange}
-                      required
+                      
                     />
                   </div>
 

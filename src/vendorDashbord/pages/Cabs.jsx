@@ -4,6 +4,7 @@ import SideBar from '../components/SideBar';
 import Footer from '../components/forms/Footer';
 import { API_URL } from '../data/apiUrl';
 import { toast, ToastContainer } from 'react-toastify';
+import DataTable from 'react-data-table-component';
 
 const Cabs = () => {
   const [cabs, setCabs] = useState([]); // To store the list of cabs
@@ -20,6 +21,32 @@ const Cabs = () => {
     per_day_cost: '',
     rate_per_km: '',
   });
+  const [errors, setErrors] = useState({
+    state_name: '',
+    service_location: '',
+    supplier_name: '',
+    email_contact: '',
+    vehicle_type: '',
+    seating_capacity: '',
+    per_day_cost: '',
+    rate_per_km: '',
+  });
+
+  const formValidate = () => {
+    let isValid = true;
+    const errMsg = { ...errors };
+    Object.keys(errMsg).forEach((key) => {
+      errMsg[key] = '';
+    });
+
+    if (!newCab.state_name) {
+      errMsg.state_name = 'State Name is Empty';
+      isValid = false;
+    }
+    setErrors(errMsg);
+    return isValid;
+  };
+
   const [selectedCabId, setSelectedCabId] = useState(null); // To store the selected cab ID
 
   // Fetch data from the "Cab-list" collection
@@ -70,7 +97,9 @@ const Cabs = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const requestBody = { ...newCab };
-
+    if (!formValidate()) {
+      return;
+    }
     try {
       let response;
       if (selectedCabId) {
@@ -80,7 +109,7 @@ const Cabs = () => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(requestBody),
         });
-         toast.success('Cabs Details updated successfully');
+        toast.success('Cabs Details updated successfully');
       } else {
         // Add new cab
         response = await fetch(`${API_URL}/vendor/add-cab`, {
@@ -88,7 +117,6 @@ const Cabs = () => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(requestBody),
         });
-        
       }
 
       if (!response.ok) throw new Error('Failed to save cab');
@@ -116,7 +144,7 @@ const Cabs = () => {
         method: 'DELETE',
       });
       if (!response.ok) {
-        throw new Error('Failed to delete library');
+        throw new Error('Failed to delete cab');
       }
       // Filter out the deleted item from the state
       setCabs(cabs.filter((item) => item._id !== id));
@@ -125,11 +153,83 @@ const Cabs = () => {
     }
   };
 
+  // Column definitions for DataTable
+  const columns = [
+    {
+      name: 'S.No',
+      selector: (row, index) => index + 1,
+      sortable: true,
+    },
+    {
+      name: 'State',
+      selector: (row) => row.state_name,
+      sortable: true,
+    },
+    {
+      name: 'Location',
+      selector: (row) => row.service_location,
+      sortable: true,
+    },
+    {
+      name: 'Cab Name',
+      selector: (row) => row.supplier_name,
+      sortable: true,
+    },
+    {
+      name: 'Email/Contact',
+      selector: (row) => row.email_contact,
+      sortable: true,
+    },
+    {
+      name: 'Vehicle Type',
+      selector: (row) => row.vehicle_type,
+      sortable: true,
+    },
+    {
+      name: 'Capacity',
+      selector: (row) => row.seating_capacity,
+      sortable: true,
+    },
+    {
+      name: 'Per Day Cost',
+      selector: (row) => row.per_day_cost,
+      sortable: true,
+    },
+    {
+      name: 'Km Rate',
+      selector: (row) => row.rate_per_km,
+      sortable: true,
+    },
+    {
+      name: 'Created Date',
+      selector: (row) => new Date(row.created_date).toLocaleDateString(),
+      sortable: true,
+    },
+    {
+      name: 'Actions',
+      cell: (row) => (
+        <div>
+          <button
+            className="btn btn-sm btn-danger"
+            onClick={() => deleteCab(row._id)}
+          >
+            Delete
+          </button>
+          <button
+            className="btn btn-sm btn-warning"
+            onClick={() => handleEditClick(row)}
+          >
+            Edit
+          </button>
+        </div>
+      ),
+    },
+  ];
+
   return (
     <>
       <NavBar />
       <SideBar />
-
       <main id="main" className="main">
         <div className="pagetitle d-flex justify-content-between align-items-center">
           <h4><i className="bi bi-pin-fill mx-2"></i><b>Cabs Details</b></h4>
@@ -145,7 +245,7 @@ const Cabs = () => {
             </button>
           </nav>
         </div>
-<ToastContainer />
+        <ToastContainer />
         <section className="section">
           <div className="row">
             <div className="col-lg-12">
@@ -164,54 +264,14 @@ const Cabs = () => {
 
                   {/* Table with dynamic data */}
                   {!loading && !error && (
-                    <table className="table datatable table-striped">
-                      <thead style={{ fontSize: '13px' }}>
-                        <tr>
-                          <th>S.No</th>
-                          <th>State</th>
-                          <th>Location</th>
-                          <th>Name</th>
-                          <th>Email or Contact Num</th>
-                          <th>Vehicle Type</th>
-                          <th>Capacity</th>
-                          <th>Per Day Cost</th>
-                          <th>Km</th>
-                          <th>Created Date</th>
-                          <th>Action</th>
-                        </tr>
-                      </thead>
-                      <tbody style={{ fontSize: '13px' }}>
-                        {/* Loop through the cabs */}
-                        {cabs.map((cab, index) => (
-                          <tr key={cab._id}>
-                            <td>{index + 1}</td>
-                            <td>{cab.state_name}</td>
-                            <td>{cab.service_location}</td>
-                            <td>{cab.supplier_name}</td>
-                            <td>{cab.email_contact}</td>
-                            <td>{cab.vehicle_type}</td>
-                            <td>{cab.seating_capacity}</td>
-                            <td>{cab.per_day_cost}</td>
-                            <td>{cab.rate_per_km}</td>
-                            <td>{new Date(cab.created_date).toLocaleDateString()}</td>
-                            <td>
-                              <button
-                                className="btn btn-sm btn-danger"
-                                onClick={() => deleteCab(cab._id)}
-                              >
-                                Delete
-                              </button>
-                              <button
-                                className="btn btn-sm btn-warning"
-                                onClick={() => handleEditClick(cab)}
-                              >
-                                Edit
-                              </button>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                    <DataTable
+                      columns={columns}
+                      data={cabs}
+                      pagination
+                      highlightOnHover
+                      striped
+                      responsive
+                    />
                   )}
                 </div>
               </div>
@@ -240,8 +300,8 @@ const Cabs = () => {
                         value={newCab.state_name}
                         onChange={handleInputChange}
                         className="form-control"
-                        required
                       />
+                      {errors.state_name && <p className="text-danger">{errors.state_name}</p>}
                     </div>
                     <div className="mb-3">
                       <label htmlFor="service_location" className="form-label">Location</label>
@@ -252,7 +312,6 @@ const Cabs = () => {
                         value={newCab.service_location}
                         onChange={handleInputChange}
                         className="form-control"
-                        required
                       />
                     </div>
                     <div className="mb-3">
@@ -264,7 +323,6 @@ const Cabs = () => {
                         value={newCab.supplier_name}
                         onChange={handleInputChange}
                         className="form-control"
-                        required
                       />
                     </div>
                     <div className="mb-3">
@@ -276,7 +334,6 @@ const Cabs = () => {
                         value={newCab.email_contact}
                         onChange={handleInputChange}
                         className="form-control"
-                        required
                       />
                     </div>
                     <div className="mb-3">
@@ -288,7 +345,6 @@ const Cabs = () => {
                         value={newCab.vehicle_type}
                         onChange={handleInputChange}
                         className="form-control"
-                        required
                       />
                     </div>
                     <div className="mb-3">
@@ -300,7 +356,6 @@ const Cabs = () => {
                         value={newCab.seating_capacity}
                         onChange={handleInputChange}
                         className="form-control"
-                        required
                       />
                     </div>
                     <div className="mb-3">
@@ -312,7 +367,6 @@ const Cabs = () => {
                         value={newCab.per_day_cost}
                         onChange={handleInputChange}
                         className="form-control"
-                        required
                       />
                     </div>
                     <div className="mb-3">
@@ -324,7 +378,6 @@ const Cabs = () => {
                         value={newCab.rate_per_km}
                         onChange={handleInputChange}
                         className="form-control"
-                        required
                       />
                     </div>
                     <div className="modal-footer">

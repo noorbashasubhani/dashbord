@@ -4,7 +4,7 @@ import SideBar from '../components/SideBar';
 import Footer from '../components/forms/Footer';
 import { API_URL } from '../data/apiUrl';
 
-const Employees = () => {
+const BirthdayList = () => {
   const [emp, setEmp] = useState([]); // Should be an array to store employee details
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -37,11 +37,11 @@ const Employees = () => {
       
       <main id="main" className="main">
         <div className="pagetitle">
-          <h4><i className="bi bi-person-fill mx-2"></i><b>Employee Details</b></h4>
+          <h4><i className="bi bi-person-fill mx-2"></i><b>Birthday Details</b></h4>
           <nav className="d-flex justify-arround">
             <ol className="breadcrumb mx-2">
               <li className="breadcrumb-item">
-                <a href="index.html">Employee</a>
+                <a href="index.html">Birthday</a>
               </li>
               <li className="breadcrumb-item active">List</li>
             </ol>
@@ -53,7 +53,7 @@ const Employees = () => {
             <div className="col-lg-12">
               <div className="card">
                 <div className="card-body">
-                  <h6 className="card-title" style={{ fontSize: "14px" }}>Employee Details</h6>
+                  <h6 className="card-title" style={{ fontSize: "14px" }}>Birthday Details</h6>
                   <p className="" style={{ fontSize: "13px", marginTop: "-15px" }}>
                     Explore our CRM's organized Departments & Designations feature, facilitating seamless collaboration and clear communication within the workforce.
                   </p>
@@ -72,13 +72,8 @@ const Employees = () => {
                           <th>S.No</th>
                           <th>Employee ID</th>
                           <th>Employee Name</th>
-                          <th>Email E-mail</th>
-                          <th>Department Name</th>
-                          <th>Designation Name</th>
-                          <th>Joining Date</th>
-                          <th>Work Location</th>
-                          <th>Salary</th>
-                          <th>Action</th>
+                          
+                          <th>Birthday</th>
                         </tr>
                       </thead>
                       <tbody style={{ fontSize: "13px" }}>
@@ -89,13 +84,7 @@ const Employees = () => {
                             <td>{index + 1}</td> {/* Serial number */}
                             <td>{emps.employee_id}</td>
                             <td>{emps.first_name} {emps.last_name}</td> {/* Employee name */}
-                            <td>{emps.email}</td> {/* Employee joining date */}
-                            <td>{emps.department_id}</td> {/* Employee joining date */}
-                            <td>{emps.designation_id}</td> {/* Employee joining date */}
-                            <td>{emps.designation_id}</td> {/* Employee joining date */}
-                            <td>Hyderabad Begumpet White House Building</td> {/* Employee joining date */}
-                            <td>confidential</td> {/* Employee joining date */}
-                            <td></td>
+                            <td>{emps.date_of_birthday}</td>
                           </tr>
                         ))}
                       </tbody>
@@ -113,4 +102,4 @@ const Employees = () => {
   );
 };
 
-export default Employees;
+export default BirthdayList;
