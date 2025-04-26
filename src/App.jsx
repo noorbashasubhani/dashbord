@@ -33,7 +33,16 @@ import Ratechats from './vendorDashbord/pages/Ratechats'
 import Rip from './vendorDashbord/pages/Rip'
 import Team from './vendorDashbord/pages/Team'
 import Allusers from './vendorDashbord/pages/Allusers'
+import PendingUsers from './vendorDashbord/pages/PendingUsers'
 import Partners from './vendorDashbord/pages/Partners'
+import Documets from './vendorDashbord/pages/Documets'
+import PasswordVisible from './vendorDashbord/pages/PasswordVisible';
+import Recovery from './vendorDashbord/pages/Recovery'
+import DomesticCredit from './vendorDashbord/pages/DomesticCredit'
+import IntCredite from './vendorDashbord/pages/IntCredite'
+import Allcredite from './vendorDashbord/pages/Allcredite'
+import Registartion from './vendorDashbord/pages/Registarion'
+import Master from './vendorDashbord/pages/Master'
 //import { EmpProvider } from '../EmpContext'
 const App = () => {
   return (
@@ -78,6 +87,15 @@ const App = () => {
         <Route path="/Rip" element={<ProtectedRoute element={<Rip />} />} />
         <Route path="/All-Users" element={<ProtectedRoute element={<Allusers />} />} />
         <Route path="/All-Partners" element={<ProtectedRoute element={<Partners />} />} />
+        <Route path="/Download-doc" element={<ProtectedRoute element={<Documets />} />} />
+        <Route path="/Pending-Users" element={<ProtectedRoute element={<PendingUsers />} />} />
+        <Route path="/Password-visible" element={<ProtectedRoute element={<PasswordVisible />} />} />
+        <Route path="/Recovery" element={<ProtectedRoute element={<Recovery />} />} />
+        <Route path="/Domestic-Credit" element={<ProtectedRoute element={<DomesticCredit />} />} />
+        <Route path="/International-Credit" element={<ProtectedRoute element={<IntCredite />} />} />
+        <Route path="/All-Credit" element={<ProtectedRoute element={<Allcredite />} />} />
+        <Route path="/User-Registration" element={<ProtectedRoute element={<Registartion />} />} />
+        <Route path="/Masters" element={<ProtectedRoute element={<Master />} />} />
         
       </Routes>
       

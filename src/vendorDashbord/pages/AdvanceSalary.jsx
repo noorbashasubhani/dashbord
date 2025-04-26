@@ -6,18 +6,21 @@ import { API_URL } from '../data/apiUrl';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { jwtDecode } from 'jwt-decode';
+import $ from 'jquery';
+import 'select2/dist/css/select2.min.css';
+import 'select2';
+
+
+
+
 
 const AdvanceSalary = () => {
   const [pack, setPack] = useState([]);
   const [selectedPackage, setSelectedPackage] = useState(null); // State to hold the selected package data
 
   const [packdata, setPackdata] = useState({
-    package_code: '',
-    package_name: '',
-    duration: '',
-    city: '',
-    destination: '',
-    cost: ''
+    amount: '',
+    managers_names: ''
   });
   
   const [editingPackage, setEditingPackage] = useState(null);  // State for editing a package
@@ -34,53 +37,42 @@ const AdvanceSalary = () => {
     });
   };
 
-  // Handle Add Package
+ 
+
+
   const handleAddPackage = async () => {
-    const { package_code, package_name, duration, city, destination, cost } = packdata;
-  
-    // Check if all fields are filled
-    if (!package_code || !package_name || !duration || !city || !destination || !cost) {
-      toast.error("Please fill all fields.");
-      return;
-    }
-  
     try {
-      // Send the request to add the package
-      const response = await fetch(`${API_URL}/vendor/Positions/${userId}`, {
+      const response = await fetch(`${API_URL}/vendor/Advancesalary`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({
-          package_code,
-          package_name,
-          duration,
-          city,
-          destination,
-          cost,
-          added_by: userId, // Pass the userId or other user-related data if needed
+          ...packdata
         })
       });
   
-      const responseText = await response.text(); // Get raw response as text
-      const result = JSON.parse(responseText); // Manually parse JSON
+      const responseText = await response.text();
+      const result = JSON.parse(responseText);
   
       if (response.ok) {
-        setPack([...pack, result.data]); // Update the package list with the new package
+        setPack([...pack, result.data]);
+  
         const modal = new window.bootstrap.Modal(document.getElementById('addPackageModal'));
         modal.hide();
-        
-        toast.success("Package added successfully!");
-        setPackdata({ package_code: '', package_name: '', duration: '', city: '', destination: '', cost: '' }); // Reset the form
-        GetFun();  // Fetch the updated packages list
+  
+        toast.success("Advance Salary added successfully!");
+        setPackdata({ amount: '', managers_names: '' }); // Reset form
       } else {
-        throw new Error(result.message || 'Failed to add package');
+        throw new Error(result.message || 'Failed to add advance salary');
       }
     } catch (err) {
       console.error(err);
-      toast.error("Error adding package: " + err.message);
+      toast.error("Error adding salary: " + err.message);
     }
   };
+  
 
   // Handle Edit Package
   const handleEditPackage = async () => {
@@ -269,18 +261,20 @@ const AdvanceSalary = () => {
                 <form>
                   <div className="mb-3">
                     <label htmlFor="package_code" className="form-label">Amount</label>
-                    <input type="text" className="form-control" id="package_code" name="package_code" value={packdata.package_code} onChange={handleInputChange} />
+                    <input type="text" className="form-control" id="amount" name="amount" value={packdata.amount} onChange={handleInputChange} />
                   </div>
+                  
+                  
                   <div className="mb-3">
                     <label htmlFor="package_name" className="form-label">Manager List</label>
-                    <input type="text" className="form-control" id="package_name" name="package_name" value={packdata.package_name} onChange={handleInputChange} />
+                    <input type="text" className="form-control" id="managers_names" name="managers_names" value={packdata.managers_names} onChange={handleInputChange} />
                   </div>
                  
                 </form>
               </div>
               <div className="modal-footer">
                 <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" className="btn btn-primary" onClick={handleAddPackage}>Add Package</button>
+                <button type="button" className="btn btn-primary" onClick={handleAddPackage}>Add </button>
               </div>
             </div>
           </div>
@@ -305,6 +299,8 @@ const AdvanceSalary = () => {
                           <th>S.No</th>
                           <th>Amount Name</th>
                           <th>Requested Person</th>
+                          <th>Requested Send TO</th>
+                          
                           <th>Created Date</th>
                           <th style={{ width: "200px" }}>Actions</th>
                           <th>Status</th>
@@ -316,8 +312,18 @@ const AdvanceSalary = () => {
                             <tr key={items._id}>
                               <td>{index + 1}</td>
                               <td>{items.amount}</td>
-                              <td>{items.added_by}</td>
-                              <td>{items.created_date}</td>
+                              <td><td>{items.added_by ? items.added_by.first_name : 'N/A'}</td>
+                              </td>
+                              <td>
+  {items.managers_names && items.managers_names.length > 0
+    ? items.managers_names.map((manager, idx) => (
+        <span key={manager._id}>
+          {manager.first_name}{idx !== items.managers_names.length - 1 ? ', ' : ''}
+        </span>
+      ))
+    : 'N/A'}
+</td>
+                              <td>{items.createdAt}</td>
                               
                               <td>
                                 <button className="btn btn-sm btn-primary" onClick={() => handleOpenEditModal(items)}>
@@ -346,52 +352,7 @@ const AdvanceSalary = () => {
         </section>
       </main>
  {/* View Package Modal */}
- <div className="modal fade" id="viewPackageModal" tabIndex="-1" aria-labelledby="viewPackageModalLabel" aria-hidden="true">
-          <div className="modal-dialog">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title" id="viewPackageModalLabel">Package Details</h5>
-                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <div className="modal-body">
-                {selectedPackage ? (
-                  <div>
-                    <p><strong>Department Name:</strong> {selectedPackage.department_name}</p>
-                    <p><strong>Roll Name:</strong> {selectedPackage.role}</p>
-                    <p><strong>Designation Name:</strong> {selectedPackage.designation_name}</p>
-                    <p><strong>Candidate Type:</strong> {selectedPackage.candidate_type}</p>
-                    <p><strong>No of Candidates:</strong> {selectedPackage.no_of_candidates}</p>
-                    <p><strong>Job Description:</strong> ${selectedPackage.job_desc}</p>
-                    <p><strong>Roll & Responsibility:</strong> {selectedPackage.role_and_responces}</p>
 
-
-                    <p><strong>Experience:</strong> {selectedPackage.experience}</p>
-                    <p><strong>Relavent Experience:</strong> {selectedPackage.relevant_exp}</p>
-                    <p><strong>Employee Type:</strong> {selectedPackage.employee_type}</p>
-                    <p><strong>Education:</strong> {selectedPackage.education}</p>
-                    <p><strong>job Location:</strong> {selectedPackage.job_location}</p>
-                    <p><strong>Salary Range :</strong> {selectedPackage.salaryrange_from} -  {selectedPackage.salaryrange_to}</p>
-
-                    <p><strong>Gender Preffered  :</strong> {selectedPackage.gender}</p>
-                    <p><strong>Application Dead Line  :</strong> {selectedPackage.application_dead_line}</p>
-                    <p><strong>Created By  :</strong> {selectedPackage.created_by}</p>
-                    <p><strong>Created Date  :</strong> {selectedPackage.created_date}</p>
-
-                    
-                    
-                    
-                    
-                  </div>
-                ) : (
-                  <p>Loading...</p>
-                )}
-              </div>
-              <div className="modal-footer">
-                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-              </div>
-            </div>
-          </div>
-        </div>
       <Footer />
     </>
   );

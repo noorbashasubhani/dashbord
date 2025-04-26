@@ -9,23 +9,23 @@ import { jwtDecode } from 'jwt-decode';
 
 const Team = () => {
   const [pack, setPack] = useState([]);
-  const [selectedPackage, setSelectedPackage] = useState(null); // State to hold the selected package data
+  const [employees, setEmployees] = useState([]);
+  const [selectedPackage, setSelectedPackage] = useState(null);
+  //const token=
 
   const [packdata, setPackdata] = useState({
-    package_code: '',
-    package_name: '',
-    duration: '',
-    city: '',
-    destination: '',
-    cost: ''
+    team_name: '',
+    travel_type: '',
+    dept_name: '',
+    dept_head: '',
+    dept_lead: '',
+    team_employees: []
   });
-  
-  const [editingPackage, setEditingPackage] = useState(null);  // State for editing a package
+
   const token = localStorage.getItem('token');
   const decodedToken = jwtDecode(token);
   const userId = decodedToken.userId;
 
-  // Handle form data change
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setPackdata({
@@ -34,175 +34,84 @@ const Team = () => {
     });
   };
 
-  // Handle Add Package
   const handleAddPackage = async () => {
-    const { package_code, package_name, duration, city, destination, cost } = packdata;
-  
-    // Check if all fields are filled
-    if (!package_code || !package_name || !duration || !city || !destination || !cost) {
-      toast.error("Please fill all fields.");
-      return;
-    }
-  
+    const { team_name, travel_type, dept_name, dept_head, dept_lead, team_employees } = packdata;
+
+   
+
     try {
-      // Send the request to add the package
-      const response = await fetch(`${API_URL}/vendor/Package/${userId}`, {
+      const response = await fetch(`${API_URL}/vendor/Teams`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          package_code,
-          package_name,
-          duration,
-          city,
-          destination,
-          cost,
-          added_by: userId, // Pass the userId or other user-related data if needed
-        })
+        headers: {  'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}` },// Include token in the headers },
+        body: JSON.stringify(packdata),
       });
-  
-      const responseText = await response.text(); // Get raw response as text
-      const result = JSON.parse(responseText); // Manually parse JSON
-  
+
+      const result = await response.json();
       if (response.ok) {
-        setPack([...pack, result.data]); // Update the package list with the new package
+        setPack(prev => [...prev, result.data]);
+        setPackdata({ team_name: '', travel_type: '', dept_name: '', dept_head: '', dept_lead: '', team_employees: [] });
         const modal = new window.bootstrap.Modal(document.getElementById('addPackageModal'));
         modal.hide();
-        
-        toast.success("Package added successfully!");
-        setPackdata({ package_code: '', package_name: '', duration: '', city: '', destination: '', cost: '' }); // Reset the form
-        GetFun();  // Fetch the updated packages list
+        toast.success("Team added successfully!");
       } else {
-        throw new Error(result.message || 'Failed to add package');
+        throw new Error(result.message);
       }
     } catch (err) {
-      console.error(err);
-      toast.error("Error adding package: " + err.message);
+      toast.error("Failed to add team: " + err.message);
     }
   };
 
-  // Handle Edit Package
-  const handleEditPackage = async () => {
-    const { package_code, package_name, duration, city, destination, cost } = packdata;
-
-    // Check if all fields are filled
-    if (!package_code || !package_name || !duration || !city || !destination || !cost) {
-      toast.error("Please fill all fields.");
-      return;
-    }
-
-    try {
-      // Send the PUT request to update the package
-      const response = await fetch(`${API_URL}/vendor/Package/${editingPackage._id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          package_code,
-          package_name,
-          duration,
-          city,
-          destination,
-          cost,
-          added_by: userId, // Pass the userId or other user-related data if needed
-        })
-      });
-
-      const responseText = await response.text();
-      const result = JSON.parse(responseText);
-
-      if (response.ok) {
-        // Update the package list with the edited package
-        const updatedPackages = pack.map(pkg => 
-          pkg._id === editingPackage._id ? { ...pkg, ...result.data } : pkg
-        );
-        setPack(updatedPackages);
-        
-        const modal = new window.bootstrap.Modal(document.getElementById('editPackageModal'));
-        modal.hide();
-        
-        toast.success("Package updated successfully!");
-        setPackdata({ package_code: '', package_name: '', duration: '', city: '', destination: '', cost: '' }); // Reset the form
-      } else {
-        throw new Error(result.message || 'Failed to update package');
-      }
-    } catch (err) {
-      console.error(err);
-      toast.error("Error updating package: " + err.message);
-    }
-  };
-
-  // Fetch packages when component mounts
   useEffect(() => {
-    const GetFun = async () => {
+    const fetchTeams = async () => {
       try {
-        const arryQuery = await fetch(`${API_URL}/vendor/Package`, {
-          method: 'GET'
-        });
-
-        if (!arryQuery.ok) {
-          throw new Error('Data not received');
-        }
-
-        const arrayData = await arryQuery.json();
-        setPack(arrayData.data);
-        //toast.success("Packages loaded successfully!");
+        const response = await fetch(`${API_URL}/vendor/Teams`);
+        const data = await response.json();
+        setPack(data.data);
       } catch (err) {
         console.log(err.message);
-        toast.error("Error fetching packages: " + err.message);
+        toast.error("Error fetching teams: " + err.message);
       }
     };
 
-    GetFun();
-  }, []); // Runs once when the component mounts
+    const fetchEmployees = async () => {
+      try {
+        const res = await fetch(`${API_URL}/vendor/Employelist`);
+        const data = await res.json();
+        setEmployees(data.data);
+      } catch (error) {
+        toast.error("Failed to load employees.");
+      }
+    };
 
-  // Function to open the edit modal and populate data
-  const handleOpenEditModal = (packageDetails) => {
-    setEditingPackage(packageDetails);  // Set the package to be edited
-    setPackdata({
-      package_code: packageDetails.package_code,
-      package_name: packageDetails.package_name,
-      duration: packageDetails.duration,
-      city: packageDetails.city,
-      destination: packageDetails.destination,
-      cost: packageDetails.cost,
-    });
-    const modal = new window.bootstrap.Modal(document.getElementById('editPackageModal'));
-    modal.show();  // Show the edit modal
-  };
-
+    fetchTeams();
+    fetchEmployees();
+  }, []);
 
   const handleDeletePackage = async (packageId) => {
     if (window.confirm('Are you sure you want to delete this package?')) {
       try {
-        const response = await fetch(`${API_URL}/vendor/Package/${packageId}`, {
+        const response = await fetch(`${API_URL}/vendor/Teams/${packageId}`, {
           method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          headers: { 'Content-Type': 'application/json' },
         });
 
-        const responseText = await response.text();
-        const result = JSON.parse(responseText);
-
+        const result = await response.json();
         if (response.ok) {
-          // Remove the deleted package from the state
           setPack(pack.filter(pkg => pkg._id !== packageId));
-          toast.success("Package deleted successfully!");
+          toast.success("Team deleted successfully!");
         } else {
-          throw new Error(result.message || 'Failed to delete package');
+          throw new Error(result.message || 'Failed to delete team');
         }
       } catch (err) {
-        console.error(err);
-        toast.error("Error deleting package: " + err.message);
+        toast.error("Error deleting team: " + err.message);
       }
     }
   };
+
   const handleViewPackage = (packageId) => {
     const packageToView = pack.find(pkg => pkg._id === packageId);
-    setSelectedPackage(packageToView); // Set selected package to the state
+    setSelectedPackage(packageToView);
   };
 
   return (
@@ -216,22 +125,20 @@ const Team = () => {
             <h4><i className="bi bi-pin-fill mx-2"></i><b>Team Details</b></h4>
             <nav className="d-flex justify-arround">
               <ol className="breadcrumb mx-2 mb-0">
-                <li className="breadcrumb-item">
-                  <a href="index.html">Team</a>
-                </li>
+                <li className="breadcrumb-item"><a href="index.html">Team</a></li>
                 <li className="breadcrumb-item active">List</li>
               </ol>
             </nav>
           </div>
-          
+
           <button className="btn btn-sm btn-dark mb-3 ms-auto" data-bs-toggle="modal" data-bs-target="#addPackageModal">
             + Add Team
           </button>
         </div>
-        
+
         <ToastContainer />
-        
-        {/* Add Package Modal */}
+
+        {/* Add Team Modal */}
         <div className="modal fade" id="addPackageModal" tabIndex="-1" aria-labelledby="addPackageModalLabel" aria-hidden="true">
           <div className="modal-dialog">
             <div className="modal-content">
@@ -242,167 +149,75 @@ const Team = () => {
               <div className="modal-body">
                 <form>
                   <div className="mb-3">
-                    <label htmlFor="package_code" className="form-label">Package Code</label>
-                    <input type="text" className="form-control" id="package_code" name="package_code" value={packdata.package_code} onChange={handleInputChange} />
+                    <label className="form-label">Team Name</label>
+                    <input type="text" className="form-control" name="team_name" value={packdata.team_name} onChange={handleInputChange} />
                   </div>
                   <div className="mb-3">
-                    <label htmlFor="package_name" className="form-label">Package Name</label>
-                    <input type="text" className="form-control" id="package_name" name="package_name" value={packdata.package_name} onChange={handleInputChange} />
+                    <label className="form-label">Travel Type</label>
+                    <input type="text" className="form-control" name="travel_type" value={packdata.travel_type} onChange={handleInputChange} />
                   </div>
                   <div className="mb-3">
-                    <label htmlFor="duration" className="form-label">Duration</label>
-                    <input type="text" className="form-control" id="duration" name="duration" value={packdata.duration} onChange={handleInputChange} />
+                    <label className="form-label">Department Name</label>
+                    <input type="text" className="form-control" name="dept_name" value={packdata.dept_name} onChange={handleInputChange} />
                   </div>
                   <div className="mb-3">
-                    <label htmlFor="city" className="form-label">City</label>
-                    <input type="text" className="form-control" id="city" name="city" value={packdata.city} onChange={handleInputChange} />
+                    <label className="form-label">Department Head</label>
+                    <select className="form-select" name="dept_head" value={packdata.dept_head} onChange={handleInputChange}>
+                      <option value="">-- Select Head --</option>
+                      {employees.map(emp => (
+                        <option key={emp._id} value={emp._id}>{emp.first_name} {emp.last_name}</option>
+                      ))}
+                    </select>
                   </div>
                   <div className="mb-3">
-                    <label htmlFor="destination" className="form-label">Destination</label>
-                    <input type="text" className="form-control" id="destination" name="destination" value={packdata.destination} onChange={handleInputChange} />
+                    <label className="form-label">Department Lead</label>
+                    <select className="form-select" name="dept_lead" value={packdata.dept_lead} onChange={handleInputChange}>
+                      <option value="">-- Select Lead --</option>
+                      {employees.map(emp => (
+                        <option key={emp._id} value={emp._id}>{emp.first_name} {emp.last_name}</option>
+                      ))}
+                    </select>
                   </div>
                   <div className="mb-3">
-                    <label htmlFor="cost" className="form-label">Cost</label>
-                    <input type="number" className="form-control" id="cost" name="cost" value={packdata.cost} onChange={handleInputChange} />
+                    <label className="form-label">Team Employees</label>
+                    <select multiple className="form-select" name="team_employees" value={packdata.team_employees} onChange={(e) => {
+                      const selected = Array.from(e.target.selectedOptions).map(option => option.value);
+                      setPackdata({ ...packdata, team_employees: selected });
+                    }}>
+                      {employees.map(emp => (
+                        <option key={emp._id} value={emp._id}>{emp.first_name} {emp.last_name}</option>
+                      ))}
+                    </select>
                   </div>
                 </form>
               </div>
               <div className="modal-footer">
                 <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" className="btn btn-primary" onClick={handleAddPackage}>Add Package</button>
+                <button type="button" className="btn btn-primary" onClick={handleAddPackage}>Add Team</button>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Edit Package Modal */}
-        <div className="modal fade" id="editPackageModal" tabIndex="-1" aria-labelledby="editPackageModalLabel" aria-hidden="true">
+        {/* View Team Modal */}
+        <div className="modal fade" id="viewPackageModal" tabIndex="-1" aria-labelledby="viewPackageModalLabel" aria-hidden="true">
           <div className="modal-dialog">
             <div className="modal-content">
               <div className="modal-header">
-                <h5 className="modal-title" id="editPackageModalLabel">Edit Package</h5>
-                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <div className="modal-body">
-                <form>
-                  <div className="mb-3">
-                    <label htmlFor="package_code" className="form-label">Package Code</label>
-                    <input type="text" className="form-control" id="package_code" name="package_code" value={packdata.package_code} onChange={handleInputChange} />
-                  </div>
-                  <div className="mb-3">
-                    <label htmlFor="package_name" className="form-label">Package Name</label>
-                    <input type="text" className="form-control" id="package_name" name="package_name" value={packdata.package_name} onChange={handleInputChange} />
-                  </div>
-                  <div className="mb-3">
-                    <label htmlFor="duration" className="form-label">Duration</label>
-                    <input type="text" className="form-control" id="duration" name="duration" value={packdata.duration} onChange={handleInputChange} />
-                  </div>
-                  <div className="mb-3">
-                    <label htmlFor="city" className="form-label">City</label>
-                    <input type="text" className="form-control" id="city" name="city" value={packdata.city} onChange={handleInputChange} />
-                  </div>
-                  <div className="mb-3">
-                    <label htmlFor="destination" className="form-label">Destination</label>
-                    <input type="text" className="form-control" id="destination" name="destination" value={packdata.destination} onChange={handleInputChange} />
-                  </div>
-                  <div className="mb-3">
-                    <label htmlFor="cost" className="form-label">Cost</label>
-                    <input type="number" className="form-control" id="cost" name="cost" value={packdata.cost} onChange={handleInputChange} />
-                  </div>
-                </form>
-              </div>
-              <div className="modal-footer">
-                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" className="btn btn-primary" onClick={handleEditPackage}>Save Changes</button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <section className="section">
-          <div className="row">
-            <div className="col-lg-12">
-              <div className="card">
-                <div className="card-body">
-                  <h6 className="card-title" style={{ fontSize: "14px" }}>Packages Details</h6>
-                  <p className="" style={{ fontSize: "13px", marginTop: "-15px" }} >
-                    Explore our flyer list to check all the details and expiration dates.
-                  </p>
-
-                  <div className="table-responsive">
-                    <table className="table table-bordered table-striped">
-                      <thead>
-                        <tr>
-                          <th>S.No</th>
-                          <th>Team Name</th>
-                          <th>Travel Type</th>
-                          <th>Department Head</th>
-                          <th>Department Lead</th>
-                          <th>Team Numbers</th>
-                          
-                          <th>Added By</th>
-                          <th>Created Date</th>
-                          <th style={{ width: "420px" }}>Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {Array.isArray(pack) && pack.length > 0 ? (
-                          pack.map((items, index) => (
-                            <tr key={items._id}>
-                              <td>{index + 1}</td>
-                              <td>{items.package_code}</td>
-                              <td>{items.package_name}</td>
-                              <td>{items.duration}</td>
-                              <td>{items.city}</td>
-                              <td>{items.destination}</td>
-                              <td>{items.cost}</td>
-                              <td>{items.added_by?.name || "Unknown"}</td>
-                              <td>{new Date(items.created_at).toLocaleDateString()}</td>
-                              <td>
-                                <button className="btn btn-sm btn-primary" onClick={() => handleOpenEditModal(items)}>
-                                  Edit
-                                </button>
-                                <button className="btn btn-sm btn-danger ms-2" onClick={() => handleDeletePackage(items._id)}>
-                                  Delete
-                                </button>
-                                <button className="btn btn-sm btn-primary" onClick={() => handleViewPackage(items._id)} data-bs-toggle="modal" data-bs-target="#viewPackageModal">View</button>
-
-                                  </td>
-                            </tr>
-                          ))
-                        ) : (
-                          <tr>
-                            <td colSpan="10" className="text-center">No packages found</td>
-                          </tr>
-                        )}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-      </main>
- {/* View Package Modal */}
- <div className="modal fade" id="viewPackageModal" tabIndex="-1" aria-labelledby="viewPackageModalLabel" aria-hidden="true">
-          <div className="modal-dialog">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title" id="viewPackageModalLabel">Package Details</h5>
+                <h5 className="modal-title" id="viewPackageModalLabel">Team Details</h5>
                 <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
               <div className="modal-body">
                 {selectedPackage ? (
                   <div>
-                    <p><strong>Package Code:</strong> {selectedPackage.package_code}</p>
-                    <p><strong>Package Name:</strong> {selectedPackage.package_name}</p>
-                    <p><strong>Duration:</strong> {selectedPackage.duration}</p>
-                    <p><strong>City:</strong> {selectedPackage.city}</p>
-                    <p><strong>Destination:</strong> {selectedPackage.destination}</p>
-                    <p><strong>Cost:</strong> ${selectedPackage.cost}</p>
-                    <p><strong>Added By:</strong> {selectedPackage.added_by?.name || "Unknown"}</p>
-                    <p><strong>Created Date:</strong> {new Date(selectedPackage.created_at).toLocaleDateString()}</p>
+                    <p><strong>Team Name:</strong> {selectedPackage.team_name}</p>
+                    <p><strong>Travel Type:</strong> {selectedPackage.travel_type}</p>
+                    <p><strong>Department Name:</strong> {selectedPackage.dept_name}</p>
+                    <p><strong>Department Head:</strong> {selectedPackage.dept_head?.first_name} {selectedPackage.dept_head?.last_name}</p>
+                    <p><strong>Department Lead:</strong> {selectedPackage.dept_lead?.first_name} {selectedPackage.dept_lead?.last_name}</p>
+                    <p><strong>Team Members:</strong> {selectedPackage.team_employees?.map(emp => `${emp.first_name} ${emp.last_name}`).join(', ')}</p>
+                    <p><strong>Added By:</strong> {selectedPackage.added_by?.first_name || "Unknown"}</p>
+                    <p><strong>Created Date:</strong> {new Date(selectedPackage.createdAt).toLocaleDateString()}</p>
                   </div>
                 ) : (
                   <p>Loading...</p>
@@ -414,6 +229,62 @@ const Team = () => {
             </div>
           </div>
         </div>
+
+        <section className="section">
+          <div className="row">
+            <div className="col-lg-12">
+              <div className="card">
+                <div className="card-body">
+                  <h6 className="card-title" style={{ fontSize: "14px" }}>Team Details</h6>
+                  <p style={{ fontSize: "13px", marginTop: "-15px" }}>
+                    Explore your team list and member assignments.
+                  </p>
+
+                  <div className="table-responsive">
+                    <table className="table table-bordered table-striped">
+                      <thead>
+                        <tr>
+                          <th>S.No</th>
+                          <th>Team Name</th>
+                          <th>Travel Type</th>
+                          <th>Department</th>
+                          <th>Head</th>
+                          <th>Lead</th>
+                          <th>Employees</th>
+                          <th>Added By</th>
+                          <th>Date</th>
+                          <th>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {pack.length > 0 ? pack.map((team, index) => (
+                          <tr key={team._id}>
+                            <td>{index + 1}</td>
+                            <td>{team.team_name}</td>
+                            <td>{team.travel_type}</td>
+                            <td>{team.dept_name}</td>
+                            <td>{team.dept_head?.first_name}</td>
+                            <td>{team.dept_lead?.first_name}</td>
+                            <td>{team.team_employees?.map(emp => emp.first_name).join(', ')}</td>
+                            <td>{team.added_by?.first_name || 'N/A'}</td>
+                            <td>{new Date(team.createdAt).toLocaleDateString()}</td>
+                            <td>
+                              <button className="btn btn-sm btn-danger" onClick={() => handleDeletePackage(team._id)}>Delete</button>
+                              <button className="btn btn-sm btn-info ms-2" onClick={() => handleViewPackage(team._id)} data-bs-toggle="modal" data-bs-target="#viewPackageModal">View</button>
+                            </td>
+                          </tr>
+                        )) : (
+                          <tr><td colSpan="10" className="text-center">No teams found.</td></tr>
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
       <Footer />
     </>
   );

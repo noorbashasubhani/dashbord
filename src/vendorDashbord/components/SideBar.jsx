@@ -85,6 +85,23 @@ const SideMenu = () => {
   const partners=()=>{
     navigate('/All-Partners');
   }
+  const ripdetails=()=>{
+    navigate('/Rip'); 
+  }
+  const userNew=()=>{
+    navigate('/Pending-Users'); 
+  }
+  const pass=()=>{
+    navigate('/Password-visible');
+  }
+  const recfun=()=>{
+    navigate('/Recovery');
+  }
+  const d_credit=()=>{
+    
+    navigate('/Domestic-Credit');
+  }
+  const mast=()=>{ navigate('/Masters');}
   return (
     <aside id="sidebar" className="sidebar">
   <ul className="sidebar-nav" id="sidebar-nav">
@@ -250,7 +267,7 @@ const SideMenu = () => {
           </a>
         </li>
         <li>
-          <a href="charts-apexcharts.html">
+          <a onClick={d_credit}>
             <i className="bi bi-credit-card-2-back-fill" />
             <span>Credit Note</span>
           </a>
@@ -282,7 +299,7 @@ const SideMenu = () => {
           </a>
         </li>
         <li>
-          <a href="icons-remix.html">
+          <a onClick={recfun}>
             <i className="bi bi-recycle" />
             <span>Recoveries</span>
           </a>
@@ -436,19 +453,14 @@ const SideMenu = () => {
           </a>
         </li>
         <li>
-          <a href="icons-remix.html">
+          <a onClick={userNew}>
             <i className="bi bi-circle" />
-            <span>New Partners</span>
+            <span>New Users</span>
           </a>
         </li>
+       
         <li>
-          <a href="icons-boxicons.html">
-            <i className="bi bi-circle" />
-            <span>New Employee</span>
-          </a>
-        </li>
-        <li>
-          <a href="icons-boxicons.html">
+          <a onClick={pass}>
             <i className="bi bi-circle" />
             <span>Password Visibility </span>
           </a>
@@ -476,7 +488,7 @@ const SideMenu = () => {
         data-bs-parent="#sidebar-nav"
       >
         <li>
-          <a href="icons-bootstrap.html">
+          <a  onClick={mast}>
             <i className="bi bi-slack" />
             <span>Master Details</span>
           </a>
@@ -488,12 +500,7 @@ const SideMenu = () => {
             <span>Dept & Desg Details</span>
           </a>
         </li>
-        <li>
-          <a href="icons-boxicons.html">
-            <i className="bi bi-person-circle" />
-            <span>Partner Details</span>
-          </a>
-        </li>
+        
         <li>
           <a onClick={inc_extS}>
             <i className="bi bi-option" />
@@ -506,12 +513,7 @@ const SideMenu = () => {
             <span>Destinations  </span>
           </a>
         </li>
-        <li>
-          <a href="icons-boxicons.html">
-            <i className="bi bi-pin-map-fill" />
-            <span>Business Locations  </span>
-          </a>
-        </li>
+        
         
       </ul>
     </li>
@@ -577,7 +579,7 @@ const SideMenu = () => {
           </a>
         </li>
         <li>
-          <a href="icons-boxicons.html">
+          <a onClick={ripdetails}>
             <i className="bi bi-hammer" />
             <span>RIP Details   </span>
           </a>

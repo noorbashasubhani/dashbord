@@ -10,22 +10,38 @@ import { jwtDecode } from 'jwt-decode';
 const Position = () => {
   const [pack, setPack] = useState([]);
   const [selectedPackage, setSelectedPackage] = useState(null); // State to hold the selected package data
+  const [departments, setDepartments] = useState([]);
+  const [desgdetail, setDesgdetail] = useState([]);
+
+
+
+
 
   const [packdata, setPackdata] = useState({
-    package_code: '',
-    package_name: '',
-    duration: '',
-    city: '',
-    destination: '',
-    cost: ''
+    department_name: '',
+    role: '',
+    designation_name: '',
+    candidate_type: '',
+    no_of_candidates: '',
+    job_desc: '',
+    role_and_responces: '',
+    skillss: '',
+    experience: '',
+    relevant_exp: '',
+    employee_type: '',
+    education: '',
+    job_location: '',
+    language: '',
+    salaryrange_from: '',
+    salaryrange_to: '',
+    gender: '',
+    application_dead_line: ''
   });
   
   const [editingPackage, setEditingPackage] = useState(null);  // State for editing a package
   const token = localStorage.getItem('token');
   const decodedToken = jwtDecode(token);
   const userId = decodedToken.userId;
-
-  // Handle form data change
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setPackdata({
@@ -33,56 +49,6 @@ const Position = () => {
       [name]: value
     });
   };
-
-  // Handle Add Package
-  const handleAddPackage = async () => {
-    const { package_code, package_name, duration, city, destination, cost } = packdata;
-  
-    // Check if all fields are filled
-    if (!package_code || !package_name || !duration || !city || !destination || !cost) {
-      toast.error("Please fill all fields.");
-      return;
-    }
-  
-    try {
-      // Send the request to add the package
-      const response = await fetch(`${API_URL}/vendor/Positions/${userId}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          package_code,
-          package_name,
-          duration,
-          city,
-          destination,
-          cost,
-          added_by: userId, // Pass the userId or other user-related data if needed
-        })
-      });
-  
-      const responseText = await response.text(); // Get raw response as text
-      const result = JSON.parse(responseText); // Manually parse JSON
-  
-      if (response.ok) {
-        setPack([...pack, result.data]); // Update the package list with the new package
-        const modal = new window.bootstrap.Modal(document.getElementById('addPackageModal'));
-        modal.hide();
-        
-        toast.success("Package added successfully!");
-        setPackdata({ package_code: '', package_name: '', duration: '', city: '', destination: '', cost: '' }); // Reset the form
-        GetFun();  // Fetch the updated packages list
-      } else {
-        throw new Error(result.message || 'Failed to add package');
-      }
-    } catch (err) {
-      console.error(err);
-      toast.error("Error adding package: " + err.message);
-    }
-  };
-
-  // Handle Edit Package
   const handleEditPackage = async () => {
     const { package_code, package_name, duration, city, destination, cost } = packdata;
 
@@ -134,51 +100,57 @@ const Position = () => {
     }
   };
 
-  // Fetch packages when component mounts
+
   useEffect(() => {
-    const GetFun = async () => {
-      try {
-        const arryQuery = await fetch(`${API_URL}/vendor/Positions`, {
-          method: 'GET'
-        });
-
-        if (!arryQuery.ok) {
-          throw new Error('Data not received');
-        }
-
-        const arrayData = await arryQuery.json();
-        setPack(arrayData.data);
-        //toast.success("Packages loaded successfully!");
-      } catch (err) {
-        console.log(err.message);
-        toast.error("Error fetching packages: " + err.message);
+  const GetFun = async () => {
+    try {
+      // Fetch Positions
+      const positionRes = await fetch(`${API_URL}/vendor/Positions`, {
+        method: 'GET'
+      });
+      if (!positionRes.ok) {
+        throw new Error('Failed to fetch positions');
       }
-    };
+      const positionData = await positionRes.json();
+      setPack(positionData.data);
+     
 
-    GetFun();
-  }, []); // Runs once when the component mounts
 
-  // Function to open the edit modal and populate data
-  const handleOpenEditModal = (packageDetails) => {
-    setEditingPackage(packageDetails);  // Set the package to be edited
-    setPackdata({
-      package_code: packageDetails.package_code,
-      package_name: packageDetails.package_name,
-      duration: packageDetails.duration,
-      city: packageDetails.city,
-      destination: packageDetails.destination,
-      cost: packageDetails.cost,
-    });
-    const modal = new window.bootstrap.Modal(document.getElementById('editPackageModal'));
-    modal.show();  // Show the edit modal
+      const deptRes = await fetch(`${API_URL}/vendor/Dept`, {
+        method: 'GET'
+      });
+      if (!deptRes.ok) {
+        throw new Error('Failed to fetch departments avove links');
+      }
+      const deptData = await deptRes.json();
+      setDepartments(deptData); // you'll define departments in state below
+     
+
+      const desgRes = await fetch(`${API_URL}/vendor/Desg`, {
+        method: 'GET'
+      });
+      if (!desgRes.ok) {
+        throw new Error('Failed to fetch departments avove links');
+      }
+      const desgData = await desgRes.json();
+      setDesgdetail(desgData.designations); // you'll define departments in state below
+       //console.log(desgData.designations);
+
+    } catch (err) {
+      console.error(err.message);
+      toast.error("Error: " + err.message);
+    }
   };
+
+  GetFun();
+}, []);
 
 
   const handleDeletePackage = async (packageId) => {
     if (window.confirm('Are you sure you want to delete this package?')) {
       try {
         const response = await fetch(`${API_URL}/vendor/PositionsDelete/${packageId}`, {
-          method: 'PUT',
+          method: 'delete',
           headers: {
             'Content-Type': 'application/json',
           },
@@ -189,7 +161,7 @@ const Position = () => {
 
         if (response.ok) {
           // Remove the deleted package from the state
-          setPack(pack.filter(pkg => pkg._id !== packageId));
+          
           toast.success("Package deleted successfully!");
         } else {
           throw new Error(result.message || 'Failed to delete package');
@@ -200,43 +172,70 @@ const Position = () => {
       }
     }
   };
-  const handleClosePackage = async (packageId) => {
-    if (window.confirm('Are you sure you want to Close this package?')) {
+  const handleAddPackage = async () => {
+    try {
+      // Send the request to add the package
+      const response = await fetch(`${API_URL}/vendor/Positions`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(packdata)
+      });
+  
+      const responseText = await response.text(); // Get raw response as text
+      const result = JSON.parse(responseText); // Manually parse JSON
+  
+      if (response.ok) {
+        setPack([...pack, result.data]); // Update the package list with the new package
+        const modal = new window.bootstrap.Modal(document.getElementById('addPackageModal'));
+        modal.hide();
+        
+        toast.success("Package added successfully!");
+        setPackdata({ package_code: '', package_name: '', duration: '', city: '', destination: '', cost: '' }); // Reset the form
+        GetFun();  // Fetch the updated packages list
+      } else {
+        throw new Error(result.message || 'Failed to add package');
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Error adding package: " + err.message);
+    }
+  };
+
+  const handleClosePosition = async (rowId) => {
+    if (window.confirm('Are you sure you want to close this position?')) {
       try {
-        const response = await fetch(`${API_URL}/vendor/PositionsClose/${packageId}`, {
+        const response = await fetch(`${API_URL}/vendor/PositionsClose/${rowId}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
           },
         });
-
-        const responseText = await response.text();
-        const result = JSON.parse(responseText);
-
+  
+        const result = await response.json();
+  
         if (response.ok) {
-          // Remove the deleted package from the state
-          setPack(pack.filter(pkg => pkg._id !== packageId));
-          toast.success("Package Closed successfully!");
+          toast.success('Position closed successfully!');
+          setPack(pack.filter(pkg => pkg._id !== rowId));
+          // Optionally update state here (e.g. refresh positions)
         } else {
-          throw new Error(result.message || 'Failed to delete package');
+          toast.error(result.message || 'Failed to close position');
         }
-      } catch (err) {
-        console.error(err);
-        toast.error("Error deleting package: " + err.message);
+      } catch (error) {
+        console.error(error);
+        toast.error('An error occurred while closing the position.');
       }
     }
   };
-  const handleViewPackage = (packageId) => {
-    const packageToView = pack.find(pkg => pkg._id === packageId);
-    setSelectedPackage(packageToView); // Set selected package to the state
-  };
+  
 
   return (
     <>
-      <NavBar />
-      <SideBar />
-
-      <main id="main" className="main">
+       <NavBar />
+       <SideBar />
+       <main id="main" className="main">
         <div className="pagetitle d-flex justify-content-between align-items-center">
           <div className="d-flex align-items-center">
             <h4><i className="bi bi-pin-fill mx-2"></i><b>Position  Details</b></h4>
@@ -257,93 +256,9 @@ const Position = () => {
         
         <ToastContainer />
         
-        {/* Add Package Modal */}
-        <div className="modal fade" id="addPackageModal" tabIndex="-1" aria-labelledby="addPackageModalLabel" aria-hidden="true">
-          <div className="modal-dialog">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title" id="addPackageModalLabel">Add New Job Position</h5>
-                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <div className="modal-body">
-                <form>
-                  <div className="mb-3">
-                    <label htmlFor="package_code" className="form-label">Package Code</label>
-                    <input type="text" className="form-control" id="package_code" name="package_code" value={packdata.package_code} onChange={handleInputChange} />
-                  </div>
-                  <div className="mb-3">
-                    <label htmlFor="package_name" className="form-label">Package Name</label>
-                    <input type="text" className="form-control" id="package_name" name="package_name" value={packdata.package_name} onChange={handleInputChange} />
-                  </div>
-                  <div className="mb-3">
-                    <label htmlFor="duration" className="form-label">Duration</label>
-                    <input type="text" className="form-control" id="duration" name="duration" value={packdata.duration} onChange={handleInputChange} />
-                  </div>
-                  <div className="mb-3">
-                    <label htmlFor="city" className="form-label">City</label>
-                    <input type="text" className="form-control" id="city" name="city" value={packdata.city} onChange={handleInputChange} />
-                  </div>
-                  <div className="mb-3">
-                    <label htmlFor="destination" className="form-label">Destination</label>
-                    <input type="text" className="form-control" id="destination" name="destination" value={packdata.destination} onChange={handleInputChange} />
-                  </div>
-                  <div className="mb-3">
-                    <label htmlFor="cost" className="form-label">Cost</label>
-                    <input type="number" className="form-control" id="cost" name="cost" value={packdata.cost} onChange={handleInputChange} />
-                  </div>
-                </form>
-              </div>
-              <div className="modal-footer">
-                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" className="btn btn-primary" onClick={handleAddPackage}>Add Package</button>
-              </div>
-            </div>
-          </div>
-        </div>
+        
 
-        {/* Edit Package Modal */}
-        <div className="modal fade" id="editPackageModal" tabIndex="-1" aria-labelledby="editPackageModalLabel" aria-hidden="true">
-          <div className="modal-dialog">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title" id="editPackageModalLabel">Edit Package</h5>
-                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <div className="modal-body">
-                <form>
-                  <div className="mb-3">
-                    <label htmlFor="package_code" className="form-label">Package Code</label>
-                    <input type="text" className="form-control" id="package_code" name="package_code" value={packdata.package_code} onChange={handleInputChange} />
-                  </div>
-                  <div className="mb-3">
-                    <label htmlFor="package_name" className="form-label">Package Name</label>
-                    <input type="text" className="form-control" id="package_name" name="package_name" value={packdata.package_name} onChange={handleInputChange} />
-                  </div>
-                  <div className="mb-3">
-                    <label htmlFor="duration" className="form-label">Duration</label>
-                    <input type="text" className="form-control" id="duration" name="duration" value={packdata.duration} onChange={handleInputChange} />
-                  </div>
-                  <div className="mb-3">
-                    <label htmlFor="city" className="form-label">City</label>
-                    <input type="text" className="form-control" id="city" name="city" value={packdata.city} onChange={handleInputChange} />
-                  </div>
-                  <div className="mb-3">
-                    <label htmlFor="destination" className="form-label">Destination</label>
-                    <input type="text" className="form-control" id="destination" name="destination" value={packdata.destination} onChange={handleInputChange} />
-                  </div>
-                  <div className="mb-3">
-                    <label htmlFor="cost" className="form-label">Cost</label>
-                    <input type="number" className="form-control" id="cost" name="cost" value={packdata.cost} onChange={handleInputChange} />
-                  </div>
-                </form>
-              </div>
-              <div className="modal-footer">
-                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" className="btn btn-primary" onClick={handleEditPackage}>Save Changes</button>
-              </div>
-            </div>
-          </div>
-        </div>
+       
 
         <section className="section">
           <div className="row">
@@ -376,44 +291,40 @@ const Position = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        {Array.isArray(pack) && pack.length > 0 ? (
-                          pack.map((items, index) => (
-                            <tr key={items._id}>
-                              <td>{index + 1}</td>
-                              <td>{items.department_name}</td>
-                              <td>{items.role}</td>
-                              <td>{items.designation_name}</td>
-                              <td>{items.no_of_candidates}</td>
-                              <td>{items.candidate_type}</td>
-                              
-                              <td>{items.salaryrange_from}-{items.salaryrange_to}</td>
-                              <td>{items.application_dead_line}</td>
-                              <td>{items.created_date}</td>
-                              <td>{items.created_by}</td>
-                              <td>
-                                <button className="btn btn-sm btn-primary" onClick={() => handleOpenEditModal(items)}>
-                                  Edit
-                                </button>
-                                <button className="btn btn-sm btn-danger ms-2" onClick={() => handleDeletePackage(items._id)}>
-                                  Delete
-                                </button>
-                                <button className="btn btn-sm btn-warning ms-2" onClick={() => handleClosePackage(items._id)}>
-                                  Close
-                                </button>
+  {Array.isArray(pack) && pack.length > 0 ? (
+    pack.map((item, index) => (
+      <tr key={item._id}>
+        <td>{index + 1}</td>
+        <td>{item.department_name?.name || 'N/A'}</td>
+        <td>{item.role}</td>
+        <td>{item.designation_name?.name || 'N/A'}</td>
+        <td>{item.no_of_candidates}</td>
+        <td>{item.candidate_type}</td>
+        <td>{item.salaryrange_from} - {item.salaryrange_to}</td>
+        <td>{item.application_dead_line?.slice(0, 10)}</td>
+        <td>{item.createdAt?.slice(0, 10)}</td>
+        <td>{item.created_by?.first_name || 'N/A'}</td>
+        <td>
+          <button className="btn btn-sm btn-success"   onClick={() => handleClosePosition(item._id)}
+          >Close</button>
+          <button
+  className="btn btn-sm btn-danger ms-2"
+  onClick={() => handleDeletePackage(item._id)}
+>
+  Delete
+</button>
+          
+        </td>
+        <td>{item.status}</td>
+      </tr>
+    ))
+  ) : (
+    <tr>
+      <td colSpan="12" className="text-center">No packages found</td>
+    </tr>
+  )}
+</tbody>
 
-                                
-                                <button className="btn btn-sm btn-primary" onClick={() => handleViewPackage(items._id)} data-bs-toggle="modal" data-bs-target="#viewPackageModal">View</button>
-
-                                  </td>
-                                  <td>{items.status}</td>
-                            </tr>
-                          ))
-                        ) : (
-                          <tr>
-                            <td colSpan="10" className="text-center">No packages found</td>
-                          </tr>
-                        )}
-                      </tbody>
                     </table>
                   </div>
                 </div>
@@ -422,8 +333,7 @@ const Position = () => {
           </div>
         </section>
       </main>
- {/* View Package Modal */}
- <div className="modal fade" id="viewPackageModal" tabIndex="-1" aria-labelledby="viewPackageModalLabel" aria-hidden="true">
+      <div className="modal fade" id="viewPackageModal" tabIndex="-1" aria-labelledby="viewPackageModalLabel" aria-hidden="true">
           <div className="modal-dialog">
             <div className="modal-content">
               <div className="modal-header">
@@ -469,9 +379,212 @@ const Position = () => {
             </div>
           </div>
         </div>
-      <Footer />
-    </>
-  );
-};
+        <div className="modal fade" id="addPackageModal" tabIndex="-1" aria-labelledby="addPackageModalLabel" aria-hidden="true">
+          <div className="modal-dialog">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title" id="addPackageModalLabel">Add New Job Position</h5>
+                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div className="modal-body">
+<form>
+<div className="mb-3">
+<label htmlFor="package_code" className="form-label">Department </label>
+<select
+className="form-select"
+name="department_name"
+value={packdata.department_name}
+onChange={handleInputChange}
+>
+<option value="">Select</option>
+{departments.map((dept) => (
+<option key={dept._id} value={dept._id}>
+{dept.name}
+</option>
+))}
+</select>
 
-export default Position;
+</div>
+<div>
+<label>Select Roll</label>
+<select className="form-select" name="role" onChange={handleInputChange}>
+<option value="">Select Roll</option>
+
+<option  value="Executive">Executive </option>
+<option  value="JuniorExecutive">Junior Executive </option>
+<option  value="SeniorExecutive">Senior Executive </option>
+<option  value="Manager">Manager </option>
+<option  value="SeniorManager">Senior Manager </option>
+<option  value="AssistManager">Assist Manager </option>
+
+</select>
+</div>
+<div className="mb-3">
+<label htmlFor="package_code" className="form-label" >Designations </label>
+<select className="form-select" name="designation_name" onChange={handleInputChange}>
+<option value="">Select</option>
+{
+
+desgdetail.map((desg) => (
+<option key={desg._id} value={desg._id}>
+{desg.name}
+</option>
+))}
+</select>
+</div>
+
+<div>
+<label>Candidate Type</label>
+<select className="form-select" name="candidate_type" onChange={handleInputChange}>
+<option value="">Select</option>
+<option  value="Fresh">Fresh </option>
+<option  value="Experienced">Experienced </option>
+</select>
+</div>
+
+<div className="mb-3">
+<label htmlFor="package_name" className="form-label">No of Candidates</label>
+<input type="text" className="form-control" id="no_of_candidated" 
+name="no_of_candidates" value={packdata.no_of_candidates} onChange={handleInputChange} />
+</div>
+<div className="mb-3">
+<label htmlFor="job_desc" className="form-label">Job Description</label>
+<textarea
+className="form-control"
+id="job_desc"
+name="job_desc"
+rows="4"
+value={packdata.job_desc}
+onChange={handleInputChange}
+/>
+</div>
+<div className="mb-3">
+<label htmlFor="job_desc" className="form-label">Roll && Responsibility</label>
+<textarea
+className="form-control"
+id="role_and_responces"
+name="role_and_responces"
+rows="4"
+value={packdata.role_and_responces}
+onChange={handleInputChange}
+/>
+</div>
+
+<div className="mb-3">
+<label htmlFor="job_desc" className="form-label">Skills</label>
+<textarea
+className="form-control"
+id="skills"
+name="skills"
+rows="4"
+value={packdata.skills}
+onChange={handleInputChange}
+/>
+</div>
+
+
+<div className="mb-3">
+<label htmlFor="city" className="form-label">Experience in Years</label>
+<input type="numbers" className="form-control" id="experience" name="experience" value={packdata.city} onChange={handleInputChange} />
+</div>
+<div className="mb-3">
+  <label htmlFor="relevant_exp" className="form-label">Relevant Experience</label>
+  <select
+    className="form-select"
+    id="relevant_exp"
+    name="relevant_exp"
+    value={packdata.relevant_exp}
+    onChange={handleInputChange}
+    required
+  >
+    <option value="">Select</option>
+    <option value="Yes">Yes</option>
+    <option value="No">No</option>
+  </select>
+</div>
+
+<div>
+<label>Employee Type</label>
+<select className="form-select" name="employee_type" onChange={handleInputChange}>
+<option value="">Select</option>
+<option  value="Interm">Interm </option>
+<option  value="Part Time">Part Time </option>
+<option  value="Full Time">Full Time </option>
+<option  value="Work From Home">Work From Home </option>
+</select>
+</div>
+<div className="mb-3">
+<label htmlFor="destination" className="form-label" >Education Type</label>
+<select className="form-select" name="education" onChange={handleInputChange}>
+<option value="">Select</option>
+<option  value="Any">Any </option>
+<option  value="Relavent Education">Relavent Education </option>
+<option  value="SCC">SCC </option>
+<option  value="Inter">Inter </option>
+<option  value="Inter">Graduate </option>
+<option  value="Inter">Post Graduate </option>
+<option  value="Inter">BBA </option>
+<option  value="Inter">Diploma </option>
+<option  value="Inter">MCA </option>
+</select>
+</div>
+<div className="mb-3">
+<label htmlFor="cost" className="form-label">Job Location</label>
+
+<input type="text" className="form-control" id="job_location"  name="job_location" value={packdata.job_location} onChange={handleInputChange} />
+
+</div>
+<div className="mb-3">
+<label htmlFor="job_desc" className="form-label">Language</label>
+<textarea
+className="form-control" id="language" name="language" rows="4" value={packdata.language} onChange={handleInputChange}
+/>
+</div>
+
+<div className="mb-3">
+<label htmlFor="city" className="form-label">Salary From</label>
+<input type="numbers" className="form-control" id="salaryrange_from" 
+onChange={handleInputChange} name="salaryrange_from" value={packdata.salaryrange_from} />
+</div>
+
+
+<div className="mb-3">
+<label htmlFor="city" className="form-label">Salary To</label>
+<input type="numbers" className="form-control" id="salaryrange_to" 
+onChange={handleInputChange} name="salaryrange_to" value={packdata.salaryrange_to}  />
+</div>
+
+
+<div>
+<label>Gender Type</label>
+<select className="form-select" name="gender" onChange={handleInputChange}  >
+<option value="">Select</option>
+<option  value="Male">Male </option>
+<option  value="Female">Female </option>
+<option  value="Any">Any</option>
+
+</select>
+</div>
+
+
+<div className="mb-3">
+<label htmlFor="city" className="form-label" >Dead Line</label>
+<input type="date" className="form-control" onChange={handleInputChange}
+id="application_dead_line" name="application_dead_line"
+value={packdata.application_dead_line}  />
+</div>
+<div className="modal-footer">
+                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" className="btn btn-primary" onClick={handleAddPackage}>Add Package</button>
+              </div>
+</form>
+              </div>
+              
+            </div>
+          </div>
+        </div>
+    </>
+  )
+}
+
+export default Position
