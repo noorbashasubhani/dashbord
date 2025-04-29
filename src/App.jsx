@@ -43,6 +43,9 @@ import IntCredite from './vendorDashbord/pages/IntCredite'
 import Allcredite from './vendorDashbord/pages/Allcredite'
 import Registartion from './vendorDashbord/pages/Registarion'
 import Master from './vendorDashbord/pages/Master'
+import Leaves from './vendorDashbord/pages/Leaves'
+import LeadsComments from './vendorDashbord/pages/LeadsComments'
+import Rnrleads from './vendorDashbord/pages/Rnrleads'
 //import { EmpProvider } from '../EmpContext'
 const App = () => {
   return (
@@ -96,6 +99,9 @@ const App = () => {
         <Route path="/All-Credit" element={<ProtectedRoute element={<Allcredite />} />} />
         <Route path="/User-Registration" element={<ProtectedRoute element={<Registartion />} />} />
         <Route path="/Masters" element={<ProtectedRoute element={<Master />} />} />
+        <Route path="/Leaves" element={<ProtectedRoute element={<Leaves />} />} />
+        <Route path="/lead-comments/:lead_id" element={<ProtectedRoute element={<LeadsComments />} />} />
+        <Route path="/R-N-R" element={<ProtectedRoute element={<Rnrleads />} />} />
         
       </Routes>
       

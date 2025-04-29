@@ -12,7 +12,7 @@ import { useNavigate } from 'react-router-dom';
 
 
 
-const Lead = () => {
+const Rnrleads = () => {
   const [leads, setLeads] = useState([]);
   const [team, setTeam] = useState([]);
   const [activeTab, setActiveTab] = useState('active'); // Track the active tab (active or deleted)
@@ -44,7 +44,7 @@ const Lead = () => {
       setLoading(true);
       setError('');
       try {
-        const response = await fetch(`${API_URL}/vendor/lead`);
+        const response = await fetch(`${API_URL}/vendor/rnrleads`);
         if (!response.ok) {
           throw new Error('Failed to fetch leads');
         }
@@ -316,7 +316,7 @@ const exeCom=(row_id)=>{
       <main id="main" className="main">
         <div className="pagetitle d-flex justify-content-between align-items-center">
           <div className="d-flex align-items-center">
-            <h4><i className="bi bi-pin-fill mx-2"></i><b>Lead Details</b></h4>
+            <h4><i className="bi bi-pin-fill mx-2"></i><b> R-N-R Lead Details</b></h4>
             <nav className="d-flex justify-arround">
               <ol className="breadcrumb mx-2 mb-0">
                 <li className="breadcrumb-item">
@@ -326,9 +326,7 @@ const exeCom=(row_id)=>{
               </ol>
             </nav>
           </div>
-          <button className="btn btn-sm btn-dark mb-3 ms-auto" onClick={addFun}>
-            + Lead Position
-          </button>
+          
         </div>
 
         <ToastContainer />
@@ -665,4 +663,4 @@ const exeCom=(row_id)=>{
   );
 };
 
-export default Lead;
+export default Rnrleads;

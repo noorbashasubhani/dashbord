@@ -102,6 +102,16 @@ const SideMenu = () => {
     navigate('/Domestic-Credit');
   }
   const mast=()=>{ navigate('/Masters');}
+
+  const Leavess=()=>{
+    navigate('/Leaves');
+  }
+  const Leads=()=>{
+    navigate('/Lead');
+  }
+  const rnsleads=()=>{
+    navigate('/R-N-R');
+  }
   return (
     <aside id="sidebar" className="sidebar">
   <ul className="sidebar-nav" id="sidebar-nav">
@@ -129,23 +139,18 @@ const SideMenu = () => {
         data-bs-parent="#sidebar-nav"
       >
         <li>
-          <a onClick={Lead}>
+          <a onClick={Leads}>
             <i className="bi bi-airplane-engines" />
             <span>Leads List</span>
           </a>
         </li>
         <li>
-          <a href="components-accordion.html">
+          <a onClick={rnsleads}>
             <i className="bi bi-backpack" />
             <span>R-N-R Leads</span>
           </a>
         </li>
-        <li>
-          <a href="components-badges.html">
-            <i className="bi bi-bar-chart-steps" />
-            <span>Skipped Leads</span>
-          </a>
-        </li>
+        
         <li>
           <a href="components-breadcrumbs.html">
             <i className="bi bi-search" />
@@ -549,7 +554,7 @@ const SideMenu = () => {
           </a>
         </li>
         <li>
-          <a href="icons-boxicons.html">
+          <a onClick={Leavess}>
             <i className="bi bi-calendar2-date" />
             <span>Leave Details</span>
           </a>
