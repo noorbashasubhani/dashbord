@@ -112,6 +112,15 @@ const SideMenu = () => {
   const rnsleads=()=>{
     navigate('/R-N-R');
   }
+  const sourcedet=()=>{
+    navigate('/Source-wise_leads');
+  }
+  const Search=()=>{
+    navigate('/Search');
+  }
+  const pendingitenary=()=>{
+    navigate('/Pending-Itenary');
+  }
   return (
     <aside id="sidebar" className="sidebar">
   <ul className="sidebar-nav" id="sidebar-nav">
@@ -152,13 +161,13 @@ const SideMenu = () => {
         </li>
         
         <li>
-          <a href="components-breadcrumbs.html">
+          <a onClick={Search}>
             <i className="bi bi-search" />
             <span>Search Leads</span>
           </a>
         </li>
         <li>
-          <a href="components-buttons.html">
+          <a onClick={sourcedet}>
             <i className="bi bi-signpost" />
             <span>Month Wise Leads</span>
           </a>
@@ -185,7 +194,7 @@ const SideMenu = () => {
         data-bs-parent="#sidebar-nav"
       >
         <li>
-          <a href="forms-elements.html">
+          <a onClick={pendingitenary}>
             <i className="bi bi-transparency" />
             <span>Itenary</span>
           </a>

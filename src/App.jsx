@@ -46,6 +46,15 @@ import Master from './vendorDashbord/pages/Master'
 import Leaves from './vendorDashbord/pages/Leaves'
 import LeadsComments from './vendorDashbord/pages/LeadsComments'
 import Rnrleads from './vendorDashbord/pages/Rnrleads'
+import Process from './vendorDashbord/pages/Process'
+import DeleteLeads from './vendorDashbord/pages/DeleteLeads'
+import MonthwiseLeads from './vendorDashbord/pages/MonthwiseLeads'
+import SourceWiseLeads from './vendorDashbord/pages/SourceWiseLeads'
+import SearchLeads from './vendorDashbord/pages/SearchLeads'
+import PendingItenary from './vendorDashbord/pages/PendingItenary'
+import DeleteIternary from './vendorDashbord/pages/DeleteIternary'
+import DomesticForm from './vendorDashbord/pages/DomesticForm'
+import Accounts from './vendorDashbord/pages/Accounts'
 //import { EmpProvider } from '../EmpContext'
 const App = () => {
   return (
@@ -102,6 +111,15 @@ const App = () => {
         <Route path="/Leaves" element={<ProtectedRoute element={<Leaves />} />} />
         <Route path="/lead-comments/:lead_id" element={<ProtectedRoute element={<LeadsComments />} />} />
         <Route path="/R-N-R" element={<ProtectedRoute element={<Rnrleads />} />} />
+        <Route path="/Lead-process/:lead_id" element={<ProtectedRoute element={<Process />} />} />
+        <Route path="/Lead-Delete" element={<ProtectedRoute element={<DeleteLeads />} />} />
+        <Route path="/Month-wise_leads" element={<ProtectedRoute element={<MonthwiseLeads />} />} />
+        <Route path="/Source-wise_leads" element={<ProtectedRoute element={<SourceWiseLeads />} />} />
+        <Route path="/Search" element={<ProtectedRoute element={<SearchLeads />} />} />
+        <Route path="/Pending-Itenary" element={<ProtectedRoute element={<PendingItenary />} />} />
+        <Route path="/Delete-Itenary" element={<ProtectedRoute element={<DeleteIternary />} />} />
+        <Route path="/Domestic-Form/:row_id" element={<ProtectedRoute element={<DomesticForm />} />} />
+        <Route path="/NBS-ACCUNTS" element={<ProtectedRoute element={<Accounts />} />} />
         
       </Routes>
       

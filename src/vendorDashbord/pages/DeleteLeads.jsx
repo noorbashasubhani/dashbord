@@ -12,7 +12,7 @@ import { useNavigate } from 'react-router-dom';
 import LeadsTabs from './LeadsTabs';
 
 
-const Lead = () => {
+const DeleteLeads = () => {
   const [leads, setLeads] = useState([]);
   const [team, setTeam] = useState([]);
   const [activeTab, setActiveTab] = useState('active'); // Track the active tab (active or deleted)
@@ -44,7 +44,7 @@ const Lead = () => {
       setLoading(true);
       setError('');
       try {
-        const response = await fetch(`${API_URL}/vendor/lead`);
+        const response = await fetch(`${API_URL}/vendor/Processed-delete`);
         if (!response.ok) {
           throw new Error('Failed to fetch leads');
         }
@@ -71,7 +71,7 @@ const Lead = () => {
       
 
       try {
-        const responceTeam = await fetch(`${API_URL}/vendor/Lead-Sources-list`);
+        const responceTeam = await fetch(`${API_URL}/vendor/Teams`);
         if (!responceTeam.ok) {
           throw new Error('Failed to fetch partners');
         }
@@ -314,6 +314,7 @@ const exeCom=(row_id)=>{
 }
 
 
+
 const saveExcom=async()=>{
   const messageInput=document.getElementById('messages');
   const message = messageInput?.value?.trim();
@@ -332,24 +333,11 @@ const saveExcom=async()=>{
       }),
     });
     const result = await responsessd.json();
-    const updatedLead = result.data;
     if (responsessd.ok) {
       toast.success('Congratulations ! Lead Has been moved successfully');
       messageInput.value = ''; // clear input after success
       // optionally update comment list here
-      //setLeads((prev) => prev.filter((item) => item._id === lead_id));
-
-
-
-      
-
-      setLeads((prevLeads) =>
-        prevLeads.map((item) => 
-          item._id === updatedLead._id ? updatedLead : item
-        )
-      );
-
-
+      setLeads((prev) => prev.filter((item) => item._id !== lead_id));
       setExccomm(false);
     } else {
       toast.error(result.message || 'Failed to add comment');
@@ -364,6 +352,31 @@ const processFun=(lead_id)=>{
   navigate(`/Lead-process/${lead_id}`);
 }
 
+const restores=async(row_id)=>{
+ try {
+      // Assuming you have an API endpoint to delete the lead
+      //const response = await fetch(`API_URL/lead/${delid}`, { method: 'DELETE' });
+      const response = await fetch(`${API_URL}/vendor/lead/${row_id}`, {
+        method: 'PUT', // Ensure the method is PUT for updating
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ status: 'L' }), // Send the status in the request body
+      });
+      
+      if (response.ok) {
+        toast.success('Lead deleted successfully!');
+        setLeads(leads.filter((lead) => lead._id !== row_id)); // Remove the lead from the local state
+        //closeModal(); // Close the modal after deletion
+       // setDelmod(false);
+      } else {
+        toast.error('Failed to delete lead');
+      }
+    } catch (error) {
+      toast.error('Error occurred while deleting the lead');
+    }
+}
+
   return (
     <>
       <NavBar />
@@ -372,7 +385,7 @@ const processFun=(lead_id)=>{
       <main id="main" className="main">
         <div className="pagetitle d-flex justify-content-between align-items-center">
           <div className="d-flex align-items-center">
-            <h4><i className="bi bi-pin-fill mx-2"></i><b>Lead Details</b></h4>
+            <h4><i className="bi bi-pin-fill mx-2"></i><b>Deleted Lead Details</b></h4>
             <nav className="d-flex justify-arround">
               <ol className="breadcrumb mx-2 mb-0">
                 <li className="breadcrumb-item">
@@ -382,9 +395,7 @@ const processFun=(lead_id)=>{
               </ol>
             </nav>
           </div>
-          <button className="btn btn-sm btn-dark mb-3 ms-auto" onClick={addFun}>
-            + Lead Position
-          </button>
+         
         </div>
 
         <ToastContainer />
@@ -396,7 +407,7 @@ const processFun=(lead_id)=>{
               <div className="card">
                 <div className="card-body">
                   <h6 className="card-title" style={{ fontSize: '14px' }}>Leads Details</h6>
-                  <LeadsTabs  tabs={1}/>
+                  <LeadsTabs tabs={2}/>
                   <div className="table-responsive">
                     {loading ? (
                       <div className="text-center">Loading...</div>
@@ -415,14 +426,14 @@ const processFun=(lead_id)=>{
                             <th>Travel Type</th>
                             <th>Details</th>
                             <th>Operations Executive</th>
-                            <th>Comments</th>
+                           
                             <th>Source</th>
                             <th>Partner Type</th>
-                            <th>Actions</th>
-                            <th>Executive Changed By</th>
-                            <th>Previous Executive</th>
+                            
+                            
                             <th>Raised By</th>
                             <th>Location</th>
+                            <th></th>
                           </tr>
                         </thead>
                         <tbody>
@@ -434,23 +445,16 @@ const processFun=(lead_id)=>{
                               <td>{itms.customer_number}</td>
                               <td>{itms.holiday_type}</td>
                               <td><FaEye onClick={()=>desFunc(itms.holiday_desc)}/></td>
-                              <td>{itms.operation_executive?.first_name} 
-                               <FaHome size={20} color="black" onClick={()=>{assignFun(itms._id)}}/> </td>
-
-                              <td><FaRegCommentDots size={20} onClick={()=>{conFun(itms._id)}}/>
-                                 <button className="btn btn-primary btn-sm" onClick={()=>handleView(itms._id)}>View</button>
-                                 <span className="badge bg-primary" onClick={()=>exeCom(itms._id)}>Click Executive Comments</span></td>
-                                 
+                              <td>{itms.operation_executive?.first_name} </td>
+                               
+                                
                               <td>{itms.lead_source}</td>
                               <td>{itms.partner_id?.first_name}</td>
-                              <td>
-                                <button className="btn btn-danger btn-sm" onClick={()=>(delFun(itms._id))}>Delete</button>
-                                <button className="btn btn-primary btn-sm" onClick={()=>processFun(itms._id)}>Processed</button>
-                              </td>
-                              <td>{itms.executive_changed_by?.first_name}</td>
-                              <td>{itms.previous_operation_executive?.first_name}</td>
+                             
+                              
                               <td>{itms.raised_by?.first_name || 'N/A'}</td>
                               <td>{itms.lead_location}</td>
+                              <td><button className='btn btn-danger btm-sm btn-sm ' onClick={()=>restores(itms._id)}>Restore</button></td>
                             </tr>
                           ))}
                         </tbody>
@@ -551,8 +555,8 @@ const processFun=(lead_id)=>{
   <option value="Customer-Reference">Customer Reference</option>
   <option value="Personal-Reference">Personal Reference</option>
   <option value="Telecalling">Telecalling</option>
-  <option value="Telecalling-CS">Telecalling-CS</option>
-  <option value="Telecalling-CRM">Telecalling-CRM</option>
+  <option value="S">Telecalling-CS</option>
+  <option value="Telecalling-CS">Telecalling-CRM</option>
   <option value="Direct-Call">Direct Call</option>
   <option value="Marketing">Marketing</option>
   <option value="MICE-Marketing">MICE-Marketing</option>
@@ -754,4 +758,4 @@ const processFun=(lead_id)=>{
   );
 };
 
-export default Lead;
+export default DeleteLeads;
