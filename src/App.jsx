@@ -55,6 +55,7 @@ import PendingItenary from './vendorDashbord/pages/PendingItenary'
 import DeleteIternary from './vendorDashbord/pages/DeleteIternary'
 import DomesticForm from './vendorDashbord/pages/DomesticForm'
 import Accounts from './vendorDashbord/pages/Accounts'
+import Tee from './vendorDashbord/pages/Tee'
 //import { EmpProvider } from '../EmpContext'
 const App = () => {
   return (
@@ -119,7 +120,8 @@ const App = () => {
         <Route path="/Pending-Itenary" element={<ProtectedRoute element={<PendingItenary />} />} />
         <Route path="/Delete-Itenary" element={<ProtectedRoute element={<DeleteIternary />} />} />
         <Route path="/Domestic-Form/:row_id" element={<ProtectedRoute element={<DomesticForm />} />} />
-        <Route path="/NBS-ACCUNTS" element={<ProtectedRoute element={<Accounts />} />} />
+        <Route path="/ACCOUNTS" element={<ProtectedRoute element={<Accounts />} />} />
+         <Route path="/tee" element={<ProtectedRoute element={<Tee />} />} />
         
       </Routes>
       

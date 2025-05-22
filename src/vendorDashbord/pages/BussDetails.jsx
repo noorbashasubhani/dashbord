@@ -19,36 +19,83 @@ const BussDetails = ({ customerData, row_id }) => {
     total_bus_fare: ''
   });
 
-  useEffect(() => {
-    if (customerData) {
-      setFormData({
-        fare_source: customerData.fare_source || '',
-        bus_name: customerData.bus_name || '',
-        start_datetime: customerData.start_datetime || '',
-        reach_datetime: customerData.reach_datetime || '',
-        start_city: customerData.start_city || '',
-        reach_city: customerData.reach_city || '',
-        journey_duration: customerData.journey_duration || '',
-        bus_class: customerData.bus_class || '',
-        seats_available: customerData.seats_available || '',
-        cost_considered: customerData.cost_considered || '',
-        loading_on_bus: customerData.loading_on_bus || '',
-        total_bus_fare: customerData.total_bus_fare || ''
-      });
-      setIsEditMode(true);
-    } else {
-      setIsEditMode(false);
-    }
-  }, [customerData]);
+  const [busDetails, setBusDetails] = useState([]); // Store fetched bus data
+  const [loading, setLoading] = useState(true); // For loading state
 
+  // Fetch bus details from the API
+  useEffect(() => {
+    const fetchBusDetails = async () => {
+      try {
+        const response = await fetch(`${API_URL}/vendor/getBuss`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setBusDetails(data); // Set bus details to state
+        } else {
+          alert("Failed to fetch bus details");
+        }
+      } catch (error) {
+        alert("Error fetching bus details");
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBusDetails(); // Fetch data on mount
+  }, []); // Empty dependency array ensures it only runs once when the component mounts
+
+  // Handle the addition of new bus info
+  const handleAdd = async () => {
+    try {
+      const response = await fetch(`${API_URL}/vendor/Addbus/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        alert("Bus information added successfully");
+        setShowForm(false);
+        setFormData({
+          fare_source: '',
+          bus_name: '',
+          start_datetime: '',
+          reach_datetime: '',
+          start_city: '',
+          reach_city: '',
+          journey_duration: '',
+          bus_class: '',
+          seats_available: '',
+          cost_considered: '',
+          loading_on_bus: '',
+          total_bus_fare: ''
+        });
+      } else {
+        alert("Failed to add bus information");
+      }
+    } catch (error) {
+      alert("Error adding bus information");
+      console.error(error);
+    }
+  };
+
+  // Handle updating existing bus info
   const handleUpdate = async () => {
     try {
-      const response = await fetch(`${API_URL}/vendor/updatebus/${row_id}`, {
+      const response = await fetch(`${API_URL}/vendor/getBuss/${row_id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(formData),
       });
 
       if (response.ok) {
@@ -63,27 +110,14 @@ const BussDetails = ({ customerData, row_id }) => {
     }
   };
 
-  const handleAdd = async () => {
-    try {
-      const response = await fetch(`${API_URL}/vendor/addbus`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData)
-      });
-
-      if (response.ok) {
-        alert("Bus information added successfully");
-        setShowForm(false);
-      } else {
-        alert("Failed to add bus information");
-      }
-    } catch (error) {
-      alert("Error adding data");
-      console.error(error);
-    }
+  // Set form data when selecting a bus entry to edit
+  const handleEdit = (bus) => {
+    setFormData(bus);
+    setIsEditMode(true);
+    setShowForm(true);
   };
+
+  if (loading) return <div>Loading...</div>; // Show loading indicator
 
   return (
     <div className="row">
@@ -132,24 +166,35 @@ const BussDetails = ({ customerData, row_id }) => {
                     <th>Cost Considered</th>
                     <th>Loading on Bus</th>
                     <th>Total Bus Fare</th>
+                    <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>1</td>
-                    <td>{formData.fare_source}</td>
-                    <td>{formData.bus_name}</td>
-                    <td>{formData.start_datetime}</td>
-                    <td>{formData.reach_datetime}</td>
-                    <td>{formData.start_city}</td>
-                    <td>{formData.reach_city}</td>
-                    <td>{formData.journey_duration}</td>
-                    <td>{formData.bus_class}</td>
-                    <td>{formData.seats_available}</td>
-                    <td>{formData.cost_considered}</td>
-                    <td>{formData.loading_on_bus}</td>
-                    <td>{formData.total_bus_fare}</td>
-                  </tr>
+                  {busDetails.map((bus, index) => (
+                    <tr key={index}>
+                      <td>{index + 1}</td>
+                      <td>{bus.fare_source}</td>
+                      <td>{bus.bus_name}</td>
+                      <td>{new Date(bus.start_datetime).toLocaleString()}</td>
+                      <td>{new Date(bus.reach_datetime).toLocaleString()}</td>
+                      <td>{bus.start_city}</td>
+                      <td>{bus.reach_city}</td>
+                      <td>{bus.journey_duration}</td>
+                      <td>{bus.bus_class}</td>
+                      <td>{bus.seats_available}</td>
+                      <td>{bus.cost_considered}</td>
+                      <td>{bus.loading_on_bus}</td>
+                      <td>{bus.total_bus_fare}</td>
+                      <td>
+                        <button
+                          className="btn btn-sm btn-warning"
+                          onClick={() => handleEdit(bus)}
+                        >
+                          Edit
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>

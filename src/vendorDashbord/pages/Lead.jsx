@@ -10,7 +10,7 @@ import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { FaRegCommentDots } from 'react-icons/fa'; // outlined comment icon
 import { useNavigate } from 'react-router-dom';
 import LeadsTabs from './LeadsTabs';
-
+import useIdleLogout from './useIdleLogout';
 
 const Lead = () => {
   const [leads, setLeads] = useState([]);
@@ -363,12 +363,12 @@ const saveExcom=async()=>{
 const processFun=(lead_id)=>{
   navigate(`/Lead-process/${lead_id}`);
 }
-
+useIdleLogout();
   return (
     <>
       <NavBar />
       <SideBar />
-      
+    
       <main id="main" className="main">
         <div className="pagetitle d-flex justify-content-between align-items-center">
           <div className="d-flex align-items-center">

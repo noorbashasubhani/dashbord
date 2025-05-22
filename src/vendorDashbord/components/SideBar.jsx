@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import useIdleLogout from '../pages/useIdleLogout';
 
 const SideMenu = () => {
+  useIdleLogout();
   const navigate = useNavigate();
   const [isSubmenuVisible, setSubmenuVisible] = useState({
     products: false,

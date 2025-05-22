@@ -3,11 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { useState, useEffect ,useContext } from 'react';
 import { API_URL } from '../data/apiUrl';
 import { jwtDecode } from 'jwt-decode';
-
+import useIdleLogout from '../pages/useIdleLogout';
 //import { EmpContext } from '../../../EmpContext';
-
-
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify';
 const NavBar = () => {
+
+  useIdleLogout();
 const navigate = useNavigate();
 const [em,setEm]=useState();
 const [erro,setError]=useState();
@@ -51,7 +54,13 @@ useEffect(() => {
   const logout = () => {
     // Remove token from localStorage
       const token = localStorage.removeItem("token");
-      navigate('/');
+      localStorage.removeItem("token");
+      localStorage.removeItem("loginTime");
+        toast.success("You have been logged out successfully!");
+
+       setTimeout(() => {
+    navigate('/');
+  }, 1500);
   };
  
   return (
@@ -64,7 +73,7 @@ useEffect(() => {
       <i className="bi bi-list toggle-sidebar-btn" />
     </div>
     {/* End Logo */}
-    
+    <ToastContainer />
     {/* End Search Bar */}
     <nav className="header-nav ms-auto">
       <ul className="d-flex align-items-center">
@@ -227,73 +236,11 @@ useEffect(() => {
           </ul>
           {/* End Messages Dropdown Items */}
         </li>
-        {/* End Messages Nav */}
-        <li className="nav-item dropdown pe-3">
-          <a
-            className="nav-link nav-profile d-flex align-items-center pe-0"
-            href="#"
-            data-bs-toggle="dropdown"
-          >
-            <img
-                src="assets/img/profile-img.jpg"
-                alt="Profile"
-                className="rounded-circle"
-              />
-              {/* Show the user's name from the state */}
-              <span className="d-none d-md-block dropdown-toggle ps-2">
-                
-              </span>
-          </a>
-          {/* End Profile Iamge Icon */}
-          <ul className="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
-          <li className="dropdown-header">
-          <h6 style={{color:"green"}}>Welcome Gogaga Dashboard</h6>
-          <h6>{em && em.email ? em.email:null}</h6>
-          <span>{em && em.first_name ? em.first_name:null} {em && em.last_name ? em.last_name:null}</span>
-              </li>
-            <li>
-              <hr className="dropdown-divider" />
-            </li>
-            <li>
-              <a className="dropdown-item d-flex align-items-center" onClick={myprofile}>
-                <i className="bi bi-person" />
-                <span>My Profile</span>
-              </a>
-            </li>
-            <li>
-              <hr className="dropdown-divider" />
-            </li>
-            <li>
-              <a
-                className="dropdown-item d-flex align-items-center" onClick={password}>
-                <i className="bi bi-key-fill" />
-                <span>Change Password</span>
-              </a>
-            </li>
-            <li>
-              <hr className="dropdown-divider" />
-            </li>
-            <li>
-              <a
-                className="dropdown-item d-flex align-items-center"
-                href="pages-faq.html"
-              >
-                <i className="bi bi-question-circle" />
-                <span>Need Help?</span>
-              </a>
-            </li>
-            <li>
-              <hr className="dropdown-divider" />
-            </li>
-            <li>
-              <a className="dropdown-item d-flex align-items-center" onClick={logout}>
-                <i className="bi bi-box-arrow-right" />
-                <span>Sign Out</span >
-              </a>
-            </li>
-          </ul>
-          {/* End Profile Dropdown Items */}
+        <li className="dropdown-footer">
+          <a onClick={logout} style={{ cursor: 'pointer' }}>Logout</a>
         </li>
+        {/* End Messages Nav */}
+       
         {/* End Profile Nav */}
       </ul>
     </nav>

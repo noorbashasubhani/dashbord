@@ -7,9 +7,9 @@ import VendorRegistration from '../components/forms/VendorRegistration'
 import  { useState } from 'react';
 import Footer from '../components/forms/Footer'
 import Layout from '../components/Layout'
-
+import useIdleLogout from './useIdleLogout'
 const Dashbord = () => {
-
+useIdleLogout();
   const [formType, setFormType] = useState('');
   const handleFormSwitch = (form) => {
     setFormType(form);
