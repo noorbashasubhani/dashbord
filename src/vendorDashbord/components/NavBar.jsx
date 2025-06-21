@@ -8,6 +8,8 @@ import useIdleLogout from '../pages/useIdleLogout';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { toast } from 'react-toastify';
+import { FaSignOutAlt } from "react-icons/fa";
+
 const NavBar = () => {
 
   useIdleLogout();
@@ -237,7 +239,8 @@ useEffect(() => {
           {/* End Messages Dropdown Items */}
         </li>
         <li className="dropdown-footer">
-          <a onClick={logout} style={{ cursor: 'pointer' }}>Logout</a>
+          <a onClick={logout} style={{ cursor: 'pointer',color:'red',marginop:'20' }}> <FaSignOutAlt />
+          </a>
         </li>
         {/* End Messages Nav */}
        

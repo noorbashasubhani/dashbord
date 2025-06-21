@@ -56,7 +56,37 @@ import DeleteIternary from './vendorDashbord/pages/DeleteIternary'
 import DomesticForm from './vendorDashbord/pages/DomesticForm'
 import Accounts from './vendorDashbord/pages/Accounts'
 import Tee from './vendorDashbord/pages/Tee'
-//import { EmpProvider } from '../EmpContext'
+import { Departments } from './vendorDashbord/pages/Departmnets'
+import { ViewEmployees } from './vendorDashbord/pages/ViewEmpolyees'
+import EditEmplyee from './vendorDashbord/pages/EditEmplyee'
+import Registration from './vendorDashbord/pages/Registarion';
+
+import Message from './vendorDashbord/pages/Message'
+import { ContactDetails } from './vendorDashbord/pages/ContactDetails'
+import ContactForm from './vendorDashbord/pages/ContactForm'
+import InternationalForm from './vendorDashbord/pages/InternationalForm'
+import Qc from './vendorDashbord/pages/Qc'
+import PublishedIterary from './vendorDashbord/pages/PublishedIterary'
+import ModifyIteniry from './vendorDashbord/pages/ModifyIteniry'
+
+import ConfirmedItenary from './vendorDashbord/pages/ConfirmedItenary'
+import Cancelled from './vendorDashbord/pages/Cancelled'
+import Googlereviews from './vendorDashbord/pages/Googlereviews'
+import Googlereview from './vendorDashbord/pages/GoogleReview'
+import OngoingDomesticVocher from './vendorDashbord/pages/OngoingDomesticVocher'
+import OngoingInterVochers from './vendorDashbord/pages/OngoingInterVochers'
+import Vochers from './vendorDashbord/pages/Vochers.jsx'
+import CompletedDomesticVochers from './vendorDashbord/pages/CompledDomesticVochers.jsx'
+import CompletedInternationalVochers from './vendorDashbord/pages/CompletedInternationVochers.jsx'
+import GiftVochers from './vendorDashbord/pages/GiftVochers.jsx'
+import Attendance from './vendorDashbord/pages/Attendance.jsx'
+import Callendar from './vendorDashbord/pages/Callender.jsx'
+import Payroll from './vendorDashbord/pages/Payroll.jsx'
+import LeadsCommentDetails from './vendorDashbord/pages/LeadsCommentDetails.jsx'
+import Ledger from './vendorDashbord/pages/Ledger.jsx'
+
+
+ //import { EmpProvider } from '../EmpContext'
 const App = () => {
   return (
     <div>
@@ -64,9 +94,6 @@ const App = () => {
       <Routes>
         <Route path="/" element={<VendorLogin />}></Route> 
         <Route path="*" element={<Notfound />} />
-
-
-
 
 
         <Route path="/dashboard" element={<ProtectedRoute element={<Dashbord />} />} /> 
@@ -107,7 +134,7 @@ const App = () => {
         <Route path="/Domestic-Credit" element={<ProtectedRoute element={<DomesticCredit />} />} />
         <Route path="/International-Credit" element={<ProtectedRoute element={<IntCredite />} />} />
         <Route path="/All-Credit" element={<ProtectedRoute element={<Allcredite />} />} />
-        <Route path="/User-Registration" element={<ProtectedRoute element={<Registartion />} />} />
+        <Route path="/User-Registration/:row_ids" element={<ProtectedRoute element={<Registartion />} />} />
         <Route path="/Masters" element={<ProtectedRoute element={<Master />} />} />
         <Route path="/Leaves" element={<ProtectedRoute element={<Leaves />} />} />
         <Route path="/lead-comments/:lead_id" element={<ProtectedRoute element={<LeadsComments />} />} />
@@ -119,10 +146,36 @@ const App = () => {
         <Route path="/Search" element={<ProtectedRoute element={<SearchLeads />} />} />
         <Route path="/Pending-Itenary" element={<ProtectedRoute element={<PendingItenary />} />} />
         <Route path="/Delete-Itenary" element={<ProtectedRoute element={<DeleteIternary />} />} />
-        <Route path="/Domestic-Form/:row_id" element={<ProtectedRoute element={<DomesticForm />} />} />
         <Route path="/ACCOUNTS" element={<ProtectedRoute element={<Accounts />} />} />
-         <Route path="/tee" element={<ProtectedRoute element={<Tee />} />} />
-        
+        <Route path="/tee" element={<ProtectedRoute element={<Tee />} />} />
+        <Route path="/Message" element={<ProtectedRoute element={<Message />} />} />
+        <Route path="/Department" element={<ProtectedRoute element={<Departments />} />} />
+        <Route path="/View-Employee/:row_id" element={<ProtectedRoute element={<ViewEmployees />} />} />
+        <Route path="/EDIT-EMP/:row_id" element={<ProtectedRoute element={<EditEmplyee />} />} />
+        <Route path="/User-Registration" element={<ProtectedRoute element={<Registration />} />} />
+        <Route path="/Contact-Details" element={<ProtectedRoute element={<ContactDetails />} />} />
+        <Route path="/Mail" element={<ProtectedRoute element={<ContactForm />} />} />
+        <Route path="/Internationals-Form/:row_id" element={<ProtectedRoute element={<InternationalForm />} />} />
+        <Route path="/Domestic-Form/:row_id" element={<ProtectedRoute element={<DomesticForm />} />} />
+        <Route path="/Qc-Deails" element={<ProtectedRoute element={<Qc />} />} />
+        <Route path="/Published-Itinery" element={<ProtectedRoute element={<PublishedIterary />} />} />
+        <Route path="/Modify-Itinary/:id" element={<ProtectedRoute element={<ModifyIteniry />} />} />
+        <Route path="/Confirm-Itinary" element={<ProtectedRoute element={<ConfirmedItenary />} />} />
+        <Route path="/Cancelled-Itinary" element={<ProtectedRoute element={<Cancelled />} />} />
+        <Route path="/GoogleReveiws" element={<ProtectedRoute element={<Googlereviews />} />} />
+        <Route path="/Google-View/:id" element={<ProtectedRoute element={<Googlereview />} />} />
+        <Route path="/Domestic-Vochers" element={<ProtectedRoute element={<OngoingDomesticVocher />} />} />
+        <Route path="/International-Vochers" element={<ProtectedRoute element={<OngoingInterVochers />} />} />
+        <Route path="/Vochers" element={<ProtectedRoute element={<Vochers />} />} />
+        <Route path="/Complete-Domestic-Vochers" element={<ProtectedRoute element={<CompletedDomesticVochers />} />} />
+        <Route path="/Complete-International-Vochers" element={<ProtectedRoute element={<CompletedInternationalVochers />} />} />
+        <Route path="/GIFT-VOCHERS" element={<ProtectedRoute element={<GiftVochers />} />} />
+        <Route path="/Add-Attendance" element={<ProtectedRoute element={<Attendance />} />} />
+        <Route path="/Attendance-Cal" element={<ProtectedRoute element={<Callendar />} />} />
+        <Route path="/Payroll" element={<ProtectedRoute element={<Payroll />} />} />
+        <Route path="/Leads-Comments" element={<ProtectedRoute element={<LeadsCommentDetails />} />} />
+        <Route path="/Ledger" element={<ProtectedRoute element={<Ledger />} />} />
+         
       </Routes>
       
       

@@ -399,8 +399,7 @@ const Packages = () => {
         </section>
       </main>
  {/* View Package Modal */}
- <div className="modal fade" id="viewPackageModal" tabIndex="-1" aria-labelledby="viewPackageModalLabel" aria-hidden="true">
-          <div className="modal-dialog">
+<div className="modal fade" id="viewPackageModal" tabIndex="-1" aria-labelledby="viewPackageModalLabel" aria-hidden="true">         <div className="modal-dialog">
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title" id="viewPackageModalLabel">Package Details</h5>

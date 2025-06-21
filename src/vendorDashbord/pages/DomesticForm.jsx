@@ -8,6 +8,21 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useParams } from 'react-router-dom';
 import HolidaySummary from './HolidaySummary';
 import BussDetails from './BussDetails';
+import Trains from './Trains';
+import { Suppliers } from './Suppliers';
+import { Cruise } from './Curise';
+import { Transport } from './Transport';
+import { OnlineHotel } from './OnlineHotel';
+import { Flight } from './Flight';
+import { Day } from './Day';
+import Caluculation from './Caluculation';
+import { Packs } from './Packs';
+import { FormIncExc } from './FromIncExc';
+import DomesticHotels from './DomesticHotels';
+import Visa from './Visa';
+import Tcs from './Tcs';
+import InternationalSuppliers from './InternationalSuppliers';
+
 
 const DomesticForm = () => {
   const [leads, setLeads] = useState(null);
@@ -25,6 +40,19 @@ const DomesticForm = () => {
     no_of_infants: '',
     no_of_pax: ''
   });
+
+  const [totals, setTotals] = useState({
+    total_flight_cost: 0,
+    total_cruise_cost: 0,
+    total_train_cost: 0,
+    total_bus_cost: 0,
+    transport_cost: 0,
+    online_hotel_cost: 0,
+    domestic_hotel_cost: 0,
+    supplementary_cost: 0,
+    total_land: 0,
+  });
+
 
   const { row_id } = useParams();
 
@@ -45,7 +73,16 @@ const DomesticForm = () => {
       }
     };
     fetchLeads();
+    fetchAllTotals();
   }, [row_id]);
+
+
+
+  const fetchAllTotals = async () => {
+    const resp = await fetch(`${API_URL}/vendor/Cal/${row_id}`);
+    const data = await resp.json();
+    setTotals(data);
+  };
 
   const updateInf = () => {
     setFormData({
@@ -220,7 +257,27 @@ const DomesticForm = () => {
         <section>
 
             <HolidaySummary customerData={leads} row_id={row_id} />
-            <BussDetails customerData={leads} row_id={row_id} />
+
+            <Flight customerData={leads} row_id={row_id} onUpdate={fetchAllTotals}/>
+            <DomesticHotels customerData={leads} row_id={row_id} onUpdate={fetchAllTotals}/>
+            <Transport customerData={leads} row_id={row_id} onUpdate={fetchAllTotals}/>
+ <Trains customerData={leads} row_id={row_id} onUpdate={fetchAllTotals}/>
+            <BussDetails customerData={leads} row_id={row_id} onUpdate={fetchAllTotals}/>
+           
+            
+            <Cruise customerData={leads} row_id={row_id} onUpdate={fetchAllTotals}/>
+            <Suppliers customerData={leads} row_id={row_id} onUpdate={fetchAllTotals}/>
+            {/* <OnlineHotel customerData={leads} row_id={row_id} onUpdate={fetchAllTotals}/> */}
+            
+            
+            <Day customerData={leads} row_id={row_id}/>
+            <FormIncExc customerData={leads} row_id={row_id}/>
+            <Caluculation customerData={leads} row_id={row_id} totals={totals}/>
+            <Packs customerData={leads} row_id={row_id} />
+            {/* <Visa customerData={leads} row_id={row_id} onUpdate={fetchAllTotals} />
+            <Tcs customerData={leads} row_id={row_id} onUpdate={fetchAllTotals} />
+            <InternationalSuppliers row_id={row_id} onUpdate={fetchAllTotals}/> */}
+            
         </section>
 
        

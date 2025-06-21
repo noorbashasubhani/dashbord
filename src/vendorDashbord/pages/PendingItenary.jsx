@@ -21,6 +21,8 @@ const PendingItenary = () => {
       const [modes, setModes] = useState(false); // State to control modal visibility
       const [partners, setpartners] = useState([]);
       const [show, setShow] = useState(false);
+      const [reject, setReject] = useState(false);
+const [rejectId, setRejectid] = useState(null);
     
       const [selectedSource, setSelectedSource] = useState('');
       const [isPartnerSelected, setIsPartnerSelected] = useState(false);
@@ -39,7 +41,11 @@ const PendingItenary = () => {
     
       // Fetch lead and partner data when the component mounts
       useEffect(() => {
-        const fetchLeads = async () => {
+       
+    
+        fetchLeads();
+      }, []);
+     const fetchLeads = async () => {
     
           setLoading(true);
           setError('');
@@ -85,10 +91,6 @@ const PendingItenary = () => {
     
     
         };
-    
-        fetchLeads();
-      }, []);
-    
       const handleInputChange = (e) => {
         const { name, value } = e.target;
       
@@ -309,9 +311,46 @@ const PendingItenary = () => {
     const exeCom=(row_id)=>{
       
     }
-    const openBuild=(row_id)=>{
-      navigate(`/Domestic-Form/${row_id}`);
-    }
+    const openBuild = (row_id, type) => {
+      //alert(type);
+  if (type === 'Domestic') {
+    navigate(`/Domestic-Form/${row_id}`);
+  } else {
+    navigate(`/Internationals-Form/${row_id}`);
+  }
+};
+
+const openPulish=(row_id)=>{
+  setReject(true);
+  setRejectid(row_id);
+  const modal = new window.bootstrap.Modal(document.getElementById('rejectModal'));
+  modal.show();
+}
+
+const handleRejectConfirm = async () => {
+  if (!rejectId) return;
+
+  try {
+    const res = await fetch(`${API_URL}/vendor/update-status-publish/${rejectId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ itenary_status: 'Rejected' }),
+    });
+
+    if (!res.ok) throw new Error('Reject failed');
+
+    const modal = window.bootstrap.Modal.getInstance(document.getElementById('rejectModal'));
+    modal.hide();
+
+    getQcList();
+  } catch (err) {
+    console.error('Error rejecting lead:', err.message);
+  }
+};
+
+
   return (
     <>
     <main id="main" className="main">
@@ -325,7 +364,7 @@ const PendingItenary = () => {
                 <div className="col-lg-12">
                   <div className="card">
                     <div className="card-body">
-                      <h6 className="card-title" style={{ fontSize: '14px' }}>Leads Details</h6>
+                      <h6 className="card-title" style={{ fontSize: '14px' }}>Pending Itinary Details</h6>
                       <div className="table-responsive">
                         {loading ? (
                           <div className="text-center">Loading...</div>
@@ -339,6 +378,7 @@ const PendingItenary = () => {
                               <tr>
                                 <th>S.No</th>
                                 <th>Lead Created On</th>
+                                <th>GHRN NO</th>
                                 <th>Customer Name</th>
                                 <th>Number</th>
                                 <th>Travel Type</th>
@@ -352,6 +392,7 @@ const PendingItenary = () => {
                                 <th>Previous Executive</th>
                                 <th>Raised By</th>
                                 <th>Location</th>
+                                <th>Qc Status</th>
                               </tr>
                             </thead>
                             <tbody>
@@ -359,6 +400,7 @@ const PendingItenary = () => {
                                 <tr key={index}>
                                   <td>{index + 1}</td>
                                   <td>{new Date(itms.createdAt).toLocaleString()}</td>
+                                  <td>{itms.ghrn_no}</td>
                                   <td>{itms.customer_name}</td>
                                   <td>{itms.customer_number}</td>
                                   <td>{itms.holiday_type}</td>
@@ -369,13 +411,32 @@ const PendingItenary = () => {
                                   <td>{itms.lead_source}</td>
                                   <td>{itms.partner_id?.first_name}</td>
                                   <td>
-                                    <button className="btn btn-danger btn-sm" onClick={()=>(delFun(itms._id))}>Delete</button>
-                                    <button className="btn btn-sm btn-primary" onClick={()=>openBuild(itms._id)}>Build</button>
+                                    
+  <button className="btn btn-danger btn-sm" onClick={()=>(delFun(itms._id))}>Delete</button>
+                                   
+
+                                   {itms.itenary_status === 'R' ? (
+  <button className="btn btn-sm btn-dark" onClick={() => openBuild(itms._id, itms.holiday_type)}>Build</button>
+) : itms.itenary_status === 'A' ? (
+  <button className="btn btn-sm btn-success" onClick={() => openPulish(itms._id)}>Publish</button>
+) : (
+  <button className="btn btn-sm btn-primary" onClick={() => openBuild(itms._id, itms.holiday_type)}>Build</button>
+)}
+
+
+                                    
                                   </td>
                                   <td></td>
                                   <td>{itms.my_operation_executive?.first_name}</td>
                                   <td>{itms.raised_by?.first_name || 'N/A'}</td>
                                   <td>{itms.lead_location}</td>
+                                  <td>{itms.itenary_status === 'A' ? 'Approved' :
+                                       itms.itenary_status === 'R' ? 'Rejected' :
+                                       itms.itenary_status === 'P' ? '' : ''} 
+                                      
+                                       </td>
+
+                                       
                                 </tr>
                               ))}
                             </tbody>
@@ -404,6 +465,33 @@ const PendingItenary = () => {
                 <button className="btn btn-sm btn-danger" onClick={() => handleDelete(delid)}>Yes, Delete</button>
               </div>
             )}
+
+            <div className="modal fade" id="rejectModal" tabIndex="-1" aria-labelledby="rejectModalLabel" aria-hidden="true">
+  <div className="modal-dialog">
+    <div className="modal-content">
+      <div className="modal-header">
+        <h5 className="modal-title" id="rejectModalLabel">Confirm Publish</h5>
+        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div className="modal-body">
+        Are you sure you want to Publish this lead?
+      </div>
+      <div className="modal-footer">
+        <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
+          Cancel
+        </button>
+        <button
+          type="button"
+          className="btn btn-danger"
+          onClick={handleRejectConfirm}
+        >
+          Yes, Publish
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
 
     </main>
     <Footer />

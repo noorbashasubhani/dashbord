@@ -14,8 +14,11 @@ const Holidays = () => {
     holiday_date: ''
   });
 
-  useEffect(() => {
-    const fetchHoliday = async () => {
+  const [isEditMode, setIsEditMode] = useState(false); // new
+  const [editId, setEditId] = useState(null); // new
+
+
+  const fetchHoliday = async () => {
       try {
         const response = await fetch(`${API_URL}/vendor/HolidayList`);
         if (!response.ok) {
@@ -29,6 +32,8 @@ const Holidays = () => {
         setLoading(false);
       }
     };
+  useEffect(() => {
+    
 
     fetchHoliday();
   }, []);
@@ -41,31 +46,65 @@ const Holidays = () => {
     });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    console.log("Form submitted with data:", holidayData); // Debugging form data
-    try {
-      const response = await fetch(`${API_URL}/vendor/Add-Holidays`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(holidayData),
-      });
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-      if (!response.ok) {
-        throw new Error('Failed to add holiday');
-      }
+  try {
+    const method = isEditMode ? 'PUT' : 'POST';
+    const url = isEditMode
+      ? `${API_URL}/vendor/UpdateHoliday/${editId}`
+      : `${API_URL}/vendor/Add-Holidays`;
 
-      const newHoliday = await response.json();
-      console.log("New holiday added:", newHoliday); // Debugging response
-      setHoliday([...holiday, newHoliday]);
-      setShowModal(false); // Close the modal
-      setHolidayData({ name: '', holiday_date: '' }); // Reset form data
-    } catch (err) {
-      setError(err.message);
+    const response = await fetch(url, {
+      method,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(holidayData),
+    });
+
+    if (!response.ok) {
+      throw new Error(isEditMode ? 'Failed to update holiday' : 'Failed to add holiday');
     }
-  };
+
+    const result = await response.json();
+    console.log(isEditMode ? 'Updated holiday:' : 'Added holiday:', result);
+
+    // Reset form and close modal
+    setShowModal(false);
+    setHolidayData({ name: '', holiday_date: '' });
+    setEditId(null);
+    setIsEditMode(false);
+    fetchHoliday();
+  } catch (err) {
+    setError(err.message);
+  }
+};
+
+ const delFun=async(row_id)=>{
+      const del=await fetch(`${API_URL}/vendor/DeleteHoliday/${row_id}`,{
+        method:'DELETE'
+      });
+     if(!del.ok){
+      throw new Error('Data not deleted using this url');
+     }
+     fetchHoliday();
+ }
+
+ 
+ const editFun = (holidayId) => {
+  const holidayToEdit = holiday.find((h) => h._id === holidayId);
+  if (holidayToEdit) {
+    setHolidayData({
+      name: holidayToEdit.name,
+      holiday_date: holidayToEdit.holiday_date?.slice(0, 10) || ''
+    });
+    setEditId(holidayId);
+    setIsEditMode(true);
+    setShowModal(true);
+  }
+};
+
 
   return (
     <>
@@ -110,6 +149,7 @@ const Holidays = () => {
                           <th>S.No</th>
                           <th>Holiday Name</th>
                           <th>Holiday Date</th>
+                          <th>Action</th>
                         </tr>
                       </thead>
                       <tbody style={{ fontSize: '13px' }}>
@@ -118,6 +158,10 @@ const Holidays = () => {
                             <td>{index + 1}</td>
                             <td>{holidayS.name}</td>
                             <td>{holidayS.holiday_date}</td>
+                            <td>
+                    <button className="btn btn-danger btn-sm" onClick={()=>delFun(holidayS._id)}>Delete</button>
+                    <button className="btn btn-primary btn-sm" onClick={()=>editFun(holidayS._id)}>Edit</button>
+                    </td>
                           </tr>
                         ))}
                       </tbody>

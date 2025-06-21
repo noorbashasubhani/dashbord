@@ -1,0 +1,46 @@
+.present {
+  background-color: green !important;
+  color: white !important;
+  border-radius: 50% !important;
+}
+
+.casual {
+  background-color: yellow !important;
+  color: black !important;
+  border-radius: 50% !important;
+}
+
+.halfday {
+  background-color: pink !important;
+  color: black !important;
+  border-radius: 50% !important;
+}
+
+.lop {
+  background-color: red !important;
+  color: white !important;
+  border-radius: 50% !important;
+}
+
+.absent {
+  background-color: gray !important;
+  color: white !important;
+  border-radius: 50% !important;
+}
+
+.legend {
+  display: inline-block;
+  padding: 6px 12px;
+  font-size: 14px;
+  border-radius: 8px;
+  font-weight: bold;
+}
+.react-calendar__tile{
+      border: 1px solid lightsteelblue !important;
+      width:50px !important;
+      height:auto !important
+}
+.react-calendar{
+  width:100%;
+}
+

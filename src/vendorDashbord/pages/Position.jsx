@@ -100,9 +100,7 @@ const Position = () => {
     }
   };
 
-
-  useEffect(() => {
-  const GetFun = async () => {
+const GetFun = async () => {
     try {
       // Fetch Positions
       const positionRes = await fetch(`${API_URL}/vendor/Positions`, {
@@ -123,7 +121,7 @@ const Position = () => {
         throw new Error('Failed to fetch departments avove links');
       }
       const deptData = await deptRes.json();
-      setDepartments(deptData); // you'll define departments in state below
+      setDepartments(deptData.data); // you'll define departments in state below
      
 
       const desgRes = await fetch(`${API_URL}/vendor/Desg`, {
@@ -141,6 +139,8 @@ const Position = () => {
       toast.error("Error: " + err.message);
     }
   };
+  useEffect(() => {
+  
 
   GetFun();
 }, []);
@@ -161,8 +161,9 @@ const Position = () => {
 
         if (response.ok) {
           // Remove the deleted package from the state
-          
+           GetFun();
           toast.success("Package deleted successfully!");
+          
         } else {
           throw new Error(result.message || 'Failed to delete package');
         }

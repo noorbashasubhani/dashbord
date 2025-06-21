@@ -64,7 +64,8 @@ const Partners = () => {
 
                   {/* Table with dynamic data */}
                   {!loading && !error && (
-                    <table className="table  table-striped">
+                    <div className="table-responsive">
+  <table className="table table-striped table-bordered table-hover">
                       <thead style={{ fontSize: "13px" }}>
                         <tr>
                           <th>S.No</th>
@@ -109,6 +110,7 @@ const Partners = () => {
                         ))}
                       </tbody>
                     </table>
+                    </div>
                   )}
                 </div>
               </div>

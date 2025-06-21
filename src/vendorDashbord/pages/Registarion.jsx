@@ -57,10 +57,10 @@ const Registration = () => {
   // Handle form data changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-    if (name === 'email') {
-        validateEmail(value);
-      }
+    setFormData(prev => ({
+    ...prev,
+    [name]: value,
+  }));
   };
 
   // Handle password visibility toggle
@@ -101,7 +101,7 @@ const Registration = () => {
     try {
       const deptRes = await fetch(`${API_URL}/vendor/Dept`);
       const datas = await deptRes.json();
-      setDept(datas); // ✅ correc
+      setDept(datas.data); // ✅ correc
     } catch (error) {
       console.error('Error fetching departments:', error.message);
       setDept(); // fallback to empty array
@@ -345,17 +345,20 @@ const Registration = () => {
                       <div className="col-3">
                         <div className="mb-3">
                           <label htmlFor="mobile_no" className="form-label">Department Name</label>
-                          <select className="form-select" id="department_id"
-                            name="department_id"
-                            value={formData.department_id}
-                            onChange={handleInputChange}>
-                              <option value="">----Select Departmens ---</option>
-                              {dept.map(department => (
-                                    <option key={department._id} value={department._id}>
-                                    {department.name}
-                                    </option>
-                                ))}
-                          </select>
+                          <select
+                          className="form-select"
+                          id="department_id"
+                          name="department_id"
+                          value={formData.department_id}
+                          onChange={handleInputChange}
+                        >
+                          <option value="">----Select Departments---</option>
+                          {dept && dept.length > 0 && dept.map(department => (
+                            <option key={department._id} value={department._id}>
+                              {department.name}
+                            </option>
+                          ))}
+                        </select>
                           
                         </div>
                       </div>

@@ -1,98 +1,124 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useReducer } from 'react';
 import NavBar from '../components/NavBar';
 import SideBar from '../components/SideBar';
 import Footer from '../components/forms/Footer';
 import { API_URL } from '../data/apiUrl';
+import DataTable from 'react-data-table-component';
+import { Departments } from './Departmnets';
+const initial={
+  formData:{
+    department:'',
+    name:''
+  },
+  showPop:false,
+  departmentList:[],
+  tableData:[]
+}
+
+
+const reducer=(state,action)=>{
+    switch(action.type){
+       case 'SHOW':return {...state,showPop:true}
+       case 'HIDE':return {...state,showPop:false}
+       case 'DEPT':return {...state,departmentList:action.payload}
+       case 'SAVE':return {...state,formData:{...state.formData,[action.payload.name]:action.payload.value}}
+case 'FETCH': return {...state, tableData: action.payload }
+default: return state;
+    }
+}
 
 const Designation = () => {
-  const [departments, setDepartments] = useState({});
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [gdata,setGdata]=useState([]);
+  const [state,dispacth]=useReducer(reducer,initial);
+  const openOpo=()=>{
+    dispacth({type:'SHOW'});
+  }
+  
 
-  const [showModal, setShowModal] = useState(false);
-  const [newDesignation, setNewDesignation] = useState('');
-  const [selectedDepartment, setSelectedDepartment] = useState('');
-  const [depar,setDepar]=useState([]);
-  // Fetching designations
-  const fetchDesignations = async () => {
-   //setLoading(true);
-    try {
-      const response = await fetch(`${API_URL}/vendor/Desg`);
-      if (!response.ok) throw new Error('Failed to fetch designations');
-      const data = await response.json();
-      setDepartments(data);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
+  const depatList=async()=>{
+    const respnce=await fetch(`${API_URL}/vendor/Dept`);
+    if(!respnce.ok){
+      throw new Error('Data not comming using this Departmns');
     }
-  };
-
-  const fetchDeparts=async()=>{
-    try{
-      const response = await fetch(`${API_URL}/vendor/Dept`);
-      if (!response.ok) throw new Error('Failed to fetch designations');
-      const data = await response.json();
-      setDepar(data);
-    }catch(err){
-       console.log(err.message);
-    }
+    const destlist=await respnce.json();
+    dispacth({type:'DEPT',payload:destlist.data});
   }
 
-  useEffect(() => {
-    fetchDesignations();
-    fetchDeparts();
-  }, []);
-
-  // Group designations by department
-  const groupedDepartments = {};
-  if (departments.designations && Array.isArray(departments.designations)) {
-    departments.designations.forEach((item) => {
-      if (!item.name || !item.department?.name || !item.department?._id) return;
-      const deptId = item.department._id;
-      const deptName = item.department.name;
-
-      if (!groupedDepartments[deptId]) {
-      groupedDepartments[deptId] = {
-        id: deptId,
-        name: deptName,
-        designations: []
-      };
+  const desgList=async()=>{
+    const respnce=await fetch(`${API_URL}/vendor/Desg`);
+    if(!respnce.ok){
+      throw new Error('Data not comming using this Departmns');
     }
-    groupedDepartments[deptId].designations.push(item.name);
-
-    });
+    const destlist=await respnce.json();
+    dispacth({type:'FETCH',payload:destlist.designations});
+  }
+  useEffect(()=>{
+    depatList();
+    desgList();
+    Datalist();
+  },[]);
+  const evenChage=(e)=>{
+    dispacth({type:'SAVE',payload:{name:e.target.name,value:e.target.value}});
   }
 
-  // Get unique departments for dropdown
-  const uniqueDepartments = Array.from(groupedDepartments, ([id, name]) => ({ id, name }));
-
-
-  const handleSubmit = async (e) => {
+  
+  const addFun=async(e)=>{
+   
     e.preventDefault();
-
-    try {
-      const res = await fetch(`${API_URL}/vendor/Add-Designations`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          department: selectedDepartment,
-          name: newDesignation
-        })
+      const sdavedData=await fetch(`${API_URL}/vendor/Add-Designations`,{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json'
+      },
+      body:JSON.stringify(state.formData)
       });
+      dispacth({type:'HIDE'});
+       desgList();
+      if(!sdavedData.ok){
+      throw new Error('Data not saved');
+      }
+  }        
 
-      if (!res.ok) throw new Error('Failed to add designation');
+ const delFun=async(row_id)=>{
+      try{
+        const datalist=await fetch(`${API_URL}/vendor/Desg/${row_id}`,{
+          method:'DELETE'
+        });
+         desgList();
+      }catch(err){
+          console.log(err.message);
+      }
+ }
 
-      // Refresh list after add
-      await fetchDesignations();
-      setShowModal(false);
-      setNewDesignation('');
-      setSelectedDepartment('');
-      setError(null);
-    } catch (err) {
-      setError(err.message);
-    }
-  };
+  const column = [
+  { name: '#', selector: (row, index) => index + 1, sortable: true },
+  {
+    name: 'Department Name',
+    selector: row => row.department?.name || 'N/A',
+    sortable: true
+  },
+  { name: 'Designation', selector: row => row.name, sortable: true },
+  {name:'Action',cell:row=>(<button className="btn btn-danger btn-sm" onClick={()=>delFun(row._id)}>Delete</button>)}
+];
+
+const Datalist = async () => {
+  const response = await fetch(`${API_URL}/vendor/GroupDesinations`);
+  if (!response.ok) {
+    throw new Error('Failed to fetch grouped data');
+  }
+
+  const json = await response.json(); // Assuming `json.data` holds your object
+
+  const transformed = Object.entries(json.data).map(([department, designations]) => ({
+    department,
+    designations,
+  }));
+
+  setGdata(transformed);
+};
+
+
+
 
   return (
     <>
@@ -109,7 +135,7 @@ const Designation = () => {
               </li>
               <li className="breadcrumb-item active">Designation</li>
             </ol>
-            <button className="btn btn-sm btn-primary mb-3 ms-auto" onClick={() => setShowModal(true)}>
+            <button className="btn btn-sm btn-primary mb-3 ms-auto" onClick={openOpo}>
               + Add Designation
             </button>
           </nav>
@@ -125,82 +151,71 @@ const Designation = () => {
                     Explore our CRM's organized Departments & Designations feature, facilitating seamless collaboration and clear communication within the workforce.
                   </p>
 
-                  {loading && <p>Loading...</p>}
-                  {error && <p className="text-danger">{error}</p>}
+                 
 
-                  <table className="table datatable table-stripped">
-                    <thead style={{ fontSize: "13px" }}>
-                      <tr>
-                        <th>S.No</th>
-                        <th>Department</th>
-                        <th>Designations</th>
-                      </tr>
-                    </thead>
-                    <tbody style={{ fontSize: "13px" }}>
-  {Object.values(groupedDepartments).map((dept, index) => (
-    <tr key={dept.id}>
-      <td>{index + 1}</td>
-      <td>{dept.name}</td>
-      <td>{dept.designations.join(', ')}</td>
-    </tr>
-  ))}
-</tbody>
-                  </table>
+                <DataTable title='Department-Designiation List' columns={column} data={state.tableData} pagination/>
+              
+
+
 
                 </div>
               </div>
             </div>
           </div>
+          {state.showPop && (
+  <div className="modal show d-block" tabIndex="-1" role="dialog">
+    <div className="modal-dialog" role="document">
+      <div className="modal-content">
+        <div className="modal-header">
+          <h5 className="modal-title">Add New Designation</h5>
+          <button type="button" className="btn-close" onClick={() => dispacth({ type: 'HIDE' })}></button>
+        </div>
+        <form onSubmit={addFun}>
+          <div className="modal-body">
+            <div className="mb-3">
+  <label className="form-label">Select Department</label>
+  <select
+    name="department"
+    className="form-select"
+    value={state.formData.department}
+    onChange={evenChage}
+    required
+  >
+    <option value="">-- Select Department --</option>
+    {state.departmentList.map((dept) => (
+      <option key={dept._id} value={dept._id}>
+        {dept.name}
+      </option>
+    ))}
+  </select>
+</div>
+
+            <div className="mb-3">
+              <label className="form-label">Designation Name</label>
+              <input
+                type="text"
+                className="form-control"
+                name="name"
+                value={state.formData.name}
+                onChange={evenChage}
+              />
+            </div>
+          </div>
+          <div className="modal-footer">
+            <button type="button" className="btn btn-secondary" onClick={() => dispacth({ type: 'HIDE' })}>Close</button>
+            <button type="button" className="btn btn-primary" onClick={addFun}>Add</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+)}
+
         </section>
       </main>
 
-      {/* Add Designation Modal */}
-      {showModal && (
-        <div className="modal show d-block" tabIndex="-1" role="dialog">
-          <div className="modal-dialog" role="document">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title">Add New Designation</h5>
-                <button type="button" className="btn-close" onClick={() => setShowModal(false)}></button>
-              </div>
-              <form onSubmit={handleSubmit}>
-                <div className="modal-body">
-                  <div className="mb-3">
-                    <label className="form-label">Select Department</label>
-                    <select
-                      className="form-select"
-                      value={selectedDepartment}
-                      onChange={(e) => setSelectedDepartment(e.target.value)}
-                      required
-                    >
-                      <option value="">Select Department</option>
-                      {depar.map((dept, index) => (
-                        <option key={index} value={dept._id}>{dept.name}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div className="mb-3">
-                    <label className="form-label">Designation Name</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      value={newDesignation}
-                      onChange={(e) => setNewDesignation(e.target.value)}
-                      placeholder="Enter Designation Name"
-                      required
-                    />
-                  </div>
-                </div>
-                <div className="modal-footer">
-                  <button type="button" className="btn btn-secondary" onClick={() => setShowModal(false)}>Close</button>
-                  <button type="submit" className="btn btn-primary">Add Designation</button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-      )}
 
+      <Departments />
       <Footer />
     </>
   );

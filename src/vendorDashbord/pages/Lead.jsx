@@ -12,6 +12,10 @@ import { useNavigate } from 'react-router-dom';
 import LeadsTabs from './LeadsTabs';
 import useIdleLogout from './useIdleLogout';
 
+
+
+
+
 const Lead = () => {
   const [leads, setLeads] = useState([]);
   const [team, setTeam] = useState([]);
@@ -71,7 +75,7 @@ const Lead = () => {
       
 
       try {
-        const responceTeam = await fetch(`${API_URL}/vendor/Lead-Sources-list`);
+        const responceTeam = await fetch(`${API_URL}/vendor/Teams`);
         if (!responceTeam.ok) {
           throw new Error('Failed to fetch partners');
         }
@@ -193,17 +197,21 @@ const Lead = () => {
 
 const [assmodel,setAssmodel]=useState(false);
 const [assid,setAssid]=useState(null);
+const [exc_ids,setExecutive]=useState(null);
 
-const assignFun=(row_id)=>{
+const assignFun=(row_id,exc_id)=>{
+  //alert(exc_id);
   setAssmodel(true);
   setAssid(row_id);
+  setExecutive(exc_id);
 }
 
 const assignD=async()=>{
   const assigneeId = document.getElementById('operation_executive').value;
   const reason = document.getElementById('reason_assign').value;
   const token = localStorage.getItem('token');
-  //alert(assid);
+  const executive=document.getElementById('executive').value;
+ //alert(exc_ids);
   try {
     const responses = await fetch(`${API_URL}/vendor/Assign/${assid}`, {
       method: 'PUT',
@@ -213,7 +221,8 @@ const assignD=async()=>{
       },
       body: JSON.stringify({ 
         operation_executive: assigneeId,
-        reason: reason
+        reason,
+        executive
       }),
     });
     const result = await responses.json();
@@ -264,7 +273,7 @@ const saveCom=async()=>{
   const messageInput=document.getElementById('message');
   const message = messageInput?.value?.trim();
   const lead_id=comid;
-
+  
   try{
     const token = localStorage.getItem('token'); // or however you store it
 
@@ -318,6 +327,7 @@ const saveExcom=async()=>{
   const messageInput=document.getElementById('messages');
   const message = messageInput?.value?.trim();
   const lead_id=excid;
+  //const executive=document.getElementById('executive');
   //alert(message);
   try{
     const token = localStorage.getItem('token'); // or however you store it
@@ -435,7 +445,7 @@ useIdleLogout();
                               <td>{itms.holiday_type}</td>
                               <td><FaEye onClick={()=>desFunc(itms.holiday_desc)}/></td>
                               <td>{itms.operation_executive?.first_name} 
-                               <FaHome size={20} color="black" onClick={()=>{assignFun(itms._id)}}/> </td>
+                               <FaHome size={20} color="black" onClick={()=>{assignFun(itms._id,itms.operation_executive._id)}}/> </td>
 
                               <td><FaRegCommentDots size={20} onClick={()=>{conFun(itms._id)}}/>
                                  <button className="btn btn-primary btn-sm" onClick={()=>handleView(itms._id)}>View</button>
@@ -465,7 +475,7 @@ useIdleLogout();
 
         {/* Modal for adding a new lead */}
         {modes && (
-          <div className="modal show" style={{ display: 'block' }} id="addLeadModal" tabIndex="-1" aria-hidden="true">
+           <div className="modal fade show d-block" tabIndex="-1" id="addLeadModal" aria-hidden="true" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}> 
             <div className="modal-dialog">
               <div className="modal-content">
                 <div className="modal-header">
@@ -475,7 +485,8 @@ useIdleLogout();
                 <div className="modal-body">
                   <form onSubmit={handleSubmit}>
                     {/* Form fields */}
-                    <div className="mb-3">
+                    <div className="row">
+                     <div className="col-md-6 mb-3">
                       <label htmlFor="customerName" className="form-label">Customer Name</label>
                       <input
                         type="text"
@@ -483,10 +494,10 @@ useIdleLogout();
                         name="customer_name"
                         value={formData.customer_name}
                         onChange={handleInputChange}
-                        id="customerName"
+                        id="customerName" required
                       />
                     </div>
-                    <div className="mb-3">
+                     <div className="col-md-6 mb-3">
                       <label htmlFor="customerNumber" className="form-label">Customer Number</label>
                       <input
                         type="text"
@@ -495,9 +506,12 @@ useIdleLogout();
                         value={formData.customer_number}
                         onChange={handleInputChange}
                         id="customerNumber"
+                        required
                       />
                     </div>
-                    <div className="mb-3">
+                    </div>
+                    <div className="row">
+                    <div className="col-md-6 mb-3">
                       <label htmlFor="customer_email" className="form-label">Customer E-mail</label>
                       <input
                         type="email"
@@ -508,7 +522,7 @@ useIdleLogout();
                         id="customer_email"
                       />
                     </div>
-                    <div className="mb-3">
+                    <div className="col-md-6 mb-3">
                       <label htmlFor="lead_location" className="form-label">Lead Location</label>
                       <input
                         type="text"
@@ -517,9 +531,12 @@ useIdleLogout();
                         value={formData.lead_location}
                         onChange={handleInputChange}
                         id="lead_location"
+                        required
                       />
                     </div>
-                    <div className="mb-3">
+                    </div>
+                    <div className="row">
+                     <div className="col-md-6 mb-3">
                       <label htmlFor="holiday_type" className="form-label">Holiday Type</label>
                       <select
                         className="form-control"
@@ -527,13 +544,14 @@ useIdleLogout();
                         value={formData.holiday_type}
                         onChange={handleInputChange}
                         id="holiday_type"
+                        required
                       >
                         <option value="">Select Holiday Type</option>
                         <option value="Domestic">Domestic</option>
                         <option value="International">International</option>
                       </select>
                     </div>
-                    <div className="mb-3">
+                    <div className="col-md-6 mb-3">
                       <label htmlFor="lead_source" className="form-label">Source</label>
                       <select
   className="form-control"
@@ -541,6 +559,7 @@ useIdleLogout();
   value={formData.lead_source}
   onChange={handleInputChange}
   id="lead_source"
+  required
 >
   <option value="">Select Source Type</option>
   <option value="Website">Website</option>
@@ -561,6 +580,7 @@ useIdleLogout();
   <option value="QR-Code-Scan">QR Code Scan</option>
 </select>
 
+                    </div>
                     </div>
                     {isPartnerSelected && (
                       <div className="mb-3">
@@ -600,7 +620,9 @@ useIdleLogout();
         )}
 
         {delmod && (
-          <div className="modal show" style={{ display: 'block' }} id="deleteModal" tabIndex="-1" aria-hidden="true">
+          <div className="modal fade show d-block"
+           style={{ backgroundColor: 'rgba(0,0,0,0.5)' }} id="deleteModal"
+            tabIndex="-1" aria-hidden="true">
             <div className="modal-dialog">
               <div className="modal-content">
                 <div className="modal-header">
@@ -625,7 +647,8 @@ useIdleLogout();
         )}
 
         {assmodel && (
-          <div className="modal show" style={{ display: 'block' }} id="deleteModal" tabIndex="-1" aria-hidden="true">
+          <div className="modal fade show d-block" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }} 
+          id="deleteModal" tabIndex="-1" aria-hidden="true">
             <div className="modal-dialog">
               <div className="modal-content">
                 <div className="modal-header">
@@ -649,7 +672,7 @@ useIdleLogout();
                     ))
                   )}
                 </select>
-               
+                <input type="hidden" name="executive" id="executive" value={exc_ids}/>
 
                   <label>Reason for Assign</label>
                   <textarea type="text" className="form-control" name="reason_assign" id="reason_assign"></textarea>
@@ -669,7 +692,7 @@ useIdleLogout();
         )}
 
         {desModel  && (
-          <div className="modal show" style={{ display: 'block' }} id="deleteModal" tabIndex="-1" aria-hidden="true">
+          <div className="modal fade show d-block" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }} id="deleteModal" tabIndex="-1" aria-hidden="true">
             <div className="modal-dialog">
               <div className="modal-content">
                 <div className="modal-header">
@@ -694,7 +717,7 @@ useIdleLogout();
 
 
 {commodel  && (
-          <div className="modal show" style={{ display: 'block' }} id="deleteModal" tabIndex="-1" aria-hidden="true">
+          <div className="modal fade show d-block" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }} id="deleteModal" tabIndex="-1" aria-hidden="true">
             <div className="modal-dialog">
               <div className="modal-content">
                 <div className="modal-header">
@@ -718,7 +741,7 @@ useIdleLogout();
         )}
 
         { exccomm && (
-          <div className="modal show" style={{ display: 'block' }} id="deleteModal" tabIndex="-1" aria-hidden="true">
+          <div className="modal fade show d-block" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }} id="deleteModal" tabIndex="-1" aria-hidden="true">
             <div className="modal-dialog">
               <div className="modal-content">
                 <div className="modal-header">
@@ -729,7 +752,7 @@ useIdleLogout();
 
                 <div className="modal-body">
                   {/* You can show lead details here if necessary */}
-                  <label> Assign To</label>
+                  <label>Moving Leads</label>
                   <select className="form-control" name="messages" id="messages">
                   
                   <option value="R">Move To R-N-R</option>

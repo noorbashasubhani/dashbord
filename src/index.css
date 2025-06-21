@@ -6,6 +6,14 @@
 }
 
 
+input:invalid:focus {
+  outline: none;
+  border-color: red;
+}
+button:disabled {
+  background-color: #ccc !important;
+  cursor: not-allowed;
+}
 
 .form-group label,form button{
     font-size: 13px;
@@ -275,6 +283,10 @@
   color: #007bff;
 }
 
+.custom-bg-dark {
+  background-color: #343a40 !important;
+  color: white !important;
+}
   /* Responsive design: */
   @media (max-width: 1200px) {
     .gallery {

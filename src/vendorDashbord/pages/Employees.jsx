@@ -3,13 +3,19 @@ import NavBar from '../components/NavBar';
 import SideBar from '../components/SideBar';
 import Footer from '../components/forms/Footer';
 import { API_URL } from '../data/apiUrl';
+import { useNavigate } from 'react-router-dom';
+
 
 const Employees = () => {
+  const navigate = useNavigate();
   const [emp, setEmp] = useState([]); // Should be an array to store employee details
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
+
+    fetchEmp();
+  }, []);
     // Fetch data from the "Employees" collection
     const fetchEmp = async () => {
       try {
@@ -27,8 +33,24 @@ const Employees = () => {
       }
     };
 
-    fetchEmp();
-  }, []);
+    
+
+ const goTonew=(row_id)=>{
+      navigate('/View-Employee/'+`${row_id}`); // Replace with your target URL path
+ }
+ const editFunc=(row_id)=>{
+    navigate('/EDIT-EMP/'+`${row_id}`); // Replace with your target URL path
+ }
+
+ const delFun=async(row_id)=>{
+   const delData=await fetch(`${API_URL}/vendor/DelUser/${row_id}`,{
+    method:'DELETE'
+   });
+   if(!delData.ok){
+    throw new Error('Data not delete in this link');
+   }
+   fetchEmp();
+ }
 
   return (
     <>
@@ -66,7 +88,8 @@ const Employees = () => {
 
                   {/* Table with dynamic data */}
                   {!loading && !error && (
-                    <table className="table datatable table-striped">
+                    <div className="table-responsive">
+  <table className="table table-striped table-bordered table-hover">
                       <thead style={{ fontSize: "13px" }}>
                         <tr>
                           <th>S.No</th>
@@ -90,16 +113,21 @@ const Employees = () => {
                             <td>{emps.employee_id}</td>
                             <td>{emps.first_name} {emps.last_name}</td> {/* Employee name */}
                             <td>{emps.email}</td> {/* Employee joining date */}
-                            <td>{emps.department_id}</td> {/* Employee joining date */}
-                            <td>{emps.designation_id}</td> {/* Employee joining date */}
-                            <td>{emps.designation_id}</td> {/* Employee joining date */}
+                            <td>{emps.department_id?.name || 'N/A'}</td> {/* Employee joining date */}
+                            <td>{emps.designation_id?.name || 'N/A'}</td> {/* Employee joining date */}
+                            <td>{emps.joining_date}</td> {/* Employee joining date */}
                             <td>Hyderabad Begumpet White House Building</td> {/* Employee joining date */}
                             <td>confidential</td> {/* Employee joining date */}
-                            <td></td>
+                            <td>
+                              <button className="btn btn-sm btn-primary" onClick={()=>goTonew(emps._id)}>View</button>
+                              <button className="btn btn-sm btn-danger" onClick={()=>delFun(emps._id)}>Delete</button>
+                              <button className="btn btn-success btn-sm" onClick={()=>editFunc(emps._id)}>Edit</button>
+                              </td>
                           </tr>
                         ))}
                       </tbody>
                     </table>
+                    </div>
                   )}
                 </div>
               </div>

@@ -51,8 +51,8 @@ const VendorLogin = () => {
 
           setTimeout(() => {
             navigate("/dashboard");
-            window.location.reload(); // optional
-          }, 1000);
+            //window.location.reload(); // optional
+          }, 5000);
         } else {
           setError(data.message || "Login failed, please try again.");
         }

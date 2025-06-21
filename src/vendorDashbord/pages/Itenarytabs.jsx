@@ -10,13 +10,13 @@ const ItenaryTabs = ({ tabs }) => {
     navigate('/Pending-Itenary');
   }
   const publishedTab = () =>{
-    //navigate('/Lead-delete');
+    navigate('/Published-Itinery');
   }
   const confirmedTab = () =>{
-   // navigate('/Lead-delete');
+    navigate('/Confirm-Itinary');
   }
   const cancelledTab = () =>{
-   // navigate('/Lead-delete');
+    navigate('/Cancelled-Itinary');
   }
   const deletedTab = () =>{
     navigate('/Delete-Itenary');

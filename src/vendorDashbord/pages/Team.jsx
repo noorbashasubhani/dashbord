@@ -6,12 +6,15 @@ import { API_URL } from '../data/apiUrl';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { jwtDecode } from 'jwt-decode';
+import Select from 'react-select';
+
+import * as bootstrap from 'bootstrap';
 
 const Team = () => {
   const [pack, setPack] = useState([]);
   const [employees, setEmployees] = useState([]);
   const [selectedPackage, setSelectedPackage] = useState(null);
-  //const token=
+  const [userid, setUserid] = useState(null);
 
   const [packdata, setPackdata] = useState({
     team_name: '',
@@ -19,12 +22,9 @@ const Team = () => {
     dept_name: '',
     dept_head: '',
     dept_lead: '',
-    team_employees: []
+    team_employees: [],
+    for_the_month: ''
   });
-
-  const token = localStorage.getItem('token');
-  const decodedToken = jwtDecode(token);
-  const userId = decodedToken.userId;
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -35,25 +35,35 @@ const Team = () => {
   };
 
   const handleAddPackage = async () => {
-    const { team_name, travel_type, dept_name, dept_head, dept_lead, team_employees } = packdata;
-
-   
-
     try {
-      const response = await fetch(`${API_URL}/vendor/Teams`, {
+      const response = await fetch(`${API_URL}/vendor/Teams/${userid}`, {
         method: 'POST',
-        headers: {  'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}` },// Include token in the headers },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(packdata),
       });
 
       const result = await response.json();
       if (response.ok) {
-        setPack(prev => [...prev, result.data]);
-        setPackdata({ team_name: '', travel_type: '', dept_name: '', dept_head: '', dept_lead: '', team_employees: [] });
-        const modal = new window.bootstrap.Modal(document.getElementById('addPackageModal'));
-        modal.hide();
-        toast.success("Team added successfully!");
+      await fetchTeams();
+        setTimeout(() => {
+  toast.success("Team added successfully!", {
+    autoClose: 3000,
+    toastId: 'team-added-toast'
+  });
+}, 300); // delay to avoid double-render conflicts
+        const modalElement = document.getElementById('addPackageModal');
+        const modal = bootstrap.Modal.getInstance(modalElement);
+        if (modal) modal.hide();
+
+        setPackdata({
+          team_name: '',
+          travel_type: '',
+          dept_name: '',
+          dept_head: '',
+          dept_lead: '',
+          team_employees: [],
+          for_the_month: ''
+        });
       } else {
         throw new Error(result.message);
       }
@@ -62,17 +72,22 @@ const Team = () => {
     }
   };
 
+  const fetchTeams = async () => {
+    try {
+      const response = await fetch(`${API_URL}/vendor/Teams`);
+      const data = await response.json();
+      setPack(data.data);
+    } catch (err) {
+      toast.error("Error fetching teams: " + err.message);
+    }
+  };
+
   useEffect(() => {
-    const fetchTeams = async () => {
-      try {
-        const response = await fetch(`${API_URL}/vendor/Teams`);
-        const data = await response.json();
-        setPack(data.data);
-      } catch (err) {
-        console.log(err.message);
-        toast.error("Error fetching teams: " + err.message);
-      }
-    };
+    const token = localStorage.getItem('token');
+    if (token) {
+      const decodedToken = jwtDecode(token);
+      setUserid(decodedToken.userId);
+    }
 
     const fetchEmployees = async () => {
       try {
@@ -89,29 +104,49 @@ const Team = () => {
   }, []);
 
   const handleDeletePackage = async (packageId) => {
-    if (window.confirm('Are you sure you want to delete this package?')) {
-      try {
-        const response = await fetch(`${API_URL}/vendor/Teams/${packageId}`, {
-          method: 'DELETE',
-          headers: { 'Content-Type': 'application/json' },
-        });
+  if (window.confirm('Are you sure you want to delete this package?')) {
+    try {
+      const response = await fetch(`${API_URL}/vendor/Teams/${packageId}`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+      });
 
-        const result = await response.json();
-        if (response.ok) {
-          setPack(pack.filter(pkg => pkg._id !== packageId));
-          toast.success("Team deleted successfully!");
-        } else {
-          throw new Error(result.message || 'Failed to delete team');
-        }
-      } catch (err) {
-        toast.error("Error deleting team: " + err.message);
+      const result = await response.json();
+      if (response.ok) {
+        setPack(prev => prev.filter(pkg => pkg._id !== packageId));
+
+        console.log("✅ Deletion success toast should show only once");
+
+       
+
+         setTimeout(() => {
+  toast.success("Team deleted successfully!", {
+    autoClose: 3000,
+    toastId: 'team-added-toast'
+  });
+}, 300);
+      } else {
+        throw new Error(result.message || 'Failed to delete team');
       }
+    } catch (err) {
+      toast.error("Error deleting team: " + err.message, {
+        toastId: 'team-delete-error'
+      });
     }
-  };
+  }
+};
+
 
   const handleViewPackage = (packageId) => {
     const packageToView = pack.find(pkg => pkg._id === packageId);
     setSelectedPackage(packageToView);
+    const viewModal = new bootstrap.Modal(document.getElementById('viewPackageModal'));
+    viewModal.show();
+  };
+
+  const openAddModal = () => {
+    const modal = new bootstrap.Modal(document.getElementById('addPackageModal'));
+    modal.show();
   };
 
   return (
@@ -131,12 +166,24 @@ const Team = () => {
             </nav>
           </div>
 
-          <button className="btn btn-sm btn-dark mb-3 ms-auto" data-bs-toggle="modal" data-bs-target="#addPackageModal">
+          <button className="btn btn-sm btn-dark mb-3 ms-auto" onClick={openAddModal}>
             + Add Team
           </button>
         </div>
 
-        <ToastContainer />
+        <ToastContainer
+  position="top-right"
+  autoClose={3000}
+  hideProgressBar={false}
+  newestOnTop={false}
+  closeOnClick
+  rtl={false}
+  pauseOnFocusLoss
+  draggable
+  pauseOnHover
+/>
+
+
 
         {/* Add Team Modal */}
         <div className="modal fade" id="addPackageModal" tabIndex="-1" aria-labelledby="addPackageModalLabel" aria-hidden="true">
@@ -148,46 +195,77 @@ const Team = () => {
               </div>
               <div className="modal-body">
                 <form>
-                  <div className="mb-3">
-                    <label className="form-label">Team Name</label>
-                    <input type="text" className="form-control" name="team_name" value={packdata.team_name} onChange={handleInputChange} />
-                  </div>
-                  <div className="mb-3">
-                    <label className="form-label">Travel Type</label>
-                    <input type="text" className="form-control" name="travel_type" value={packdata.travel_type} onChange={handleInputChange} />
-                  </div>
-                  <div className="mb-3">
-                    <label className="form-label">Department Name</label>
-                    <input type="text" className="form-control" name="dept_name" value={packdata.dept_name} onChange={handleInputChange} />
-                  </div>
-                  <div className="mb-3">
-                    <label className="form-label">Department Head</label>
-                    <select className="form-select" name="dept_head" value={packdata.dept_head} onChange={handleInputChange}>
-                      <option value="">-- Select Head --</option>
-                      {employees.map(emp => (
-                        <option key={emp._id} value={emp._id}>{emp.first_name} {emp.last_name}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div className="mb-3">
-                    <label className="form-label">Department Lead</label>
-                    <select className="form-select" name="dept_lead" value={packdata.dept_lead} onChange={handleInputChange}>
-                      <option value="">-- Select Lead --</option>
-                      {employees.map(emp => (
-                        <option key={emp._id} value={emp._id}>{emp.first_name} {emp.last_name}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div className="mb-3">
-                    <label className="form-label">Team Employees</label>
-                    <select multiple className="form-select" name="team_employees" value={packdata.team_employees} onChange={(e) => {
-                      const selected = Array.from(e.target.selectedOptions).map(option => option.value);
-                      setPackdata({ ...packdata, team_employees: selected });
-                    }}>
-                      {employees.map(emp => (
-                        <option key={emp._id} value={emp._id}>{emp.first_name} {emp.last_name}</option>
-                      ))}
-                    </select>
+                  <div className="row">
+                    <div className="col-sm-6 mb-3">
+                      <label className="form-label">Team Name</label>
+                      <input type="text" className="form-control" name="team_name" value={packdata.team_name} onChange={handleInputChange} />
+                    </div>
+
+                    <div className="col-sm-6 mb-3">
+                      <label className="form-label">Travel Type</label>
+                      <select className="form-control" name="travel_type" value={packdata.travel_type} onChange={handleInputChange}>
+                        <option value="">Select Travel Type</option>
+                        <option value="Domestic">Domestic</option>
+                        <option value="International">International</option>
+                      </select>
+                    </div>
+
+                    <div className="col-sm-6 mb-3">
+                      <label className="form-label">Department</label>
+                      <select className="form-select" name="dept_name" value={packdata.dept_name} onChange={handleInputChange}>
+                        <option value="">Select Department</option>
+                        <option value="Sales">Sales</option>
+                        <option value="Operation">Operation</option>
+                        <option value="Reservation">Reservation</option>
+                      </select>
+                    </div>
+
+                    <div className="col-sm-6 mb-3">
+                      <label className="form-label">Department Head</label>
+                      <select className="form-select" name="dept_head" value={packdata.dept_head} onChange={handleInputChange}>
+                        <option value="">-- Select Head --</option>
+                        {employees.map(emp => (
+                          <option key={emp._id} value={emp._id}>{emp.first_name} {emp.last_name}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div className="col-sm-6 mb-3">
+                      <label className="form-label">Department Lead</label>
+                      <select className="form-select" name="dept_lead" value={packdata.dept_lead} onChange={handleInputChange}>
+                        <option value="">-- Select Lead --</option>
+                        {employees.map(emp => (
+                          <option key={emp._id} value={emp._id}>{emp.first_name} {emp.last_name}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div className="col-sm-6 mb-3">
+                      <label className="form-label">For The Month</label>
+                      <input type="date" className="form-control" name="for_the_month" value={packdata.for_the_month} onChange={handleInputChange} />
+                    </div>
+
+                    <div className="mb-3">
+                      <label className="form-label">Team Employees</label>
+                      <Select
+                        isMulti
+                        name="team_employees"
+                        options={employees.map(emp => ({
+                          value: emp._id,
+                          label: `${emp.first_name} ${emp.last_name}`
+                        }))}
+                        value={packdata.team_employees.map(id => {
+                          const emp = employees.find(e => e._id === id);
+                          return emp ? { value: emp._id, label: `${emp.first_name} ${emp.last_name}` } : null;
+                        }).filter(Boolean)}
+                        onChange={selectedOptions =>
+                          setPackdata({
+                            ...packdata,
+                            team_employees: selectedOptions.map(option => option.value)
+                          })
+                        }
+                      />
+                    </div>
                   </div>
                 </form>
               </div>
@@ -199,7 +277,7 @@ const Team = () => {
           </div>
         </div>
 
-        {/* View Team Modal */}
+        {/* View Modal */}
         <div className="modal fade" id="viewPackageModal" tabIndex="-1" aria-labelledby="viewPackageModalLabel" aria-hidden="true">
           <div className="modal-dialog">
             <div className="modal-content">
@@ -219,9 +297,7 @@ const Team = () => {
                     <p><strong>Added By:</strong> {selectedPackage.added_by?.first_name || "Unknown"}</p>
                     <p><strong>Created Date:</strong> {new Date(selectedPackage.createdAt).toLocaleDateString()}</p>
                   </div>
-                ) : (
-                  <p>Loading...</p>
-                )}
+                ) : <p>Loading...</p>}
               </div>
               <div className="modal-footer">
                 <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -235,23 +311,24 @@ const Team = () => {
             <div className="col-lg-12">
               <div className="card">
                 <div className="card-body">
-                  <h6 className="card-title" style={{ fontSize: "14px" }}>Team Details</h6>
+                  <h6 className="card-title">Team Details</h6>
                   <p style={{ fontSize: "13px", marginTop: "-15px" }}>
                     Explore your team list and member assignments.
                   </p>
-
                   <div className="table-responsive">
                     <table className="table table-bordered table-striped">
                       <thead>
                         <tr>
                           <th>S.No</th>
                           <th>Team Name</th>
-                          <th>Travel Type</th>
+                          <th>Team Type</th>
                           <th>Department</th>
                           <th>Head</th>
                           <th>Lead</th>
                           <th>Employees</th>
                           <th>Added By</th>
+                          <th>Team-Month</th>
+                          <th>Status</th>
                           <th>Date</th>
                           <th>Actions</th>
                         </tr>
@@ -267,14 +344,16 @@ const Team = () => {
                             <td>{team.dept_lead?.first_name}</td>
                             <td>{team.team_employees?.map(emp => emp.first_name).join(', ')}</td>
                             <td>{team.added_by?.first_name || 'N/A'}</td>
+                            <td>{team.for_the_month}</td>
+                            <td>{team.status}</td>
                             <td>{new Date(team.createdAt).toLocaleDateString()}</td>
                             <td>
                               <button className="btn btn-sm btn-danger" onClick={() => handleDeletePackage(team._id)}>Delete</button>
-                              <button className="btn btn-sm btn-info ms-2" onClick={() => handleViewPackage(team._id)} data-bs-toggle="modal" data-bs-target="#viewPackageModal">View</button>
+                              <button className="btn btn-sm btn-info ms-2" onClick={() => handleViewPackage(team._id)}>View</button>
                             </td>
                           </tr>
                         )) : (
-                          <tr><td colSpan="10" className="text-center">No teams found.</td></tr>
+                          <tr><td colSpan="12" className="text-center">No teams found.</td></tr>
                         )}
                       </tbody>
                     </table>
@@ -285,6 +364,7 @@ const Team = () => {
           </div>
         </section>
       </main>
+
       <Footer />
     </>
   );

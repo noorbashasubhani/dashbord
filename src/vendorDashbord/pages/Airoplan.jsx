@@ -46,7 +46,7 @@ const formValidate=()=>{
           throw new Error('Failed to fetch airplan details');
         }
         const data = await response.json();
-        setAirplan(data); // Store the airport list
+        setAirplan(data.data); // Store the airport list
       } catch (err) {
         setError(err.message);
       } finally {

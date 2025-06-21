@@ -6,50 +6,96 @@ import { API_URL } from '../data/apiUrl';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {useParams} from 'react-router-dom';
+import Select from 'react-select';
+
 
 
 const Process = () => {
     const { lead_id } = useParams();
-    const [formData, setFormData] = useState({});
+    const [formData, setFormData] = useState({
+  visiting_city: [],
+  food_prefaring: [],
+  room_prefaring: []
+});
+
+
+const roomOptions = [
+  { value: 'Beach-Front', label: 'Beach Front' },
+  { value: 'Floor-Specific', label: 'Floor Specific' },
+  { value: 'Fort-Stay', label: 'Fort Stay' },
+  { value: 'Hill-View', label: 'Hill View' },
+  { value: 'Smoking-Room', label: 'Smoking Room' },
+  { value: 'Suite', label: 'Suite' },
+  { value: 'Tent-Stay', label: 'Tent Stay' },
+  { value: 'Tree-House', label: 'Tree House' },
+  { value: 'Water-Villa', label: 'Water Villa' },
+];
+
+const foodOptions = [
+  { value: 'All-Inclusive', label: 'All Inclusive' },
+  { value: 'Jain-Meals', label: 'Jain Meals' },
+  { value: 'Non-Veg', label: 'Non Veg' },
+  { value: 'Veg', label: 'Veg' },
+];
+
+const handleFoodPrefChange = (selectedOptions) => {
+  const values = selectedOptions.map(opt => opt.value);
+  setFormData(prev => ({
+    ...prev,
+    food_prefaring: values
+  }));
+};
+
+
     const [dest,setDest]=useState([]);
     const [leads,setLeads]=useState([]);
 
-    const handleChange = (e) => {
-        const { name, value, type, checked } = e.target;
-      
-        setFormData((prev) => {
-          const updatedForm = {
-            ...prev,
-            [name]: type === 'checkbox' ? checked : value,
-          };
-      
-          // Auto-calculate trip duration
-          if ((name === 'start_date' || name === 'end_date') && updatedForm.start_date && updatedForm.end_date) {
-            const start = new Date(updatedForm.start_date);
-            const end = new Date(updatedForm.end_date);
-            const diffInMs = end - start;
-      
-            if (diffInMs >= 0) {
-              const diffInDays = Math.ceil(diffInMs / (1000 * 60 * 60 * 24)) + 1; // +1 to include start day
-              updatedForm.duration = `${diffInDays} day${diffInDays > 1 ? 's' : ''}`;
-            } else {
-              updatedForm.duration = '';
-              toast.error('End date cannot be before start date');
-            }
-          }
-      
-
-          if (["no_of_adults", "no_of_children", "no_of_infants"].includes(name)) {
-            const adults = parseInt(updatedForm.no_of_adults) || 0;
-            const children = parseInt(updatedForm.no_of_children) || 0;
-            const infants = parseInt(updatedForm.no_of_infants) || 0;
-            updatedForm.no_of_pax = adults + children + infants;
-          }
     
+    const handleChange = (e) => {
+  const { name, value, type, checked, multiple, options } = e.target;
 
-          return updatedForm;
-        });
-      };
+  setFormData((prev) => {
+    let newValue = value;
+
+    // Handle multiple select (e.g., food_prefaring)
+    if (multiple) {
+      newValue = Array.from(options)
+        .filter(option => option.selected)
+        .map(option => option.value);
+    }
+
+    const updatedForm = {
+      ...prev,
+      [name]: type === 'checkbox' ? checked : newValue,
+    };
+
+    // Auto-calculate trip duration
+    if ((name === 'start_date' || name === 'end_date') && updatedForm.start_date && updatedForm.end_date) {
+      const start = new Date(updatedForm.start_date);
+      const end = new Date(updatedForm.end_date);
+      const diffInMs = end - start;
+
+      if (diffInMs >= 0) {
+        const diffInDays = Math.ceil(diffInMs / (1000 * 60 * 60 * 24)) + 1;
+        updatedForm.duration = `${diffInDays} day${diffInDays > 1 ? 's' : ''}`;
+      } else {
+        updatedForm.duration = '';
+        toast.error('End date cannot be before start date');
+      }
+    }
+
+    // Calculate total Pax
+    if (["no_of_adults", "no_of_children", "no_of_infants"].includes(name)) {
+      const adults = parseInt(updatedForm.no_of_adults) || 0;
+      const children = parseInt(updatedForm.no_of_children) || 0;
+      const infants = parseInt(updatedForm.no_of_infants) || 0;
+      updatedForm.no_of_pax = adults + children + infants;
+    }
+
+    return updatedForm;
+  });
+};
+
       
       
 
@@ -86,6 +132,8 @@ const Process = () => {
       
         getHolidays();
       }, []);
+
+      
 
 
       const handleSubmit = async (e) => {
@@ -252,7 +300,7 @@ const Process = () => {
                       />
                     </div>
                     <div className="col-4">
-                      <label htmlFor="customer_email" className="form-label">Customer Location</label>
+                      <label htmlFor="customer_location" className="form-label">Customer Location</label>
                       <input
                         type="text"
                         className="form-control"
@@ -287,26 +335,46 @@ const Process = () => {
 
                     <div className="col-6 form-group">
                     <label>Holiday Destination</label>
-                      <select  type="text" className="form-control" name="holiday_destination"
-                       onChange={handleChange} value={formData.holiday_destination}>
-                        <option value="">Select </option>
-                       
-                        <option value="">Select </option>
-                        {dest.map((itms,index)=>(
-                            <option value={itms._id}>{itms.destination_name}</option>
-                        ))}
-                      </select>
+                      <select
+  className="form-control"
+  name="holiday_destination"
+  value={formData.holiday_destination?._id || ""}
+  onChange={(e) => {
+    const selected = dest.find(d => d._id === e.target.value);
+    setFormData(prev => ({
+      ...prev,
+      holiday_destination: selected || { _id: "", destination_name: "" }
+    }));
+  }}
+>
+  <option value="">Select</option>
+  {dest.map((itms) => (
+    <option key={itms._id} value={itms._id}>
+      {itms.destination_name}
+    </option>
+  ))}
+</select>
+
                   </div>
                   <div className="col-6 form-group">
-                    <label>Select Visiting Cities</label>
-                      <select  type="text" className="form-control" 
-                      name="visiting_city" onChange={handleChange} value={formData.visiting_city}>
-                        <option value="">Select </option>
-                        {dest.map((itms,index)=>(
-                            <option value={itms._id}>{itms.destination_name}</option>
-                        ))}
-                      </select>
-                  </div>
+  <label>Select Visiting Cities</label>
+  <Select
+  isMulti
+  name="visiting_city"
+  options={dest.map(item => ({ value: item._id, label: item.destination_name }))}
+  value={dest
+    .filter(item => formData.visiting_city.includes(item._id))
+    .map(item => ({ value: item._id, label: item.destination_name }))
+  }
+  onChange={(selectedOptions) =>
+    setFormData({
+      ...formData,
+      visiting_city: selectedOptions.map(option => option.value),
+    })
+  }
+/>
+</div>
+
                   <div className="col-6">
                       <label htmlFor="customer_email" className="control">Trip Start Date</label>
                       <input
@@ -340,15 +408,21 @@ const Process = () => {
                     </div>
                     <div className="col-6 form-group">
                     <label>Travel Flexibility(How flexible is customer with change of dates?)</label>
-                <select  type="text" className="form-control" value={formData.transformation_mode} name="transformation_mode" onChange={handleChange}>
-                        <option value="">Select </option>
-                        <option value="Fixed-With-Dates">Fixed With Dates</option>
-                        <option value="2-3-Days">2-3 Days </option>
-                        <option value="A-week">A week  </option>
-                        <option value="Fort-Night">Fort Night </option>
-                        <option value="With-In-The-Month">With In The Month </option>
-                        <option value="Any-Date">Any Date </option>
-                      </select>
+                      <select
+  className="form-control"
+  name="transformation_mode"
+  value={formData.transformation_mode}
+  onChange={handleChange}
+>
+  <option value="">Select</option>
+  <option value="Fixed-With-Dates">Fixed With Dates</option>
+  <option value="2-3-Days">2-3 Days</option>
+  <option value="A-week">A week</option>
+  <option value="Fort-Night">Fort Night</option>
+  <option value="With-In-The-Month">With In The Month</option>
+  <option value="Any-Date">Any Date</option>
+</select>
+
                   </div>
 
                    
@@ -476,19 +550,23 @@ const Process = () => {
                       </select>
                     </div>
                     <div className="col-3">
-                      <label htmlFor="customer_email" className="control">Room Preferences</label>
-                      <select  type="text" className="form-control" value={formData.room_prefaring}  name="room_prefaring" onChange={handleChange}>
-                        <option value="">Select </option>
-                        <option value="Beach-Front">Beach Front</option>
-                        <option value="Floor-Specific">Floor Specific</option>
-                        <option value="Fort-Stay">Fort Stay </option>
-                        <option value="Hill-View">Hill View</option>
-                        <option value="Smoking-Room">Smoking Room</option>
-                        <option value="Suite">Suite</option>
-                        <option value="Tent-Stay">Tent Stay</option>
-                        <option value="Tree-House">Tree House</option>
-                        <option value="Water-Villa">Water Villa</option>
-                      </select>
+                      <label>Room Preferences</label>
+<Select
+  isMulti
+  name="room_prefaring"
+  className="basic-multi-select"
+  classNamePrefix="select"
+  options={roomOptions}
+  value={roomOptions.filter(opt => formData.room_prefaring.includes(opt.value))}
+  onChange={(selected) => {
+    const values = selected.map(opt => opt.value);
+    setFormData(prev => ({
+      ...prev,
+      room_prefaring: values
+    }));
+  }}
+/>
+
                     </div>
 
                     <div className="col-4">
@@ -508,20 +586,21 @@ const Process = () => {
                       </select>
                     </div>
                     <div className="col-4">
-                      <label htmlFor="customer_email" className="control">Room Preferences</label>
-                      <select  className="form-control" value={formData.holiday_type} name="holiday_type" onChange={handleChange}>
-                        <option value="">Select </option>
-                        <option value="Beach-Front">Beach Front</option>
-                        <option value="Floor-Specific">Floor Specific</option>
-                        <option value="Fort-Stay">Fort Stay </option>
-                        <option value="Hill-View">Hill View</option>
-                        <option value="Smoking-Room">Smoking Room</option>
-                        <option value="Suite">Suite</option>
-                        <option value="Tent-Stay">Tent Stay</option>
-                        <option value="Tree-House">Tree House</option>
-                        <option value="Water-Villa">Water Villa</option>
-                      </select>
-                    </div>
+  <label htmlFor="customer_email" className="control">Food Preferences</label>
+  <label>Food Preferences</label>
+
+
+<Select
+  isMulti
+  options={foodOptions}
+  value={foodOptions.filter(opt => (formData.food_prefaring || []).includes(opt.value))}
+  onChange={handleFoodPrefChange}
+/>
+
+
+
+</div>
+
                     <div className="col-6">
                     <label htmlFor="customer_email" className="control">Accommodation Preferences</label>
                     <textarea className="form-control" name="accomdation_prefaring" onChange={handleChange} value={formData.accomdation_prefaring}></textarea>

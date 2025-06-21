@@ -11,6 +11,7 @@ import Investiment from './Investiment';
 import Taxes from './Taxes';
 import Office_exc from './Office_exc';
 import Otherexc from './Otherexc';
+import Theam from './Theam';
 const Master = () => {
   
 
@@ -63,6 +64,8 @@ const Master = () => {
                   <Office_exc />
                   <hr></hr>
                   <Otherexc />
+                  <hr></hr>
+                  <Theam />
                 </div>
                 </div>
               </div>

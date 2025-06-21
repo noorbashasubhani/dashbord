@@ -58,7 +58,6 @@ const RegistrationEmployee = () => {
     e.preventDefault();
     try {
      // const API_URL = 'http://localhost:5000'; // Replace with your actual API URL
-
       // Send POST request to the backend API
       const response = await fetch(`${API_URL}/vendor/Registration`, {
         method: 'POST',

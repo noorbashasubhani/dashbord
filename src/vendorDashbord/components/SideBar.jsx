@@ -123,6 +123,36 @@ const SideMenu = () => {
   const pendingitenary=()=>{
     navigate('/Pending-Itenary');
   }
+  const contact=()=>{
+    navigate('/Contact-Details');
+  }
+  const qc=()=>{
+    navigate('/Qc-Deails');
+  }
+  const googels=()=>{
+    navigate('/GoogleReveiws');
+  }
+  const vochers=()=>{
+    navigate('/Domestic-Vochers');
+  }
+  const gifts=()=>{
+     navigate('/GIFT-VOCHERS');
+  }
+  const attendance=()=>{
+    navigate('/Add-Attendance');
+  }
+  const calendar=()=>{
+    navigate('/Attendance-Cal');
+  }
+  const funPay=()=>{
+    navigate('/Payroll');
+  }
+  const commMess=()=>{
+    navigate('/Leads-Comments');
+  }
+  const ledger=()=>{
+    navigate('/Ledger');
+  }
   return (
     <aside id="sidebar" className="sidebar">
   <ul className="sidebar-nav" id="sidebar-nav">
@@ -208,21 +238,16 @@ const SideMenu = () => {
           </a>
         </li>
         <li>
-          <a href="forms-editors.html">
+          <a onClick={qc}>
             <i className="bi bi-usb-symbol" />
             <span>Quality Check</span>
           </a>
         </li>
-        <li>
-          <a href="forms-validation.html">
-            <i className="bi bi-calculator" />
-            <span>Quick Caluculation</span>
-          </a>
-        </li>
+        
       </ul>
     </li>
     <li className="nav-item">
-      <a className="nav-link collapsed" href="pages-blank.html">
+      <a className="nav-link collapsed" onClick={googels}>
         <i className="bi bi-file-earmark" />
         <span>Google Review</span>
       </a>
@@ -245,13 +270,13 @@ const SideMenu = () => {
         data-bs-parent="#sidebar-nav"
       >
         <li>
-          <a href="tables-general.html">
+          <a onClick={vochers}>
             <i className="bi bi-box2" />
             <span>Vochers List</span>
           </a>
         </li>
         <li>
-          <a href="tables-data.html">
+          <a onClick={gifts}>
             <i className="bi bi-gift-fill" />
             <span>Gift Vochers</span>
           </a>
@@ -309,7 +334,7 @@ const SideMenu = () => {
         data-bs-parent="#sidebar-nav"
       >
         <li>
-          <a href="icons-bootstrap.html">
+          <a onClick={ledger}>
             <i className="bi bi-piggy-bank" />
             <span>Ledger</span>
           </a>
@@ -425,7 +450,7 @@ const SideMenu = () => {
           </a>
         </li>
         <li>
-          <a href="icons-boxicons.html">
+          <a onClick={commMess}>
             <i className="bi bi-circle" />
             <span>Leads Comments</span>
           </a>
@@ -559,7 +584,7 @@ const SideMenu = () => {
           </a>
         </li>
         <li>
-          <a href="icons-remix.html">
+          <a onClick={contact}>
             <i className="bi bi-telephone" />
             <span>Contact Details</span>
           </a>
@@ -583,13 +608,13 @@ const SideMenu = () => {
           </a>
         </li>
         <li>
-          <a href="icons-boxicons.html">
+          <a onClick={calendar}>
             <i className="bi bi-calendar2-fill" />
             <span>Attendance Details   </span>
           </a>
         </li>
         <li>
-          <a href="icons-boxicons.html">
+          <a onClick={funPay}>
             <i className="bi bi-handbag" />
             <span>Payroll Details   </span>
           </a>

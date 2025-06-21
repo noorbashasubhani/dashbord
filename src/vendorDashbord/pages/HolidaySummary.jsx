@@ -3,6 +3,7 @@ import { API_URL } from '../data/apiUrl'; // Adjust path as needed
 
 const HolidaySummary = ({ customerData, row_id }) => {
   const [showForm, setShowForm] = useState(false);
+  const [destin,setDestin]=useState([]);
   const [formData, setFormData] = useState({
     holiday_destination: '',
     start_date: '',
@@ -11,6 +12,7 @@ const HolidaySummary = ({ customerData, row_id }) => {
   });
 
   useEffect(() => {
+    destinationlist();
     if (customerData) {
       setFormData({
         holiday_destination: customerData.holiday_destination || '',
@@ -53,6 +55,22 @@ const HolidaySummary = ({ customerData, row_id }) => {
     }
   };
 
+
+  const destinationlist=async()=>{
+
+     try{
+        const response=await fetch(`${API_URL}/vendor/Domestic-Destination`);
+        if(!response.ok){
+          throw new Error('This is not link');
+        }
+        const result=await response.json();
+        setDestin(result.data);
+     }catch(err){
+        console.log(err.message);
+     }
+
+  }
+
   return (
     <div className="row">
       <div className="col-lg-12">
@@ -77,7 +95,7 @@ const HolidaySummary = ({ customerData, row_id }) => {
                 </thead>
                 <tbody>
                   <tr>
-                    <td>{formData.holiday_destination || 'N/A'}</td>
+                    <td>{formData.holiday_destination.destination_name || 'N/A'}</td>
                     <td>{formData.start_date || 'N/A'}</td>
                     <td>{formData.end_date || 'N/A'}</td>
                     <td>{formData.duration || 'N/A'} days</td>
@@ -97,11 +115,23 @@ const HolidaySummary = ({ customerData, row_id }) => {
                 <h5>Edit Holiday Info</h5>
                 <div className="form-group my-2">
                   <label>Holiday Destination</label>
-                  <input
-                    className="form-control"
-                    value={formData.holiday_destination}
-                    onChange={(e) => setFormData({ ...formData, holiday_destination: e.target.value })}
-                  />
+                 
+                  <select className="form-control" value={formData.holiday_destination?._id || ''} name="holiday_destination"
+                    onChange={(e) => {
+    const selected = destin.find(d => d._id === e.target.value);
+    setFormData({ ...formData, holiday_destination: selected });
+  }}
+                   >
+                    <option value="">---Select Holidays ---</option>
+                    {destin.length > 0 ? (
+
+                    destin.map((items,index)=>(
+                      <option value={items._id}>{items.destination_name}</option>
+                    ))
+                  
+                    ):(<option>No Data Found</option>) }
+                    
+                  </select>
                 </div>
                 <div className="form-group my-2">
                   <label>Start Date</label>
