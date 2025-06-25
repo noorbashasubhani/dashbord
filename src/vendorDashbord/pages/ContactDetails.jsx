@@ -28,7 +28,7 @@ const getData=async()=>{
         throw new Error('Please Check Data not comming..');
       }
       const result=await responce.json();
-      dispatch({type:'LIST',payload:result})
+      dispatch({type:'LIST',payload:result.data})
     
     }catch(err){
       console.log(err.message);

@@ -20,6 +20,7 @@ const DomesticCredit = () => {
     ref_no: '',
     amount: '',
     valid_date: '',
+    travel_type:'D'
   });
 
   const [delid, setDelid] = useState(null);  

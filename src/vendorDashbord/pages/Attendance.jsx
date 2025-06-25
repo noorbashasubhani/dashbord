@@ -30,7 +30,7 @@ const Attendance = () => {
     try {
       const res = await fetch(`${API_URL}/vendor/Userlist`);
       const result = await res.json();
-      setData(result || []);
+      setData(result.data);
     } catch (error) {
       toast.error('Failed to load users');
     } finally {

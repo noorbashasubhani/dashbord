@@ -20,11 +20,26 @@ const Callendar = () => {
   const [dayStatusMap, setDayStatusMap] = useState({});
 
   useEffect(() => {
-    fetch(`${API_URL}/vendor/Userlist`)
-      .then(res => res.json())
-      .then(setEmployees)
-      .catch(() => toast.error('Failed to load employees'));
-  }, []);
+  getEmp();
+}, []);
+
+const getEmp = async () => {
+  try {
+    const response = await fetch(`${API_URL}/vendor/Userlist`);
+    const json = await response.json(); // parse JSON
+
+    if (Array.isArray(json.data)) {
+  setEmployees(json.data);
+} else {
+  console.error('Invalid employee data:', json);
+}
+
+  } catch (err) {
+    console.log('Fetch error:', err.message);
+  }
+};
+
+
 
   const handleSearch = async () => {
     if (!selectedEmployee || !attendanceMonth) return;

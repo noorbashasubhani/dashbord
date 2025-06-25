@@ -6,12 +6,11 @@ import { API_URL } from '../data/apiUrl';
 import { jwtDecode } from 'jwt-decode';
 
 const Qc = () => {
-
-
   const [qc, setQc] = useState([]);
   const [selectedLeadId, setSelectedLeadId] = useState(null);
-  const [reject, setReject] = useState(false);
-const [rejectId, setRejectid] = useState(null);
+  const [rejectId, setRejectid] = useState(null);
+  const [approveModalInstance, setApproveModalInstance] = useState(null);
+  const [rejectModalInstance, setRejectModalInstance] = useState(null);
 
   const token = localStorage.getItem('token');
   const decodedToken = jwtDecode(token);
@@ -20,9 +19,7 @@ const [rejectId, setRejectid] = useState(null);
   const getQcList = async () => {
     try {
       const response = await fetch(`${API_URL}/vendor/QC-LIST`);
-      if (!response.ok) {
-        throw new Error('Data not coming');
-      }
+      if (!response.ok) throw new Error('Data not coming');
       const data = await response.json();
       setQc(data.data);
     } catch (err) {
@@ -30,74 +27,75 @@ const [rejectId, setRejectid] = useState(null);
     }
   };
 
+  const openApproveModal = (id) => {
+    setSelectedLeadId(id);
+    const modalEl = document.getElementById('approveModal');
+    const modal = new window.bootstrap.Modal(modalEl, { backdrop: 'static' });
+    modal.show();
+    setApproveModalInstance(modal);
+  };
+
+  const openRejectModal = (id) => {
+    setRejectid(id);
+    const modalEl = document.getElementById('rejectModal');
+    const modal = new window.bootstrap.Modal(modalEl, { backdrop: 'static' });
+    modal.show();
+    setRejectModalInstance(modal);
+  };
+
   const handleApproveConfirm = async () => {
     if (!selectedLeadId) return;
     try {
       const response = await fetch(`${API_URL}/vendor/update-status/${selectedLeadId}`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ itenary_status: 'A',qc_done_by:userId }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ itenary_status: 'A', qc_done_by: userId }),
       });
+
       if (!response.ok) throw new Error('Status update failed');
-      // Close the modal
-      const modal = window.bootstrap.Modal.getInstance(document.getElementById('approveModal'));
-      modal.hide();
+
+      if (approveModalInstance) {
+        approveModalInstance.hide();
+      }
+
       getQcList();
     } catch (err) {
-      console.error('Error updating status:', err.message);
+      console.error('Error approving:', err.message);
     }
   };
 
-
   const handleRejectConfirm = async () => {
-  if (!rejectId) return;
+    if (!rejectId) return;
+    try {
+      const res = await fetch(`${API_URL}/vendor/update-status/${rejectId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ itenary_status: 'R', qc_done_by: userId }),
+      });
 
-  try {
-    const res = await fetch(`${API_URL}/vendor/update-status/${rejectId}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ itenary_status: 'R',qc_done_by:userId }),
-    });
+      if (!res.ok) throw new Error('Reject failed');
 
-    if (!res.ok) throw new Error('Reject failed');
+      if (rejectModalInstance) {
+        rejectModalInstance.hide();
+      }
 
-    const modal = window.bootstrap.Modal.getInstance(document.getElementById('rejectModal'));
-    modal.hide();
-
-    getQcList();
-  } catch (err) {
-    console.error('Error rejecting lead:', err.message);
-  }
-};
-
-  
+      getQcList();
+    } catch (err) {
+      console.error('Error rejecting lead:', err.message);
+    }
+  };
 
   useEffect(() => {
     getQcList();
   }, []);
 
-const funrej = (row_id) => {
-  setReject(true);
-  setRejectid(row_id);
-  const modal = new window.bootstrap.Modal(document.getElementById('rejectModal'));
-  modal.show();
-};
-
   return (
     <>
       <NavBar />
       <SideBar />
-
       <main id="main" className="main">
         <div className="pagetitle">
-          <h4>
-            <i className="bi bi-pin-fill mx-2"></i>
-            <b>Quality Checking</b>
-          </h4>
+          <h4><i className="bi bi-pin-fill mx-2"></i><b>Quality Checking</b></h4>
         </div>
 
         <section className="section">
@@ -109,7 +107,7 @@ const funrej = (row_id) => {
                     Departments & Designation Details
                   </h6>
                   <p style={{ fontSize: '13px', marginTop: '-15px' }}>
-                    Explore our CRM's organized Departments & Designations feature, facilitating seamless collaboration and clear communication within the workforce.
+                    Explore our CRM's organized Departments & Designations feature.
                   </p>
 
                   <table className="table datatable table-striped">
@@ -139,40 +137,17 @@ const funrej = (row_id) => {
                             <td>{item.holiday_destination?.destination_name}</td>
                             <td>{item.holiday_type}</td>
                             <td>{new Date(item.createdAt).toLocaleDateString()}</td>
-                            <td>
-                              <a href={item.cost_sheet_url} target="_blank" rel="noopener noreferrer">
-                                View
-                              </a>
-                            </td>
-                            <td>
-                              <a href={item.itinerary_url} target="_blank" rel="noopener noreferrer">
-                                View
-                              </a>
-                            </td>
+                            <td><a href={item.cost_sheet_url} target="_blank" rel="noopener noreferrer">View</a></td>
+                            <td><a href={item.itinerary_url} target="_blank" rel="noopener noreferrer">View</a></td>
                             <td>{item.operation_executive?.first_name} {item.operation_executive?.last_name}</td>
                             <td>
-                              <button
-                                className="btn btn-sm btn-primary"
-                                data-bs-toggle="modal"
-                                data-bs-target="#approveModal"
-                                onClick={() => setSelectedLeadId(item._id)}
-                              >
-                                Approve
-                              </button>
-                              <button
-  className="btn btn-sm btn-danger"
-  onClick={() => funrej(item._id)}
->
-  Reject
-</button>     </td>
+                              <button className="btn btn-sm btn-primary me-1" onClick={() => openApproveModal(item._id)}>Approve</button>
+                              <button className="btn btn-sm btn-danger" onClick={() => openRejectModal(item._id)}>Reject</button>
+                            </td>
                           </tr>
                         ))
                       ) : (
-                        <tr>
-                          <td colSpan="11" className="text-center">
-                            No QC Leads Found
-                          </td>
-                        </tr>
+                        <tr><td colSpan="11" className="text-center">No QC Leads Found</td></tr>
                       )}
                     </tbody>
                   </table>
@@ -183,7 +158,7 @@ const funrej = (row_id) => {
         </section>
       </main>
 
-      {/* Approval Modal */}
+      {/* Approve Modal */}
       <div className="modal fade" id="approveModal" tabIndex="-1" aria-labelledby="approveModalLabel" aria-hidden="true">
         <div className="modal-dialog">
           <div className="modal-content">
@@ -193,43 +168,29 @@ const funrej = (row_id) => {
             </div>
             <div className="modal-body">Are you sure you want to approve this lead?</div>
             <div className="modal-footer">
-              <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
-                Cancel
-              </button>
-              <button type="button" className="btn btn-success" onClick={handleApproveConfirm}>
-                Yes, Approve
-              </button>
+              <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+              <button type="button" className="btn btn-success" onClick={handleApproveConfirm}>Yes, Approve</button>
             </div>
           </div>
         </div>
       </div>
 
+      {/* Reject Modal */}
       <div className="modal fade" id="rejectModal" tabIndex="-1" aria-labelledby="rejectModalLabel" aria-hidden="true">
-  <div className="modal-dialog">
-    <div className="modal-content">
-      <div className="modal-header">
-        <h5 className="modal-title" id="rejectModalLabel">Confirm Rejection</h5>
-        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="rejectModalLabel">Confirm Rejection</h5>
+              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div className="modal-body">Are you sure you want to reject this lead?</div>
+            <div className="modal-footer">
+              <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+              <button type="button" className="btn btn-danger" onClick={handleRejectConfirm}>Yes, Reject</button>
+            </div>
+          </div>
+        </div>
       </div>
-      <div className="modal-body">
-        Are you sure you want to reject this lead?
-      </div>
-      <div className="modal-footer">
-        <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
-          Cancel
-        </button>
-        <button
-          type="button"
-          className="btn btn-danger"
-          onClick={handleRejectConfirm}
-        >
-          Yes, Reject
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-
 
       <Footer />
     </>

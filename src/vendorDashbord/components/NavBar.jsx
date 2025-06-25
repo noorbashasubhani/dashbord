@@ -160,6 +160,7 @@ useEffect(() => {
             <span className="badge bg-success badge-number">3</span>
           </a>
           {/* End Messages Icon */}
+          
           <ul className="dropdown-menu dropdown-menu-end dropdown-menu-arrow messages">
             <li className="dropdown-header">
               You have 3 new messages
@@ -238,10 +239,34 @@ useEffect(() => {
           </ul>
           {/* End Messages Dropdown Items */}
         </li>
-        <li className="dropdown-footer">
-          <a onClick={logout} style={{ cursor: 'pointer',color:'red',marginop:'20' }}> <FaSignOutAlt />
-          </a>
-        </li>
+       <li class="nav-item dropdown me-3">
+  <a
+    class="nav-link dropdown-toggle"
+    href="#"
+    role="button"
+    data-bs-toggle="dropdown"
+    aria-expanded="false"
+  >
+    <img
+      src="assets/img/profile-img.jpg"
+      class="rounded-circle"
+      alt=""
+      width="30"
+      height="30"
+    />
+    
+  </a>
+  <ul class="dropdown-menu">
+    <li><a class="dropdown-item" onClick={myprofile}>Profile</a></li>
+    <li><a class="dropdown-item" onClick={password}>Change Password</a></li>
+    <li><hr class="dropdown-divider" /></li>
+    <li>
+      <a class="dropdown-item text-danger" onClick={logout}>
+        <i class="bi bi-box-arrow-right"></i> Logout
+      </a>
+    </li>
+  </ul>
+</li>
         {/* End Messages Nav */}
        
         {/* End Profile Nav */}

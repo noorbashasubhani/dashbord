@@ -1,12 +1,14 @@
 import React from 'react'
 import { useState,useEffect } from 'react';
-
 import { API_URL } from '../data/apiUrl';
+import { jwtDecode } from 'jwt-decode';
+
 
 
 const Caluculation = ({ customerData, row_id , totals }) => {
+const [leadApproved, setLeadApproved] = useState(false);
 
-
+   const [partners,setPartners]=useState([]);
    const { total_flight_cost,
      total_cruise_cost,
       total_train_cost,
@@ -20,7 +22,9 @@ const Caluculation = ({ customerData, row_id , totals }) => {
 
 
     const [btns,setBtns]=useState(false);
-   const [form, setForm] = useState({ land_cost: 0, loading_percentage_on_land: 0, loading_amount_on_land: 0, cost_to_company: 0, supper_partner_id: '', supper_partner_percentage: 0, supper_partner_percentage_amount: 0, sales_partner_id: '', sales_partner_percentage: 0, sales_partner_percentage_amount: 0, lead_partner_id: '', lead_partner_percentage: 0, lead_partner_percentage_amount: 0, total_partners_percentage: 0, total_partners_percentage_amount: 0, cost_to_be_sold: 0, goods_tax_percentage: 0, goods_tax_amount: 0, goods_tax_amount_after_land: 0, flight_cost_share: 0, flight_cost_percentage: 0, flight_cost_amount: 0, travel_insurance: 0, total_flight_cost: 0, cruise_cost: 0, loading_on_cruise_percentage: 0, loading_on_cruise_amount: 0, supper_agent_commission: 0, sales_agent_commission: 0, lead_agent_commission: 0, total_agent_commission_amount: 0, cruise_amount_after_loading: 0, total_package_cost: 0, sup_charges: 0, train_charges: 0, bus_charges: 0, total_package_cost_quoted: 0, no_of_packs: 0, package_cost_for_flight: 0, land_cost_per_person: 0, flight_cost_per_person: 0, cruise_cost_per_person: 0, train_cost_per_person: 0, bus_cost_per_person: 0, show_single_cost_in_itenary: 'no', doc_id: '' });
+   const [form, setForm] = useState({ land_cost: 0, loading_percentage_on_land: 0, loading_amount_on_land: 0, cost_to_company: 0, supper_partner_id: '', supper_partner_percentage: 0, supper_partner_percentage_amount: 0, sales_partner_id: '', sales_partner_percentage: 0, sales_partner_percentage_amount: 0, lead_partner_id: '', lead_partner_percentage: 0, lead_partner_percentage_amount: 0, total_partners_percentage: 0, total_partners_percentage_amount: 0, cost_to_be_sold: 0, goods_tax_percentage: 0, goods_tax_amount: 0, goods_tax_amount_after_land: 0, flight_cost_share: 0, flight_cost_percentage: 0, flight_cost_amount: 0, travel_insurance: 0, total_flight_cost: 0, cruise_cost: 0, loading_on_cruise_percentage: 0, loading_on_cruise_amount: 0, supper_agent_commission: 0, sales_agent_commission: 0, lead_agent_commission: 0, total_agent_commission_amount: 0, cruise_amount_after_loading: 0, total_package_cost: 0, sup_charges: 0, train_charges: 0, bus_charges: 0, total_package_cost_quoted: 0, no_of_packs: 0, package_cost_for_flight: 0, land_cost_per_person: 0, flight_cost_per_person: 0, cruise_cost_per_person: 0, train_cost_per_person: 0, bus_cost_per_person: 0, show_single_cost_in_itenary: 'no', doc_id: '',
+    sup_status:'',sales_status:'',lead_status:'',sup_approved_by:'',sale_approved_by:'',lead_approved_by:''
+    });
 
 
 
@@ -133,7 +137,7 @@ bus_cost_per_person: busCostPerPerson,
 
 useEffect(() => {
 
-
+  getPartnersList();
   fetchCalculation();
 }, [row_id, totals.total_land,totals.total_flight_cost,totals.total_cruise_cost,totals.total_train_cost,totals.total_bus_cost
   ,totals.transport_cost,totals.online_hotel_cost,totals.domestic_hotel_cost]);
@@ -220,6 +224,63 @@ setForm((prev) => ({
 
 
 
+const getPartnersList=async()=>{
+  try{
+    const responce=await fetch(`${API_URL}/vendor/Partnerlist`);
+    if(!responce.ok){
+      throw new Error('Something went wrong');
+    }
+    const datas=await responce.json();
+    setPartners(datas.data);
+  }catch(err){
+    console.log(err.message);
+  }
+}
+
+const Approve = async (cal_id, Type) => {
+  //alert(row_id);
+  const token = localStorage.getItem("token");
+  const decoded = jwtDecode(token);
+  const userId= decoded.userId;
+  let bodyData = { doc_id: row_id };
+
+
+ 
+
+  if (Type === 'S') {
+  bodyData.sup_status = 'A';
+  bodyData.sup_approved_by = userId;
+} else if (Type === 'P') {
+  bodyData.sales_status = 'A';              // ✅ Use 'partner_...'
+  bodyData.partner_approved_by = userId;      // ✅ Fix this line
+} else if (Type === 'L') {
+  bodyData.lead_status = 'A';
+  bodyData.lead_approved_by = userId;
+}
+
+  try {
+    const response = await fetch(`${API_URL}/vendor/calApprove`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(bodyData),
+    });
+
+    const result = await response.json();
+
+    if (response.ok) {
+      console.log("Update successful:", result);
+      //saveData();
+      //fetchCalculation();
+      // toast.success("Approval updated");
+    } else {
+      console.error("Update failed:", result.message);
+    }
+  } catch (err) {
+    console.log("Error:", err.message);
+  }
+};
 
 
   return (
@@ -258,28 +319,64 @@ setForm((prev) => ({
                  <tr>
                     <td>
                         <select className="form-select" value={form.supper_partner_id} name="supper_partner_id" onChange={handleChange}>
-                            <option>--Select Super Parnter--</option>
-                        </select>
+                        <option value="">--Select Super Partner--</option>
+                        {partners.map((its, indx) => (
+                          <option key={its._id} value={its._id}>{its.first_name}</option>
+                        ))}
+                      </select>
                     </td>
-                    <td><input type="number" name="supper_partner_percentage" value={form.supper_partner_percentage} className="form-control" onChange={handleChange}/></td>
+                    <td><input type="number" name="supper_partner_percentage" 
+                    value={form.supper_partner_percentage} className="form-control" onChange={handleChange}/>
+                    <span
+  className={`badge ${form.sup_status === 'A' ? 'bg-success' : 'bg-danger'}`}
+  onClick={() => Approve(form._id, 'S')}
+  style={{ cursor: 'pointer' }}
+>
+  Approve
+</span></td>
                     <td><input type="number" name="supper_partner_percentage_amount" value={form.supper_partner_percentage_amount} className="form-control" onChange={handleChange}/></td>
                 </tr>
                  <tr>
                     <td>
-                        <select className="form-select" name="sales_partner_id" onChange={handleChange}>
+                        <select className="form-select" value={form.sales_partner_id} name="sales_partner_id" onChange={handleChange}>
                             <option>--Select Sales Parnter--</option>
+                            {partners.map((its, indx) => (
+                          <option key={its._id} value={its._id}>{its.first_name}</option>
+                        ))}
                         </select>
+                        
                     </td>
-                    <td><input type="number" name="sales_partner_percentage" value={form.sales_partner_percentage} className="form-control" onChange={handleChange}/></td>
+                    <td><input type="number" name="sales_partner_percentage" value={form.sales_partner_percentage} 
+                    className="form-control" onChange={handleChange}/>
+                    <span
+  className={`badge ${form.sales_status === 'A' ? 'bg-success' : 'bg-danger'}`}
+  onClick={() => Approve(form._id, 'P')}
+  style={{ cursor: 'pointer' }}
+>
+  Approve
+</span>
+                    </td>
                     <td><input type="number" name="sales_partner_percentage_amount" value={form.sales_partner_percentage_amount} className="form-control" onChange={handleChange}/></td>
                 </tr>
                 <tr>
                     <td>
-                        <select className="form-select" name="lead_partner_id"  onChange={handleChange}>
+                        <select className="form-select" value={form.lead_partner_id} name="lead_partner_id"  onChange={handleChange}>
                             <option>--Select Sales Parnter--</option>
+                            {partners.map((its, indx) => (
+                          <option key={its._id} value={its._id}>{its.first_name}</option>
+                        ))}
                         </select>
                     </td>
-                    <td><input type="number" name="lead_partner_percentage" value={form.lead_partner_percentage} className="form-control" onChange={handleChange}/></td>
+                    <td><input type="number" name="lead_partner_percentage" value={form.lead_partner_percentage} 
+                    className="form-control" onChange={handleChange}/>
+                    <span
+  className={`badge ${form.lead_status === 'A' ? 'bg-success' : 'bg-danger'}`}
+  onClick={() => Approve(form._id, 'L')}
+  style={{ cursor: 'pointer' }}
+>
+  Approve
+</span>
+                    </td>
                     <td><input type="number" name="lead_partner_percentage_amount" value={form.lead_partner_percentage_amount} className="form-control" onChange={handleChange}/></td>
                 </tr>
 

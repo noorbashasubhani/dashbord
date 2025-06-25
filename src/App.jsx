@@ -84,7 +84,20 @@ import Callendar from './vendorDashbord/pages/Callender.jsx'
 import Payroll from './vendorDashbord/pages/Payroll.jsx'
 import LeadsCommentDetails from './vendorDashbord/pages/LeadsCommentDetails.jsx'
 import Ledger from './vendorDashbord/pages/Ledger.jsx'
-
+import NewPartner from './vendorDashbord/pages/NewPartner.jsx'
+import PartnerRegistration from './vendorDashbord/pages/PartnerRegistration.jsx'
+import Reimbursement from './vendorDashbord/pages/Reimbursement.jsx'
+import DeductionForm from './vendorDashbord/pages/DeductionForm.jsx'
+import Receipts from './vendorDashbord/pages/TabbedView.jsx'
+import ReservationTab from './vendorDashbord/pages/ReservationTab.jsx'
+import InternationalPyments from './vendorDashbord/pages/InternationalPayments.jsx'
+import { Credits } from './vendorDashbord/pages/Credits.jsx'
+import InternationalCredits from './vendorDashbord/pages/InternationalCredits.jsx'
+import { CustomerSupports } from './vendorDashbord/pages/CustomerSupports.jsx'
+import { Payable } from './vendorDashbord/pages/Payable.jsx'
+import Revenue from './vendorDashbord/pages/Revenu.jsx'
+import DailySales from './vendorDashbord/pages/DailySale.jsx'
+import DailySalesReport from './vendorDashbord/pages/DailySalesReport.jsx'
 
  //import { EmpProvider } from '../EmpContext'
 const App = () => {
@@ -175,6 +188,22 @@ const App = () => {
         <Route path="/Payroll" element={<ProtectedRoute element={<Payroll />} />} />
         <Route path="/Leads-Comments" element={<ProtectedRoute element={<LeadsCommentDetails />} />} />
         <Route path="/Ledger" element={<ProtectedRoute element={<Ledger />} />} />
+        <Route path="/New-Partners" element={<ProtectedRoute element={<NewPartner />} />} />
+        <Route path="/Registration-Form/:code" element={<ProtectedRoute element={<PartnerRegistration />} />} />
+        <Route path="/Reimbusment" element={<ProtectedRoute element={<Reimbursement />} />} />
+        <Route path="/Deductions" element={<ProtectedRoute element={<DeductionForm />} />} />
+         
+         <Route path="/Receiptstabs" element={<ProtectedRoute element={<Receipts />} />} />
+
+         <Route path="/Reservations" element={<ProtectedRoute element={<ReservationTab />} />} />
+         <Route path="/Reservations-International" element={<ProtectedRoute element={<InternationalPyments />} />} />
+         <Route path="/Crdits-Details" element={<ProtectedRoute element={<Credits />} />} />
+         <Route path="/Int-Crdits-Details" element={<ProtectedRoute element={<InternationalCredits />} />} />
+         <Route path="/Customer-Supports" element={<ProtectedRoute element={<CustomerSupports />} />} />
+         <Route path="/Payable-Report" element={<ProtectedRoute element={<Payable />} />} />
+         <Route path="/Revenu-Details" element={<ProtectedRoute element={<Revenue />} />} />
+         <Route path="/Daily-Sales-Add" element={<ProtectedRoute element={<DailySales />} />} />
+         <Route path="/Daily-Sales-Report" element={<ProtectedRoute element={<DailySalesReport />} />} />
          
       </Routes>
       

@@ -58,11 +58,9 @@ const Hotels = () => {
         const data = await response.json();
   
         // Ensure that data is an array and contains valid hotel objects
-        if (Array.isArray(data)) {
-          setHotels(data);
-        } else {
-          throw new Error('Invalid data format');
-        }
+        
+          setHotels(data.data);
+       
       } catch (err) {
         setError(err.message);
       } finally {

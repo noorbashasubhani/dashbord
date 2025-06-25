@@ -93,15 +93,19 @@ const SideMenu = () => {
   const userNew=()=>{
     navigate('/Pending-Users'); 
   }
+  const partNew=()=>{ navigate('/New-Partners'); }
   const pass=()=>{
     navigate('/Password-visible');
   }
   const recfun=()=>{
     navigate('/Recovery');
   }
+  const recmb=()=>{
+    navigate('/Reimbusment');
+  }
   const d_credit=()=>{
     
-    navigate('/Domestic-Credit');
+    navigate('/Crdits-Details');
   }
   const mast=()=>{ navigate('/Masters');}
 
@@ -152,6 +156,27 @@ const SideMenu = () => {
   }
   const ledger=()=>{
     navigate('/Ledger');
+  }
+  const pardec=()=>{
+    navigate('/Deductions');
+  }
+  const Receiptstabs=()=>{
+    navigate('/Receiptstabs');
+  }
+  const Reservations=()=>{
+    navigate('/Reservations');
+  }
+  const customerSupport=()=>{
+    navigate('/Customer-Supports');
+  }
+  const revenun=()=>{
+    navigate('/Revenu-Details');
+  }
+  const payable=()=>{
+    navigate('/Payable-Report');
+  }
+  const dailysal=()=>{
+    navigate('/Daily-Sales-Report');
   }
   return (
     <aside id="sidebar" className="sidebar">
@@ -302,7 +327,7 @@ const SideMenu = () => {
         data-bs-parent="#sidebar-nav"
       >
         <li>
-          <a href="charts-chartjs.html">
+          <a onClick={Reservations}>
             <i className="bi bi-alipay" />
             <span>Package Payment</span>
           </a>
@@ -346,31 +371,26 @@ const SideMenu = () => {
           </a>
         </li>
         <li>
-          <a href="icons-boxicons.html">
+          <a onClick={recmb}>
             <i className="bi bi-repeat" />
             <span>Reiumbursment</span>
           </a>
         </li>
         <li>
-          <a href="icons-boxicons.html">
+          <a >
             <i className="bi bi-paypal" />
             <span>Partner Payout</span>
           </a>
         </li>
         <li>
-          <a href="icons-boxicons.html">
+          <a onClick={pardec}>
             <i className="bi bi-scissors" />
             <span>Partner Deductions</span>
           </a>
         </li>
+        
         <li>
-          <a href="icons-boxicons.html">
-            <i className="bi bi-tools" />
-            <span>Employee Deductions</span>
-          </a>
-        </li>
-        <li>
-          <a href="icons-boxicons.html">
+          <a onClick={Receiptstabs}>
             <i className="bi bi-wallet2" />
             <span>Receipts</span>
           </a>
@@ -406,13 +426,13 @@ const SideMenu = () => {
           </a>
         </li>
         <li>
-          <a href="icons-boxicons.html">
+          <a onClick={revenun}>
             <i className="bi bi-currency-exchange" />
             <span>Revenue Report</span>
           </a>
         </li>
         <li>
-          <a href="icons-boxicons.html">
+          <a onClick={payable}>
             <i className="bi bi-currency-rupee" />
             <span>Payable  Report</span>
           </a>
@@ -444,7 +464,7 @@ const SideMenu = () => {
           </a>
         </li>
         <li>
-          <a href="icons-remix.html">
+          <a onClick={dailysal}>
             <i className="bi bi-circle" />
             <span>Daily Sales Report</span>
           </a>
@@ -465,7 +485,7 @@ const SideMenu = () => {
       </ul>
     </li>
     <li className="nav-item">
-      <a className="nav-link collapsed" href="pages-faq.html">
+      <a className="nav-link collapsed" onClick={customerSupport}>
         <i className="bi bi-question-circle" />
         <span>Customer Support</span>
       </a>
@@ -497,6 +517,12 @@ const SideMenu = () => {
           <a onClick={userNew}>
             <i className="bi bi-circle" />
             <span>New Users</span>
+          </a>
+        </li>
+                <li>
+          <a onClick={partNew}>
+            <i className="bi bi-circle" />
+            <span>New Partner</span>
           </a>
         </li>
        
