@@ -2,7 +2,7 @@ import React from 'react'
 import { useState,useReducer,useEffect } from 'react'
 import { API_URL } from '../data/apiUrl'
 
-export const OnlineHotel = ({ customerData, row_id }) => {
+export const OnlineHotel = ({ customerData, row_id ,onUpdate }) => {
     const [data,setData]=useState([]);
     const [form,setForm]=useState({
         price_source: '',
@@ -46,7 +46,7 @@ export const OnlineHotel = ({ customerData, row_id }) => {
         const getingdata = await resp.json();
         //console.log("Fetched Data:", getingdata.data);
         setData(getingdata.data);
-        
+        if (onUpdate) onUpdate();
         }catch(err){
             console.log(err.message);
         }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { API_URL } from '../data/apiUrl';
 
-const InternationalSuppliers = ({ row_id }) => {
+const InternationalSuppliers = ({ customerData, row_id ,onUpdate }) => {
   const [form, setForm] = useState({
     destination: '',
     company_name: '',
@@ -25,6 +25,7 @@ const [editingId, setEditingId] = useState(null);
       const response = await fetch(`${API_URL}/vendor/Supplier/${row_id}`);
       const data = await response.json();
       setSuppliers(data.data || []);
+      if (onUpdate) onUpdate();
     } catch (err) {
       console.error('Error fetching suppliers:', err);
     }

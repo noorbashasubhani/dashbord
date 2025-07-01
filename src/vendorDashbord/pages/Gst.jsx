@@ -5,7 +5,7 @@ import SideBar from '../components/SideBar';
 import Footer from '../components/forms/Footer';
 import { useNavigate } from 'react-router-dom';
 
-const LTA = () => {
+const Gst = () => {
   const navigate = useNavigate();
   const [ltaList, setLtaList] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -119,4 +119,4 @@ const LTA = () => {
   );
 };
 
-export default LTA;
+export default Gst;

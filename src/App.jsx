@@ -98,7 +98,15 @@ import { Payable } from './vendorDashbord/pages/Payable.jsx'
 import Revenue from './vendorDashbord/pages/Revenu.jsx'
 import DailySales from './vendorDashbord/pages/DailySale.jsx'
 import DailySalesReport from './vendorDashbord/pages/DailySalesReport.jsx'
-
+import ProductivityReport from './vendorDashbord/pages/ProductivityReport.jsx'
+import CIH from './vendorDashbord/pages/CIH.jsx'
+import PartnerReport from './vendorDashbord/pages/PartnerReport.jsx'
+import AddLTA from './vendorDashbord/pages/AddLTA.jsx'
+import LTA from './vendorDashbord/pages/LTA.jsx'
+import EditLTA from './vendorDashbord/pages/EditLTA.jsx'
+import AddIvoice from './vendorDashbord/pages/AddIvoice.jsx'
+import PartnerApproval from './vendorDashbord/pages/PartnerApproval.jsx'
+import FormView from './vendorDashbord/pages/FormView.jsx'
  //import { EmpProvider } from '../EmpContext'
 const App = () => {
   return (
@@ -204,6 +212,15 @@ const App = () => {
          <Route path="/Revenu-Details" element={<ProtectedRoute element={<Revenue />} />} />
          <Route path="/Daily-Sales-Add" element={<ProtectedRoute element={<DailySales />} />} />
          <Route path="/Daily-Sales-Report" element={<ProtectedRoute element={<DailySalesReport />} />} />
+         <Route path="/Product-Report" element={<ProtectedRoute element={<ProductivityReport />} />} />
+         <Route path="/CIH" element={<ProtectedRoute element={<CIH />} />} />
+         <Route path="/Partners-Report-Business" element={<ProtectedRoute element={<PartnerReport />} />} />
+         <Route path="/Add-LTA" element={<ProtectedRoute element={<AddLTA />} />} />
+         <Route path="/LTA" element={<ProtectedRoute element={<LTA />} />} />
+         <Route path="/edit-lta/:id" element={<ProtectedRoute element={<EditLTA />} />} />
+         <Route path="/Add-Invoice" element={<ProtectedRoute element={<AddIvoice />} />} />
+         <Route path="/Parner-Approval" element={<ProtectedRoute element={<PartnerApproval />} />} />
+         <Route path="/View-Form-Domestic/:row_id" element={<ProtectedRoute element={<FormView />} />} />
          
       </Routes>
       

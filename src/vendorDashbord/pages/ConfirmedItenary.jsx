@@ -8,6 +8,8 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
+import { Link } from 'react-router-dom';
+
 
 const ConfirmedItenary = () => {
   const [leads, setLeads] = useState([]);
@@ -152,7 +154,13 @@ const userId = user.userId;
                               <td>{lead.calculation_data?.total_tcs_cost}</td>
                               <td></td>
                               <td>{lead.start_date} To {lead.end_date}</td>
-                              <td><button className="btn btn-sm btn-primary" onClick={()=>celFun(lead._id)}>Cancel</button></td>
+                              <td>
+                                <button className="btn btn-sm btn-primary" onClick={()=>celFun(lead._id)}>Cancel</button>
+                               <Link to={`/View-Form-Domestic/${lead._id}`}>
+  <button className="btn btn-success btn-sm">View</button>
+</Link>
+
+                                </td>
                             </tr>
                           ))}
                         </tbody>

@@ -40,7 +40,7 @@ export const Suppliers = ({ customerData, row_id, onUpdate }) => {
             }
             const resdata=await res.json();
             dispatch({type:'FETC',payload:resdata.data});
-
+            if (onUpdate) onUpdate();
         }catch(err){
          console.log(err.message);
          dispatch({type:'FETC',error_msg:err.message});

@@ -18,7 +18,7 @@ const Partners = () => {
           throw new Error('Failed to fetch employee details');
         }
         const data = await response.json();
-        setEmp(data); // This will store the list of employees
+        setEmp(data.data); // This will store the list of employees
       } catch (err) {
         setError(err.message);
       } finally {

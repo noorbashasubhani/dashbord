@@ -4,158 +4,138 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Layout from '../components/Layout';
 
-const DomestciHotels = ({leads, row_id }) => {
- // alert(row_id);
+// ✅ Initial form state constant
+const initialFormState = {
+  hotel_id: '',
+  hotel_rating: '',
+  location: '',
+  contact_person: '',
+  contact_number: '',
+  check_in_date: '',
+  check_out_date: '',
+  in_time: '',
+  out_time: '',
+  meals_plan: '',
+  single_room_cost: 0,
+  double_room_cost: 0,
+  triple_room_cost: 0,
+  extra_room_cost: 0,
+  no_of_single_rooms: 0,
+  no_of_double_rooms: 0,
+  no_of_triple_rooms: 0,
+  no_of_extra_rooms: 0,
+  no_of_single_room_nights: 0,
+  no_double_room_nights: 0,
+  no_of_triple_room_nights: 0,
+  no_of_extra_room_nights: 0,
+  single_category: '',
+  double_category: '',
+  triple_category: '',
+  extra_category: '',
+  cost_for_single: 0,
+  cost_for_double: 0,
+  cost_for_triple: 0,
+  cost_for_extra: 0,
+  final_cost: 0
+};
+
+const DomestciHotels = ({ leads, row_id, onUpdate }) => {
   const [showModal, setShowModal] = useState(false);
-  const [docId] = useState(row_id || '');
-  const [hotels,setHotels]=useState([]);
-  const [formHotels,setForHotels]=useState([]);
-   console.log('Hotel  details are :'+ hotels);
-  const [form, setForm] = useState({
-    hotel_id: '',
-    hotel_rating: '',
-    location: '',
-    contact_person: '',
-    contact_number: '',
-    check_in_date: '',
-    check_out_date: '',
-    in_time: '',
-    out_time: '',
-    meals_plan: '',
-    single_room_cost: 0,
-    double_room_cost: 0,
-    triple_room_cost: 0,
-    extra_room_cost: 0,
-    no_of_single_rooms: 0,
-    no_of_double_rooms: 0,
-    no_of_triple_rooms: 0,
-    no_of_extra_rooms: 0,
-    no_of_single_room_nights: 0,
-    no_double_room_nights: 0,
-    no_of_triple_room_nights: 0,
-    no_of_extra_room_nights: 0,
-    single_category: '',
-    double_category: '',
-    triple_category: '',
-    extra_category: '',
-    cost_for_single: 0,
-    cost_for_double: 0,
-    cost_for_triple: 0,
-    cost_for_extra: 0,
-    final_cost: 0
-  });
-  
-  const getHotelsData=async()=>{
-    try{
-      const getDatas=await fetch(`${API_URL}/vendor/Domestic-Hotel/${row_id}`);
-      if(!getDatas.ok){
-        throw new Error('Data not fetching this rurl');
-      }
-      const formHotels=await getDatas.json();
-      setForHotels(formHotels.data);
-    }catch(err){
-         console.log(err.message);
-    }
-    
-  }
+  const [hotels, setHotels] = useState([]);
+  const [formHotels, setForHotels] = useState([]);
+  const [form, setForm] = useState(initialFormState);
 
+  // ✅ Fetch all hotel options and this lead's hotel entries
   useEffect(() => {
-   getHotels();
-   getHotelsData();
+    getHotels();
+    getHotelsData();
+    
   }, []);
-  
-  const getHotels=async()=>{
-    try{
-      const datfets=await fetch(`${API_URL}/vendor/Gethotels`);
-      if(!datfets.ok){
-        throw new Error('This data not getting somethingwent wrong....');
-      }
-      const datas=await datfets.json();
-      setHotels(datas.data);
-    }catch(err){
-     console.log(err.message);
+
+  const getHotels = async () => {
+    try {
+      const res = await fetch(`${API_URL}/vendor/Gethotels`);
+      const data = await res.json();
+      setHotels(data.data);
+      if (onUpdate) onUpdate();
+    } catch (err) {
+      console.log(err.message);
     }
-  }
-
-
-  const handleChange = (e) => {
-  const { name, value, type } = e.target;
-
- if (name === 'hotel_id') {
-    const selectedHotel = hotels.find(h => h._id === value);
-    setForm({
-      ...form,
-      hotel_id: value,
-      hotel_rating: selectedHotel?.hotel_rating || '',
-      location: selectedHotel?.hotel_city || '',
-      contact_person: selectedHotel?.contact_person || '',
-      contact_number: selectedHotel?.contact_no || '',
-    });
-  }else{
-
-    setForm((prev) => ({
-      ...prev,
-      [name]: type === 'number' ? parseFloat(value) || 0 : value
-    }));
-  }
   };
 
- useEffect(() => {
-  const {
-    check_in_date,
-    check_out_date,
-    single_room_cost, no_of_single_rooms,
-    double_room_cost, no_of_double_rooms,
-    triple_room_cost, no_of_triple_rooms,
-    extra_room_cost, no_of_extra_rooms
-  } = form;
+  const getHotelsData = async () => {
+    try {
+      const res = await fetch(`${API_URL}/vendor/Domestic-Hotel/${row_id}`);
+      const data = await res.json();
+      setForHotels(data.data);
+      if (onUpdate) onUpdate();
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
 
-  // Calculate date difference
-  let number_of_nights = 0;
-  if (check_in_date && check_out_date) {
-    const checkIn = new Date(check_in_date);
-    const checkOut = new Date(check_out_date);
-    const diffTime = checkOut - checkIn;
-    number_of_nights = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    if (number_of_nights < 0) number_of_nights = 0;
-  }
+  const handleChange = (e) => {
+    const { name, value, type } = e.target;
 
-  // Use number_of_nights as room_nights
-  const no_of_single_room_nights = number_of_nights;
-  const no_double_room_nights = number_of_nights;
-  const no_of_triple_room_nights = number_of_nights;
-  const no_of_extra_room_nights = number_of_nights;
+    if (name === 'hotel_id') {
+      const selectedHotel = hotels.find(h => h._id === value);
+      setForm({
+        ...form,
+        hotel_id: value,
+        hotel_rating: selectedHotel?.hotel_rating || '',
+        location: selectedHotel?.hotel_city || '',
+        contact_person: selectedHotel?.contact_person || '',
+        contact_number: selectedHotel?.contact_no || '',
+      });
+    } else {
+      setForm(prev => ({
+        ...prev,
+        [name]: type === 'number' ? parseFloat(value) || 0 : value
+      }));
+    }
+  };
 
-  // Calculate costs
-  const cost_for_single = single_room_cost * no_of_single_rooms * no_of_single_room_nights;
-  const cost_for_double = double_room_cost * no_of_double_rooms * no_double_room_nights;
-  const cost_for_triple = triple_room_cost * no_of_triple_rooms * no_of_triple_room_nights;
-  const cost_for_extra = extra_room_cost * no_of_extra_rooms * no_of_extra_room_nights;
+  // ✅ Auto calculate cost and nights
+  useEffect(() => {
+    const {
+      check_in_date, check_out_date,
+      single_room_cost, no_of_single_rooms,
+      double_room_cost, no_of_double_rooms,
+      triple_room_cost, no_of_triple_rooms,
+      extra_room_cost, no_of_extra_rooms
+    } = form;
 
-  const final_cost = cost_for_single + cost_for_double + cost_for_triple + cost_for_extra;
+    let number_of_nights = 0;
+    if (check_in_date && check_out_date) {
+      const checkIn = new Date(check_in_date);
+      const checkOut = new Date(check_out_date);
+      const diffTime = checkOut - checkIn;
+      number_of_nights = Math.max(Math.ceil(diffTime / (1000 * 60 * 60 * 24)), 0);
+    }
 
-  setForm((prev) => ({
-    ...prev,
-    number_of_nights,
-    no_of_single_room_nights,
-    no_double_room_nights,
-    no_of_triple_room_nights,
-    no_of_extra_room_nights,
-    cost_for_single,
-    cost_for_double,
-    cost_for_triple,
-    cost_for_extra,
-    final_cost,
-  }));
-}, [
-  form.check_in_date, form.check_out_date,
-  form.single_room_cost, form.no_of_single_rooms,
-  form.double_room_cost, form.no_of_double_rooms,
-  form.triple_room_cost, form.no_of_triple_rooms,
-  form.extra_room_cost, form.no_of_extra_rooms
-]);
+    const updatedForm = {
+      no_of_single_room_nights: number_of_nights,
+      no_double_room_nights: number_of_nights,
+      no_of_triple_room_nights: number_of_nights,
+      no_of_extra_room_nights: number_of_nights,
+      cost_for_single: single_room_cost * no_of_single_rooms * number_of_nights,
+      cost_for_double: double_room_cost * no_of_double_rooms * number_of_nights,
+      cost_for_triple: triple_room_cost * no_of_triple_rooms * number_of_nights,
+      cost_for_extra: extra_room_cost * no_of_extra_rooms * number_of_nights,
+    };
 
+    updatedForm.final_cost = Object.values(updatedForm).slice(4).reduce((acc, val) => acc + val, 0);
 
+    setForm(prev => ({ ...prev, ...updatedForm }));
+  }, [
+    form.check_in_date, form.check_out_date,
+    form.single_room_cost, form.no_of_single_rooms,
+    form.double_room_cost, form.no_of_double_rooms,
+    form.triple_room_cost, form.no_of_triple_rooms,
+    form.extra_room_cost, form.no_of_extra_rooms
+  ]);
+
+  // ✅ Submit or Update
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -163,48 +143,45 @@ const DomestciHotels = ({leads, row_id }) => {
       const url = form._id
         ? `${API_URL}/vendor/Domestic-Hotel/${form._id}`
         : `${API_URL}/vendor/Domestic-Hotel/${row_id}`;
+
       const res = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form)
       });
+
       if (!res.ok) throw new Error('Failed to save hotel details');
       toast.success(form._id ? 'Updated successfully' : 'Added successfully');
       setShowModal(false);
-      setForm(initialForm);
-      //fetchFormHotels();
-      getHotelsData();
+      setForm(initialFormState);
+      await getHotelsData();
+      if (onUpdate) onUpdate(); // ✅ Ensure totals refresh
     } catch (err) {
       console.error(err);
       toast.error(err.message);
     }
   };
 
-
-  const delFun=async(del_id)=>{
-    
-     try{
-       const delres=await fetch(`${API_URL}/vendor/Domestic-Hotel/${del_id}`,{
-        method:'Delete'
-       });
-       if(!delres.ok){
-        throw new Error('Data not deleted');
-       }
-       getHotelsData();
-     }catch(err){
+  const delFun = async (del_id) => {
+    try {
+      const res = await fetch(`${API_URL}/vendor/Domestic-Hotel/${del_id}`, {
+        method: 'DELETE'
+      });
+      if (!res.ok) throw new Error('Data not deleted');
+      await getHotelsData();
+      if (onUpdate) onUpdate(); // ✅ Ensure totals refresh
+    } catch (err) {
       console.log(err.message);
-     }
-  }
+    }
+  };
 
-  const handleEditClick=async(hotelData)=>{
-    
+  const handleEditClick = (hotelData) => {
     setShowModal(true);
-     // setForm({ ...form, ...hotel });
-      setForm({
-    ...hotelData,
-    hotel_id: hotelData.hotel_id?._id || '',  // 👈 convert object to string
-  });
-  }
+    setForm({
+      ...hotelData,
+      hotel_id: hotelData.hotel_id?._id || ''
+    });
+  };
   return (
     <Layout>
       <div className="row mt-5">

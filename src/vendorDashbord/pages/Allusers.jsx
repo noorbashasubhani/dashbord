@@ -20,7 +20,7 @@ const Allusers = () => {
           throw new Error('Failed to fetch employee details');
         }
         const data = await response.json();
-        setEmp(data); // This will store the list of employees
+        setEmp(data.data); // This will store the list of employees
       } catch (err) {
         setError(err.message);
       } finally {
@@ -100,8 +100,8 @@ const goTonew=(row_id)=>{
                             <td>{emps.code}</td>
                             <td>{emps.first_name} {emps.last_name}</td> {/* Employee name */}
                             <td>{emps.email}</td> {/* Employee joining date */}
-                            <td>{emps.department_id.name}</td> {/* Employee joining date */}
-                            <td>{emps.designation_id.name}</td> {/* Employee joining date */}
+                            <td>{emps.department_id?.name}</td> {/* Employee joining date */}
+                            <td>{emps.designation_id?.name}</td> {/* Employee joining date */}
                             <td>{emps.joining_date}</td>
                             <td>Hyderabad Begumpet White House Building</td> {/* Employee joining date */}
                             <td>confidential</td> {/* Employee joining date */}

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { API_URL } from '../data/apiUrl';
 
-const BussDetails = ({ customerData, row_id }) => {
+const BussDetails = ({ customerData, row_id,onUpdate }) => {
   const [showForm, setShowForm] = useState(false);
   const [isEditMode, setIsEditMode] = useState(!!customerData); // True if editing
   const [formData, setFormData] = useState({
@@ -56,6 +56,7 @@ const BussDetails = ({ customerData, row_id }) => {
         if (response.ok) {
           const data = await response.json();
           setBusDetails(data.data); // Set bus details to state
+          if (onUpdate) onUpdate();
         } else {
           alert("Failed to fetch bus details");
         }

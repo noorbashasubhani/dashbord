@@ -203,7 +203,7 @@ const handleFoodPrefChange = (selectedOptions) => {
     
                   <div className="col-3 form-group mb-3">
                     <label>Package Type</label>
-                      <select  type="text" className="form-control" value={formData.package_type} name="package_type" onChange={handleChange}>
+                      <select  type="text" className="form-control" value={formData.package_type} name="package_type" onChange={handleChange} required>
                         <option value="">Select </option>
                         <option value="Standard">Standard</option>
                         <option value="Budget">Budget </option>
@@ -212,7 +212,7 @@ const handleFoodPrefChange = (selectedOptions) => {
                   </div>
                   <div className="col-3 form-group mb-3">
                     <label>Customer Type</label>
-                      <select  type="text" className="form-control" name="customer_type" value={formData.customer_type} onChange={handleChange}>
+                      <select  type="text" className="form-control" name="customer_type" value={formData.customer_type} onChange={handleChange} required>
                         <option value="">Select </option>
                         <option value="New Customer">New Customer</option>
                         <option value="Return Customer">Return Customer </option>
@@ -225,7 +225,7 @@ const handleFoodPrefChange = (selectedOptions) => {
   className="form-select"
   name="lead_source"
   id="lead_source" onChange={handleChange}
-  value={formData.lead_source}
+  value={formData.lead_source} required
 >
   <option value="">Select Source Type</option>
   <option value="Website">Website</option>
@@ -256,7 +256,7 @@ const handleFoodPrefChange = (selectedOptions) => {
                         className="form-control"
                         name="customer_name"
                         value={formData.customer_name}
-                        id="customer_name" onChange={handleChange}
+                        id="customer_name" onChange={handleChange} required
                       />
                     </div>
                     <div className="col-4">
@@ -266,7 +266,7 @@ const handleFoodPrefChange = (selectedOptions) => {
                         className="form-control"
                         name="customer_number"
                         value={formData.customer_number}
-                        id="customer_number" onChange={handleChange}
+                        id="customer_number" onChange={handleChange} required
                       />
                     </div>
                     <div className="col-4">
@@ -315,7 +315,7 @@ const handleFoodPrefChange = (selectedOptions) => {
                   <div className="row my-5"> 
                   <div className="col-6 form-group mb-3">
                     <label>Holiday Type</label>
-                      <select  type="text" className="form-control" value={formData.holiday_type} name="holiday_type" onChange={handleChange}>
+                      <select  type="text" className="form-control" value={formData.holiday_type} name="holiday_type" onChange={handleChange} required>
                         <option value="">Select </option>
                         <option value="Domestic">Domestic</option>
                         <option value="International">International </option>
@@ -345,7 +345,7 @@ const handleFoodPrefChange = (selectedOptions) => {
       ...prev,
       holiday_destination: selected || { _id: "", destination_name: "" }
     }));
-  }}
+  }} required
 >
   <option value="">Select</option>
   {dest.map((itms) => (
@@ -371,7 +371,7 @@ const handleFoodPrefChange = (selectedOptions) => {
       ...formData,
       visiting_city: selectedOptions.map(option => option.value),
     })
-  }
+  } required
 />
 </div>
 
@@ -382,7 +382,7 @@ const handleFoodPrefChange = (selectedOptions) => {
                         className="form-control"
                         name="start_date"
                         value={formData.start_date}
-                        id="start_date" onChange={handleChange}
+                        id="start_date" onChange={handleChange} required
                       />
                     </div>
                     <div className="col-6">
@@ -392,7 +392,7 @@ const handleFoodPrefChange = (selectedOptions) => {
                         className="form-control"
                         name="end_date"
                         value={formData.end_date}
-                        id="end_date" onChange={handleChange}
+                        id="end_date" onChange={handleChange} required
                       />
                     </div>
                     <div className="col-6">
@@ -403,7 +403,7 @@ const handleFoodPrefChange = (selectedOptions) => {
                         name="duration"
                         value={formData.duration}
                         id="duration" 
-                        onChange={handleChange}
+                        onChange={handleChange} disabled
                       />
                     </div>
                     <div className="col-6 form-group">
@@ -412,7 +412,7 @@ const handleFoodPrefChange = (selectedOptions) => {
   className="form-control"
   name="transformation_mode"
   value={formData.transformation_mode}
-  onChange={handleChange}
+  onChange={handleChange} 
 >
   <option value="">Select</option>
   <option value="Fixed-With-Dates">Fixed With Dates</option>
@@ -439,7 +439,7 @@ const handleFoodPrefChange = (selectedOptions) => {
                         className="form-control"
                         name="no_of_adults"
                         value={ formData.no_of_adults || formData.no_of_adults}
-                        id="no_of_adults" onChange={handleChange}
+                        id="no_of_adults" onChange={handleChange} required
                       />
                     </div>
                     <div className="col-3">

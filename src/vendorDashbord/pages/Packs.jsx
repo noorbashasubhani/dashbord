@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { API_URL } from '../data/apiUrl';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from 'react-toastify';
 
 
 export const Packs = ({ row_id }) => {
@@ -58,29 +61,40 @@ export const Packs = ({ row_id }) => {
   };
 
   const handleSubmitConfirmed = async () => {
-    try {
-      const method = packData ? 'PUT' : 'POST';
-      const url = packData
-        ? `${API_URL}/vendor/FormPack/${packData._id}`
-        : `${API_URL}/vendor/FormPack/${row_id}`;
+  try {
+    const method = packData ? 'PUT' : 'POST';
+    const url = packData
+      ? `${API_URL}/vendor/FormPack/${packData._id}`
+      : `${API_URL}/vendor/FormPack/${row_id}`;
 
-      const res = await fetch(url, {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
-      });
+    const res = await fetch(url, {
+      method,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(form),
+    });
 
-      const result = await res.json();
-      if (!res.ok) throw new Error(result.message);
-      
-      fetchPack();
-      navigate('/Pending-Itenary');
-    } catch (err) {
-      alert(err.message);
-    } finally {
-      setShowConfirmModal(false);
+    const result = await res.json();
+
+    if (!res.ok) {
+      if (result.message && result.message.includes("Calculation must be fully approved")) {
+        toast.warning("All three partners must approve the calculation (Super, Sales, Lead).");
+      } else {
+        toast.error(result.message || "Something went wrong");
+      }
+      return;
     }
-  };
+
+    toast.success("Form Pack saved successfully!");
+    fetchPack();
+    navigate('/Pending-Itenary');
+
+  } catch (err) {
+    toast.error(`Error: ${err.message}`);
+  } finally {
+    setShowConfirmModal(false);
+  }
+};
+
 
   return (
     <div className="row mt-5">

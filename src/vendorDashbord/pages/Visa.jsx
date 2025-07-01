@@ -20,17 +20,14 @@ const Visa = ({ customerData, row_id, onUpdate }) => {
         const response = await fetch(`${API_URL}/vendor/Visa/${row_id}`);
         const data = await response.json();
         setVisaData(data);
+        if (onUpdate) onUpdate();
       } catch (err) {
         console.error('Error fetching visa data:', err);
       }
     };
   // Fetch visa data
   useEffect(() => {
-    
-
-    if (row_id) {
       fetchVisaData();
-    }
   }, [row_id]);
 
   useEffect(() => {
@@ -80,10 +77,10 @@ const Visa = ({ customerData, row_id, onUpdate }) => {
         throw new Error('Failed to save visa data');
       }
 
-    
+      
       fetchVisaData();
-     // const refreshedData = await refreshed.json();
-     // setVisaData(refreshedData);
+      if (onUpdate) onUpdate();
+     
     } catch (err) {
       console.error(err);
       alert("Error saving visa data");

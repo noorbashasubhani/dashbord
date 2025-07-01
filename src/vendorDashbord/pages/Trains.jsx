@@ -92,21 +92,7 @@ const reducer = (state, action) => {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-const Trains = ({ customerData, row_id }) => {
+const Trains = ({ customerData, row_id ,onUpdate }) => {
   const [state, dispatch] = useReducer(reducer, initialstatea);
 
   const getTrainsDetails = async (row_id) => {
@@ -117,6 +103,7 @@ const Trains = ({ customerData, row_id }) => {
       }
       const data = await res.json();
       dispatch({ type: 'FETCHING', payload: data.list });
+      if (onUpdate) onUpdate();
     } catch (err) {
       dispatch({ type: 'FETCHINGERROR', payload: err.message });
     }
@@ -160,35 +147,42 @@ const Trains = ({ customerData, row_id }) => {
     if (!res.ok) throw new Error(state.isEditing ? 'Failed to update train' : 'Failed to add train');
 
     const result = await res.json();
-    console.log('API result:', result);
-
     const updatedTrain = result.list || result;
-
-    console.log('Updated train:', updatedTrain);
 
     if (state.isEditing) {
       dispatch({ type: 'UPDATE_TRAIN', payload: updatedTrain });
     } else {
       dispatch({ type: 'ADD_TRAIN', payload: updatedTrain });
     }
+
+    // ✅ Trigger Calculation update after add/edit
+    if (onUpdate) onUpdate();
+
   } catch (err) {
     console.error(err.message);
   }
 };
 
 
-  const delFunc=async(row_id)=>{
-    try {
+
+  const delFunc = async (row_id) => {
+  try {
     const res = await fetch(`${API_URL}/vendor/Train/${row_id}`, {
       method: 'DELETE',
     });
 
     if (!res.ok) throw new Error('Failed to delete train');
+
     dispatch({ type: 'DELETE_TRAIN', payload: row_id });
-    } catch (err) {
-      console.error(err.message);
-    }
+
+    // ✅ Refresh calculation totals
+    if (onUpdate) onUpdate();
+
+  } catch (err) {
+    console.error(err.message);
   }
+};
+
 
   const editFunc=async(train)=>{
     

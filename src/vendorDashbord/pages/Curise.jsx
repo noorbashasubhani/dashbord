@@ -5,7 +5,7 @@ import Select from 'react-select';
 
 
 
-export const Cruise = ({ customerData, row_id }) => {
+export const Cruise = ({ customerData, row_id , onUpdate}) => {
     const [data,setData]=useState([]);
     const [form,setForm]=useState({
     cruise_supp:'',cruise_name:'',contact_person:'',contact_number:'',
@@ -69,6 +69,7 @@ useEffect(() => {
          }
         const getingdata = await resp.json();
         setData(getingdata.list);
+        if (onUpdate) onUpdate();
         }catch(err){
             console.log(err.message);
         }

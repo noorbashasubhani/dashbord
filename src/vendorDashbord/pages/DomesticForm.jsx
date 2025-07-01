@@ -257,26 +257,20 @@ const DomesticForm = () => {
         <section>
 
             <HolidaySummary customerData={leads} row_id={row_id} />
-
             <Flight customerData={leads} row_id={row_id} onUpdate={fetchAllTotals}/>
             <DomesticHotels customerData={leads} row_id={row_id} onUpdate={fetchAllTotals}/>
             <Transport customerData={leads} row_id={row_id} onUpdate={fetchAllTotals}/>
- <Trains customerData={leads} row_id={row_id} onUpdate={fetchAllTotals}/>
+            <Trains customerData={leads} row_id={row_id} onUpdate={fetchAllTotals}/>
             <BussDetails customerData={leads} row_id={row_id} onUpdate={fetchAllTotals}/>
-           
-            
             <Cruise customerData={leads} row_id={row_id} onUpdate={fetchAllTotals}/>
             <Suppliers customerData={leads} row_id={row_id} onUpdate={fetchAllTotals}/>
-            {/* <OnlineHotel customerData={leads} row_id={row_id} onUpdate={fetchAllTotals}/> */}
-            
-            
+            <Caluculation customerData={leads} row_id={row_id} totals={totals} onUpdate={fetchAllTotals}/>
+           
             <Day customerData={leads} row_id={row_id}/>
             <FormIncExc customerData={leads} row_id={row_id}/>
-            <Caluculation customerData={leads} row_id={row_id} totals={totals}/>
+            
             <Packs customerData={leads} row_id={row_id} />
-            {/* <Visa customerData={leads} row_id={row_id} onUpdate={fetchAllTotals} />
-            <Tcs customerData={leads} row_id={row_id} onUpdate={fetchAllTotals} />
-            <InternationalSuppliers row_id={row_id} onUpdate={fetchAllTotals}/> */}
+           
             
         </section>
 

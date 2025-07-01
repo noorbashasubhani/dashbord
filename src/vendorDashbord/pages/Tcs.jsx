@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { API_URL } from '../data/apiUrl';
 
-const Tcs = ({ row_id }) => {
+const Tcs = ({ customerData, row_id, onUpdate }) => {
   const [tcsData, setTcsData] = useState([]);
   const [form, setForm] = useState({
     is_customer_paying_tcs: '',
@@ -17,6 +17,7 @@ const Tcs = ({ row_id }) => {
       const response = await fetch(`${API_URL}/vendor/tcs/${row_id}`);
       const result = await response.json();
       setTcsData(result.data || []);
+       if (onUpdate) onUpdate();
     } catch (err) {
       console.error('Error fetching TCS data:', err);
     }
@@ -26,7 +27,7 @@ const Tcs = ({ row_id }) => {
   
 
   useEffect(() => {
-    if (row_id) fetchTcsData();
+    fetchTcsData();
   }, [row_id]);
 
   const handleChange = (e) => {
@@ -48,6 +49,7 @@ const Tcs = ({ row_id }) => {
 
      
       fetchTcsData();
+      if (onUpdate) onUpdate();
     } catch (err) {
       console.error(err);
       alert("Error saving TCS data");

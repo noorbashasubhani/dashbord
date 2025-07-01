@@ -8,15 +8,15 @@ const InternationalCal = ({ customerData, row_id , totals }) => {
 
 
    const { total_flight_cost,
-     total_cruise_cost,
+      total_cruise_cost,
       total_train_cost,
-     total_bus_cost,
-      transport_cost,
-       online_hotel_cost,
+      total_bus_cost,
+       transport_cost,
+        online_hotel_cost,
         domestic_hotel_cost,
         total_visa_cost,
         total_tcs_cost,
-     supplementary_cost, total_land } = totals;
+         supplementary_cost, total_land } = totals;
      //console.log("CALLING", totals.total_flight_cost);
 
 
@@ -148,7 +148,7 @@ useEffect(() => {
 
   fetchCalculation();
 }, [row_id, totals.total_land,totals.total_flight_cost,totals.total_cruise_cost,totals.total_train_cost,totals.total_bus_cost
-  ,totals.transport_cost,totals.online_hotel_cost,totals.domestic_hotel_cost]);
+  ,totals.transport_cost,totals.online_hotel_cost,totals.domestic_hotel_cost,totals.total_tcs_cost]);
 
 
   const fetchCalculation = async () => {
@@ -164,14 +164,14 @@ useEffect(() => {
         setForm(prev => ({
           ...prev,
           ...data.list,
-          land_cost: data.list.land_cost || totals.total_land || 0,
-          flight_cost_share: data.list.flight_cost_share || totals.total_flight_cost || 0,
-          cruise_cost:data.list.cruise_cost || totals.total_cruise_cost || 0,
-          sup_charges:data.list.sup_charges || totals.supplementary_cost || 0,
-          train_charges:data.list.train_charges || totals.total_train_cost || 0,
-          bus_charges:data.list.bus_charges || totals.total_bus_cost || 0,
-          visa_cost: data.list.total_visa_cost || totals.total_visa_cost || 0, // ✅ Corrected
-          total_tcs_cost: data.list.total_tcs_cost || totals.total_tcs_cost || 0,   // ✅ Corrected
+          land_cost:  totals.total_land || 0,
+          flight_cost_share: totals.total_flight_cost || 0,
+          cruise_cost:totals.total_cruise_cost || 0,
+          sup_charges:totals.supplementary_cost || 0,
+          train_charges:totals.total_train_cost || 0,
+          bus_charges:totals.total_bus_cost || 0,
+          visa_cost: totals.total_visa_cost || 0, // ✅ Corrected
+          total_tcs_cost: totals.total_tcs_cost || 0,   // ✅ Corrected
           
           
         }));
@@ -246,7 +246,19 @@ setForm((prev) => ({
         <div className="card">
           <div className="card-body">
             <h3 className="card-title" style={{ fontSize: '16px' }}>Caluculation Sheet Details</h3>
-           
+            <div
+  style={{
+    backgroundColor: '#fff3cd',
+    border: '1px solid #ffeeba',
+    padding: '10px 15px',
+    borderRadius: '5px',
+    color: '#856404',
+    fontSize: '14px',
+    marginTop: '15px',
+  }}
+>
+  <strong>Note:</strong> Please save the <strong>Calculation Sheet permanently</strong> if you have made any changes to the above details.
+</div>
             </div>
         </div>
         <table className="table table-stripped table-border table-sm table-bordered small">
@@ -261,17 +273,17 @@ setForm((prev) => ({
                 <tr>
                     <td>Land Cost</td>
                     <td></td>
-                    <td><input type="number" name="land_cost" className="form-control" value={form.land_cost} onChange={handleChange} /></td>
+                    <td><input type="number" name="land_cost" className="form-control" value={form.land_cost} onChange={handleChange} disabled/></td>
                 </tr>
                 <tr>
                     <td>Loading % on Land cost</td>
-                    <td><input type="number" name="loading_percentage_on_land" value={form.loading_percentage_on_land} className="form-control" onChange={handleChange}/></td>
-                    <td><input type="number" name="loading_amount_on_land" value={form.loading_amount_on_land} className="form-control" onChange={handleChange}/></td>
+                    <td><input type="number" name="loading_percentage_on_land" value={form.loading_percentage_on_land} className="form-control" onChange={handleChange} /></td>
+                    <td><input type="number" name="loading_amount_on_land" value={form.loading_amount_on_land} className="form-control" onChange={handleChange} disabled/></td>
                 </tr>
                 <tr>
                     <td>Cost to Company</td>
                     <td></td>
-                    <td><input type="number" name="cost_to_company" value={form.cost_to_company} className="form-control" onChange={handleChange}/></td>
+                    <td><input type="number" name="cost_to_company" value={form.cost_to_company} className="form-control" onChange={handleChange} disabled/></td>
                 </tr>
                  <tr>
                     <td>
@@ -279,8 +291,8 @@ setForm((prev) => ({
                             <option>--Select Super Parnter--</option>
                         </select>
                     </td>
-                    <td><input type="number" name="supper_partner_percentage" value={form.supper_partner_percentage} className="form-control" onChange={handleChange}/></td>
-                    <td><input type="number" name="supper_partner_percentage_amount" value={form.supper_partner_percentage_amount} className="form-control" onChange={handleChange}/></td>
+                    <td><input type="number" name="supper_partner_percentage" value={form.supper_partner_percentage} className="form-control" onChange={handleChange} /></td>
+                    <td><input type="number" name="supper_partner_percentage_amount" value={form.supper_partner_percentage_amount} className="form-control" onChange={handleChange} disabled/></td>
                 </tr>
                  <tr>
                     <td>
@@ -289,7 +301,7 @@ setForm((prev) => ({
                         </select>
                     </td>
                     <td><input type="number" name="sales_partner_percentage" value={form.sales_partner_percentage} className="form-control" onChange={handleChange}/></td>
-                    <td><input type="number" name="sales_partner_percentage_amount" value={form.sales_partner_percentage_amount} className="form-control" onChange={handleChange}/></td>
+                    <td><input type="number" name="sales_partner_percentage_amount" value={form.sales_partner_percentage_amount} className="form-control" onChange={handleChange} disabled/></td>
                 </tr>
                 <tr>
                     <td>
@@ -298,32 +310,35 @@ setForm((prev) => ({
                         </select>
                     </td>
                     <td><input type="number" name="lead_partner_percentage" value={form.lead_partner_percentage} className="form-control" onChange={handleChange}/></td>
-                    <td><input type="number" name="lead_partner_percentage_amount" value={form.lead_partner_percentage_amount} className="form-control" onChange={handleChange}/></td>
+                    <td><input type="number" name="lead_partner_percentage_amount" value={form.lead_partner_percentage_amount} className="form-control" onChange={handleChange} disabled/></td>
                 </tr>
 
                 <tr>
-                    <td>Partner Commissions</td>
-                    <td><input type="number" name="total_partners_percentage" value={form.total_partners_percentage} className="form-control" onChange={handleChange}/></td>
-                    <td><input type="number" name="total_partners_percentage_amount" value={form.total_partners_percentage_amount} className="form-control" onChange={handleChange}/></td>
+                    <td>Partner Commissions
+                       <p><strong ClassName="text-warning">Note:</strong> Partner commission must be under <strong>12%</strong> to enable saving.
+</p>
+                    </td>
+                    <td><input type="number" name="total_partners_percentage" value={form.total_partners_percentage} className="form-control" onChange={handleChange} disabled/></td>
+                    <td><input type="number" name="total_partners_percentage_amount" value={form.total_partners_percentage_amount} className="form-control" onChange={handleChange} disabled/></td>
                 </tr>
 
                 <tr>
                     <td>Cost to be Sold	</td>
                     <td></td>
-                    <td><input type="number" name="cost_to_be_sold" value={form.cost_to_be_sold} className="form-control" onChange={handleChange}/></td>
+                    <td><input type="number" name="cost_to_be_sold" value={form.cost_to_be_sold} className="form-control" onChange={handleChange} disabled/></td>
                 </tr>
 
                 <tr>
                     <td>Goods and Services Tax	</td>
                     <td><input type="number" name="goods_tax_percentage" value={form.goods_tax_percentage} className="form-control" onChange={handleChange}/></td>
-                    <td><input type="number" name="goods_tax_amount" value={form.goods_tax_amount} className="form-control" onChange={handleChange}/></td>
+                    <td><input type="number" name="goods_tax_amount" value={form.goods_tax_amount} className="form-control" onChange={handleChange} disabled/></td>
                 </tr>
 
                <tr className="table-primary1">
 
                     <td>Land cost after Goods and Services Tax & Commissions	</td>
                     <td></td>
-                    <td><input type="number" name="goods_tax_amount_after_land" value={form.goods_tax_amount_after_land} className="form-control" onChange={handleChange}/></td>
+                    <td><input type="number" name="goods_tax_amount_after_land" value={form.goods_tax_amount_after_land} className="form-control" onChange={handleChange} disabled/></td>
                 </tr>
                 
                  <tr className="table-primary1">
@@ -336,32 +351,32 @@ setForm((prev) => ({
 
                     <td>Total Package Cost Including GST & Remittance		</td>
                     <td></td>
-                    <td><input type="number" name="total_cost_remittance" value={form.total_cost_remittance} className="form-control" onChange={handleChange}/></td>
+                    <td><input type="number" name="total_cost_remittance" value={form.total_cost_remittance} className="form-control" onChange={handleChange} disabled/></td>
                 </tr>
                 
 
                 <tr className="bg-dark">
                     <td>Flight cost to be shared	</td>
                     <td></td>
-                    <td><input type="number" name="flight_cost_share" value={form.flight_cost_share} className="form-control" onChange={handleChange}/></td>
+                    <td><input type="number" name="flight_cost_share" value={form.flight_cost_share} className="form-control" onChange={handleChange} disabled/></td>
                 </tr>
 
                  <tr className="bg-dark">
                     <td>Loading % on Flight Cost	</td>
                     <td><input type="number" name="flight_cost_percentage" value={form.flight_cost_percentage} className="form-control" onChange={handleChange}/></td>
-                    <td><input type="number" name="flight_cost_amount" value={form.flight_cost_amount} className="form-control" onChange={handleChange}/></td>
+                    <td><input type="number" name="flight_cost_amount" value={form.flight_cost_amount} className="form-control" onChange={handleChange} disabled/></td>
                 </tr>
 
                  <tr className="bg-dark">
                     <td>Travel Insurance & Seat Selection(If flight is provided)	</td>
-                    <td><input type="text" name="" className="form-control" value="Add 500 Per Person" onChange={handleChange} readonly/></td>
+                    <td><input type="text" name="" className="form-control" value="Add 500 Per Person" onChange={handleChange} disabled/></td>
                     <td><input type="number" name="travel_insurance" value={form.travel_insurance} className="form-control" onChange={handleChange}/></td>
                 </tr>
 
                  <tr className="table-primary">
                     <td>Total Flight Cost	</td>
                     <td></td>
-                    <td><input type="number" name="total_flight_cost" value={form.total_flight_cost} className="form-control" onChange={handleChange}/></td>
+                    <td><input type="number" name="total_flight_cost" value={form.total_flight_cost} className="form-control" onChange={handleChange} disabled/></td>
                 </tr>
 
                 <tr className="bg-dark">
@@ -372,7 +387,7 @@ setForm((prev) => ({
                 <tr className="bg-dark">
                     <td>Loding % on cruise	</td>
                     <td><input type="number" name="loading_on_cruise_percentage" value={form.loading_on_cruise_percentage} className="form-control" onChange={handleChange}/></td>
-                    <td><input type="number" name="loading_on_cruise_amount" value={form.loading_on_cruise_amount} className="form-control" onChange={handleChange}/></td>
+                    <td><input type="number" name="loading_on_cruise_amount" value={form.loading_on_cruise_amount} className="form-control" onChange={handleChange} disabled/></td>
                 </tr>
 
                 <tr className="bg-dark">
@@ -382,18 +397,18 @@ setForm((prev) => ({
                     Sales Partner:<input type="number" name="sales_agent_commission" value={form.sales_agent_commission} className="form-control" onChange={handleChange}/>
                     Lead Generator:<input type="number" name="lead_agent_commission" value={form.lead_agent_commission} className="form-control" onChange={handleChange}/>
                     </td>
-                    <td><input type="number" name="total_agent_commission_amount" value={form.total_agent_commission_amount} className="form-control" onChange={handleChange}/></td>
+                    <td><input type="number" name="total_agent_commission_amount" value={form.total_agent_commission_amount} className="form-control" onChange={handleChange} disabled/></td>
                 </tr>
 
                 <tr className="table-primary">
                     <td>Cruise Cost After Loading	</td>
                     <td></td> 
-                    <td><input type="number" name="cruise_amount_after_loading" value={form.cruise_amount_after_loading} className="form-control" onChange={handleChange}/></td>
+                    <td><input type="number" name="cruise_amount_after_loading" value={form.cruise_amount_after_loading} className="form-control" onChange={handleChange} disabled/></td>
                 </tr>
                 <tr className="table-primary1">
                     <td> Visa cost		</td>
                     <td></td>
-                    <td><input type="number" name="visa_cost" value={form.visa_cost} className="form-control" onChange={handleChange}/></td>
+                    <td><input type="number" name="visa_cost" value={form.visa_cost} className="form-control" onChange={handleChange} disabled/></td>
                 </tr>
                 <tr className="table-primary1">
                     <td> Travel Insurance 		</td>
@@ -403,28 +418,28 @@ setForm((prev) => ({
                 <tr className="table-primary">
                     <td>Total Package cost		</td>
                     <td></td>
-                    <td><input type="number" name="total_package_cost" value={form.total_package_cost} className="form-control" onChange={handleChange}/></td>
+                    <td><input type="number" name="total_package_cost" value={form.total_package_cost} className="form-control" onChange={handleChange} disabled/></td>
                 </tr>
                 <tr className="table-primary1">
                     <td>Supplementary Charges		</td>
                     <td></td>
-                    <td><input type="number" name="sup_charges" value={form.sup_charges} className="form-control" onChange={handleChange}/></td>
+                    <td><input type="number" name="sup_charges" value={form.sup_charges} className="form-control" onChange={handleChange} disabled/></td>
                 </tr>
                  <tr className="bg-dark">
                     <td>Train Charges	</td>
                     <td></td>
-                    <td><input type="number" name="train_charges" value={form.train_charges} className="form-control" onChange={handleChange}/></td>
+                    <td><input type="number" name="train_charges" value={form.train_charges} className="form-control" onChange={handleChange} disabled/></td>
                 </tr>
                 <tr className="bg-dark">
                     <td>Bus Charges		</td>
                     <td></td>
-                    <td><input type="number" name="bus_charges" value={form.bus_charges} className="form-control" onChange={handleChange}/></td>
+                    <td><input type="number" name="bus_charges" value={form.bus_charges} className="form-control" onChange={handleChange} disabled/></td>
                 </tr>
 
                  <tr className="table-primary">
                     <td>Total Package Cost (To be quoted)		</td>
                     <td></td>
-                    <td><input type="number" name="total_package_cost_quoted" value={form.total_package_cost_quoted} className="form-control" onChange={handleChange}/></td>
+                    <td><input type="number" name="total_package_cost_quoted" value={form.total_package_cost_quoted} className="form-control" onChange={handleChange} disabled/></td>
                 </tr>
                  <tr className="bg-dark">
                     <td>Total No.of Pax	</td>
@@ -434,31 +449,31 @@ setForm((prev) => ({
                 <tr className="bg-dark">
                     <td>Package cost per person with Flights	</td>
                     <td></td>
-                    <td><input type="number" name="package_cost_for_flight" value={form.package_cost_for_flight} className="form-control" onChange={handleChange}/></td>
+                    <td><input type="number" name="package_cost_for_flight" value={form.package_cost_for_flight} className="form-control" onChange={handleChange} disabled/></td>
                 </tr>
                  <tr className="bg-dark">
                     <td colSpan={2}>Land Cost Per Person	</td>                   
-                    <td><input type="number" name="land_cost_per_person" value={form.land_cost_per_person} className="form-control" onChange={handleChange}/></td>
+                    <td><input type="number" name="land_cost_per_person" value={form.land_cost_per_person} className="form-control" onChange={handleChange} disabled/></td>
                 </tr>
                 <tr className="bg-dark">
                     <td colSpan={2}>Flight Cost Per Person		</td>                   
-                    <td><input type="number" name="flight_cost_per_person" value={form.flight_cost_per_person} className="form-control" onChange={handleChange}/></td>
+                    <td><input type="number" name="flight_cost_per_person" value={form.flight_cost_per_person} className="form-control" onChange={handleChange} disabled/></td>
                 </tr>
                 <tr className="bg-dark">
                     <td colSpan={2}>Cruise Cost Per Person		</td>                   
-                    <td><input type="number" name="cruise_cost_per_person" value={form.cruise_cost_per_person} className="form-control" onChange={handleChange}/></td>
+                    <td><input type="number" name="cruise_cost_per_person" value={form.cruise_cost_per_person} className="form-control" onChange={handleChange} disabled/></td>
                 </tr>
                 <tr className="bg-dark">
                     <td colSpan={2}>Train Cost Per Person			</td>                   
-                    <td><input type="number" name="train_cost_per_person" value={form.train_cost_per_person} className="form-control" onChange={handleChange}/></td>
+                    <td><input type="number" name="train_cost_per_person" value={form.train_cost_per_person} className="form-control" onChange={handleChange} disabled/></td>
                 </tr>
                  <tr className="bg-dark">
                     <td colSpan={2}>Bus Cost Per Person			</td>                   
-                    <td><input type="number" name="bus_cost_per_person" value={form.bus_cost_per_person} className="form-control" onChange={handleChange}/></td>
+                    <td><input type="number" name="bus_cost_per_person" value={form.bus_cost_per_person} className="form-control" onChange={handleChange} disabled/></td>
                 </tr>
                 <tr className="bg-dark">
                     <td colSpan={2}>TCS		</td>                   
-                    <td><input type="number" name="total_tcs_cost" disabled value={form.total_tcs_cost} className="form-control" onChange={handleChange}/></td>
+                    <td><input type="number" name="total_tcs_cost" disabled value={form.total_tcs_cost} className="form-control" onChange={handleChange} /></td>
                 </tr>
                 <tr className="table-primary">
                     <td colSpan={2}>Show Single Cost Per Person In Itineraries</td>                   
@@ -468,7 +483,11 @@ setForm((prev) => ({
                  <tr>
                     <td></td>
                     <td></td>
-                    <td><button className="btn btn-primary btn-sm" onClick={saveData}>Save Caluculation</button></td>
+                    <td><button className="btn btn-primary btn-sm" disabled={
+    parseFloat(form.supper_partner_percentage || 0) +
+    parseFloat(form.sales_partner_percentage || 0) +
+    parseFloat(form.lead_partner_percentage || 0) > 12
+  } onClick={saveData}>Save Caluculation</button></td>
                  </tr>
             </tbody>
         </table>

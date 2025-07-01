@@ -43,6 +43,8 @@ const InternationalForm = () => {
   });
 
   const [totals, setTotals] = useState({
+    total_visa_cost:0,
+    total_tcs_cost:0,
     total_flight_cost: 0,
     total_cruise_cost: 0,
     total_train_cost: 0,
@@ -51,6 +53,7 @@ const InternationalForm = () => {
     online_hotel_cost: 0,
     domestic_hotel_cost: 0,
     supplementary_cost: 0,
+    supplier_total:0,
     total_land: 0,
   });
 
@@ -261,32 +264,19 @@ const InternationalForm = () => {
             <HolidaySummary customerData={leads} row_id={row_id} />
             
 
-             <Flight customerData={leads} row_id={row_id} onUpdate={fetchAllTotals}/>
-              <Trains customerData={leads} row_id={row_id} onUpdate={fetchAllTotals}/>
-             <BussDetails customerData={leads} row_id={row_id} onUpdate={fetchAllTotals}/>
-           
-
-
-           <Visa customerData={leads} row_id={row_id} onUpdate={fetchAllTotals} />
-           <Tcs customerData={leads} row_id={row_id} onUpdate={fetchAllTotals} />
-           
-            <OnlineHotel customerData={leads} row_id={row_id} onUpdate={fetchAllTotals}/>
-
-
-
-
-             
-            <Cruise customerData={leads} row_id={row_id} onUpdate={fetchAllTotals}/>
-
-            <Suppliers customerData={leads} row_id={row_id} onUpdate={fetchAllTotals}/>
-            <InternationalSuppliers row_id={row_id} onUpdate={fetchAllTotals}/>
-            {/* <Transport customerData={leads} row_id={row_id} onUpdate={fetchAllTotals}/> */}
-            {/* <DomesticHotels customerData={leads} row_id={row_id} onUpdate={fetchAllTotals}/> */}
-            
-            <Day customerData={leads} row_id={row_id}/>
-            <FormIncExc customerData={leads} row_id={row_id}/>
-            <InternationalCal customerData={leads} row_id={row_id} totals={totals}/>
-            <Packs customerData={leads} row_id={row_id} />
+        <Flight customerData={leads} row_id={row_id} onUpdate={fetchAllTotals}/>
+        <Trains customerData={leads} row_id={row_id} onUpdate={fetchAllTotals}/>
+        <BussDetails customerData={leads} row_id={row_id} onUpdate={fetchAllTotals}/>
+        <Visa customerData={leads} row_id={row_id} onUpdate={fetchAllTotals} />
+        <Tcs customerData={leads} row_id={row_id} onUpdate={fetchAllTotals} />
+        <OnlineHotel customerData={leads} row_id={row_id} onUpdate={fetchAllTotals}/>
+        <Cruise customerData={leads} row_id={row_id} onUpdate={fetchAllTotals}/>
+        <Suppliers customerData={leads} row_id={row_id} onUpdate={fetchAllTotals}/>
+        <InternationalSuppliers row_id={row_id} onUpdate={fetchAllTotals}/>
+        <Day customerData={leads} row_id={row_id}/>
+        <FormIncExc customerData={leads} row_id={row_id}/>
+        <InternationalCal customerData={leads} row_id={row_id} totals={totals}/>
+        <Packs customerData={leads} row_id={row_id} />
             
             
             

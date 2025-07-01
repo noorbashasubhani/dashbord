@@ -112,6 +112,7 @@ export const Flight = ({ customerData, row_id, onUpdate  }) => {
          }
         const getingdata = await resp.json();
         setData(getingdata.data);
+        if (onUpdate) onUpdate();
         }catch(err){
             console.log(err.message);
         }

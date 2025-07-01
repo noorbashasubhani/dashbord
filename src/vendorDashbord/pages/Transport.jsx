@@ -4,7 +4,7 @@ import { API_URL } from '../data/apiUrl'
 
 
 
-export const Transport = ({ customerData, row_id }) => {
+export const Transport = ({ customerData, row_id , onUpdate }) => {
  
     const [data,setData]=useState([]);
     const [form,setForm]=useState({
@@ -60,6 +60,7 @@ const getTansport=async()=>{
          }
         const getingdata = await resp.json();
         setData(getingdata.data);
+        if (onUpdate) onUpdate();
         }catch(err){
             console.log(err.message);
         }
@@ -70,7 +71,7 @@ const getTansport=async()=>{
    const FaUnderline=async(row_id)=>{
         try{
            const delData=await fetch(`${API_URL}/vendor/Transports/${row_id}`,{
-            method:'Delete'
+            method:'delete'
            });
            if(!delData.ok){
             throw new Error('Data not deleting above url');

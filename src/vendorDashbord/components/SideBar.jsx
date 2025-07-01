@@ -178,6 +178,22 @@ const SideMenu = () => {
   const dailysal=()=>{
     navigate('/Daily-Sales-Report');
   }
+  const products=()=>{
+    navigate('/Product-Report');
+  }
+  const cihs=()=>{
+    navigate('/CIH');
+  }
+  const payble=()=>{
+    navigate('/Payable-Report');
+  }
+  const partner=()=>{
+    navigate('/Partners-Report-Business');
+    
+  }
+  const parnersApp=()=>{
+    navigate('/Parner-Approval');
+  }
   return (
     <aside id="sidebar" className="sidebar">
   <ul className="sidebar-nav" id="sidebar-nav">
@@ -257,7 +273,7 @@ const SideMenu = () => {
           </a>
         </li>
         <li>
-          <a href="forms-layouts.html">
+          <a onClick={parnersApp}>
             <i className="bi bi-ui-radios-grid" />
             <span>Partner Approval</span>
           </a>
@@ -414,7 +430,7 @@ const SideMenu = () => {
         data-bs-parent="#sidebar-nav"
       >
         <li>
-          <a href="icons-bootstrap.html">
+          <a onClick={cihs}>
             <i className="bi bi-book" />
             <span>CIH</span>
           </a>
@@ -432,7 +448,7 @@ const SideMenu = () => {
           </a>
         </li>
         <li>
-          <a onClick={payable}>
+          <a onClick={payble}>
             <i className="bi bi-currency-rupee" />
             <span>Payable  Report</span>
           </a>
@@ -458,7 +474,7 @@ const SideMenu = () => {
         data-bs-parent="#sidebar-nav"
       >
         <li>
-          <a href="icons-bootstrap.html">
+          <a onClick={products}>
             <i className="bi bi-circle" />
             <span>Productivity Report</span>
           </a>
@@ -476,7 +492,7 @@ const SideMenu = () => {
           </a>
         </li>
         <li>
-          <a href="icons-boxicons.html">
+          <a onClick={partner}>
             <i className="bi bi-circle" />
             <span>Partner  Report</span>
           </a>
@@ -816,12 +832,7 @@ const SideMenu = () => {
         <span> Marketing</span>
       </a>
     </li>
-    <li className="nav-item">
-      <a className="nav-link collapsed" href="pages-register.html">
-        <i className="bi bi-chat" />
-        <span> Live Chat</span>
-      </a>
-    </li>
+   
     {/* End Register Page Nav */}
    
     {/* End Error 404 Page Nav */}

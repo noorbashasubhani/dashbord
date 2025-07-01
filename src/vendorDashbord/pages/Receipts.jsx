@@ -13,6 +13,9 @@ const paymentTypes = [
 
 const Receipts = () => {
   const [showModal, setShowModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+const [deleteId, setDeleteId] = useState(null);
+
   const [form, setForm] = useState({
     doc_id: '',
     date_of_issue: '',
@@ -22,10 +25,11 @@ const Receipts = () => {
   });
   const [leads, setLeads] = useState([]);
   const [selectedLead, setSelectedLead] = useState(null);
+  const [rec,setRec]= useState(null);
 
   const fetchLeads = async () => {
     try {
-      const res = await fetch(`${API_URL}/vendor/confirm`);
+      const res = await fetch(`${API_URL}/vendor/GHRN-LEAD`);
       const data = await res.json();
       setLeads(data.data || []);
     } catch (err) {
@@ -35,6 +39,7 @@ const Receipts = () => {
 
   useEffect(() => {
     fetchLeads();
+    fetchReceiptlist();
   }, []);
 
   const handleSubmit = async (e) => {
@@ -67,6 +72,43 @@ const Receipts = () => {
     }
   };
 
+  const fetchReceiptlist=async()=>{
+    try{
+      const dataNew=await fetch(`${API_URL}/vendor/receipts`);
+      if(!dataNew.ok){
+        throw new Error('Data not fetching');
+      }
+      const getData=await dataNew.json();
+      setRec(getData.data);
+    }catch(err){
+      console.log(err.message);
+    }
+  }
+
+  const delFun = (id) => {
+  setDeleteId(id);
+  setShowDeleteModal(true);
+};
+
+const confirmDelete = async () => {
+  try {
+    const res = await fetch(`${API_URL}/vendor/receipts/${deleteId}`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: localStorage.getItem('token'),
+      },
+    });
+
+    if (!res.ok) throw new Error('Failed to delete receipt');
+
+    setShowDeleteModal(false);
+    setDeleteId(null);
+    fetchReceiptlist(); // refresh list
+  } catch (err) {
+    console.error('Error deleting receipt:', err.message);
+  }
+};
+
   return (
     <>
       <NavBar />
@@ -80,8 +122,10 @@ const Receipts = () => {
             <thead>
               <tr>
                 <th>S.No</th>
-                <th>Partner</th>
-                <th>Type</th>
+                <th>Reference No</th>
+                <th>Receipt To</th>
+                
+                <th>Travel Start Date</th>
                 <th>Total</th>
                 <th>Received</th>
                 <th>Pending</th>
@@ -89,9 +133,28 @@ const Receipts = () => {
                 <th>Actions</th>
               </tr>
             </thead>
-            <tbody>
-              {/* map receipt data here */}
-            </tbody>
+           <tbody>
+  {Array.isArray(rec) && rec.length > 0 ? (
+    rec.map((itms, index) => (
+      <tr key={itms._id}>
+        <td>{index + 1}</td>
+        <td>{itms.doc_id?.ghrn_no || '-'}</td>
+        <td>{itms.doc_id?.customer_name || '-'}</td>
+        <td>{new Date(itms.doc_id?.start_date).toLocaleDateString() || '-'}</td>
+        <td>{itms.total_cost}</td>
+        <td>{itms.payment_received}</td>
+        <td>{itms.pending_payment}</td>
+        <td>{new Date(itms.date_of_issue).toLocaleDateString()}</td>
+        <td><button className="btn btn-danger btn-sm" onClick={()=>delFun(itms._id)}>Delete</button></td>
+      </tr>
+    ))
+  ) : (
+    <tr>
+      <td colSpan="9" className="text-center">No receipts found</td>
+    </tr>
+  )}
+</tbody>
+
           </table>
         </div>
       </main>
@@ -115,7 +178,7 @@ const Receipts = () => {
             <td><strong>Customer Name:</strong> {selectedLead.customer_name}</td>
             <td><strong>Travel Destination:</strong> {selectedLead.holiday_destination?.destination_name || 'N/A'}</td>
             <td><strong>Travel Start Date:</strong> {new Date(selectedLead.start_date).toLocaleDateString()}</td>
-            <td><strong>Total Package Cost:</strong> ₹{selectedLead.calculation_data?.total_package_cost}</td>
+            <td><strong>Total Package Cost:</strong> ₹{selectedLead.total_amount}</td>
           </tr>
         </tbody>
       </table>
@@ -127,16 +190,21 @@ const Receipts = () => {
       <label className="col-sm-4 col-form-label">Lead (Customer)</label>
       <div className="col-sm-8">
         <Select
-          options={leads.map(lead => ({
-            value: lead._id,
-            label: `${lead.customer_name} - ${lead.ghrn_no}`,
-            leadData: lead
-          }))}
-          onChange={(option) => {
-            setForm({ ...form, doc_id: option.value });
-            setSelectedLead(option.leadData);
-          }}
-        />
+  options={leads.map(lead => ({
+    value: lead._id,
+    label: `${lead.customer_name} - ${lead.ghrn_no}`,
+    leadData: lead
+  }))}
+  onChange={(option) => {
+    const lead = option.leadData;
+    setSelectedLead(lead);
+    setForm({
+      ...form,
+      doc_id: option.value,
+      total_cost: lead.total_amount || ''
+    });
+  }}
+/>
       </div>
     </div>
 
@@ -216,6 +284,26 @@ const Receipts = () => {
           </div>
         </div>
       )}
+      {showDeleteModal && (
+  <div className="modal show fade d-block" tabIndex="-1" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
+    <div className="modal-dialog modal-dialog-centered">
+      <div className="modal-content">
+        <div className="modal-header">
+          <h5 className="modal-title">Confirm Deletion</h5>
+          <button type="button" className="btn-close" onClick={() => setShowDeleteModal(false)} />
+        </div>
+        <div className="modal-body">
+          <p>Are you sure you want to delete this receipt?</p>
+        </div>
+        <div className="modal-footer">
+          <button className="btn btn-secondary" onClick={() => setShowDeleteModal(false)}>Cancel</button>
+          <button className="btn btn-danger" onClick={confirmDelete}>Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+
       <Footer />
     </>
   );
